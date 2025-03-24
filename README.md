@@ -8,6 +8,7 @@
   - React.js
   - TypeScript
   - Vite
+  - Styled-components
 
     
 - **Linting & Formatting**:
