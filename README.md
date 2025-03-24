@@ -1,4 +1,4 @@
-# frontend
+# 제로픽 Frontend
 
 ---
 
