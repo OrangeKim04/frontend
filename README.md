@@ -48,10 +48,7 @@
  
 -**feat브랜치 생성 및 이름 규칙**
 
-1. project board에 add item
-2. 클릭하여 convert to issue
-3. assignees 지정(본인), labels 지정
-4. create a branch -> feature 브랜치 만들기, 브랜치 source: develop
+create a branch -> feature 브랜치 만들기, 브랜치 source: develop
  * 브랜치 이름: feature/issue번호/기능이름
    *ex)feature/2/Navbar*
 
