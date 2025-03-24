@@ -19,16 +19,6 @@
   - Yarn
 
 ---
-## 🚀 시작하기 (Getting Started)
-레포지토리를 클론하고 로컬에서 실행하는 방법
-
-1. **레포지토리 클론**
-   ```bash
-   git clone https://github.com/사용자명/레포지토리명.git
-   cd 레포지토리명
-
-
----
 
 ## :two_men_holding_hands:팀원 소개
 | 김규리 | 임용진 | 
