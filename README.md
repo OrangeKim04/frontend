@@ -64,3 +64,19 @@
 4. create a branch -> feature 브랜치 만들기, 브랜치 source: develop
  * 브랜치 이름: feature/issue번호/기능이름
    *ex)feature/2/Navbar*
+
+---
+## ➡️ 깃 브랜치 전략 
+깃 플로우(gitflow)
+
+- main : 기준이 되는 브랜치로 제품을 배포하는 브랜치
+- develop : 개발 브랜치로 개발자들이 이 브랜치를 기준으로 각자 작업한 기능들을 Merge
+- feature : 단위 기능을 개발하는 브랜치로 기능 개발이 완료되면 develop 브랜치에 Merge
+
+과정
+- master 브랜치에서 develop 브랜치를 분기합니다.
+- 개발자들은 develop 브랜치에 자유롭게 커밋을 합니다.
+- 기능 구현이 있는 경우 develop 브랜치에서 feature-* 브랜치를 분기합니다.
+- 테스트가 완료되면 develop 브랜치를 main에 merge합니다.
+
+---
