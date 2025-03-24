@@ -1,13 +1,10 @@
-import styled from 'styled-components';
+import LoginPage from './pages/LoginPage';
 function App() {
-  return (
-    <>
-      <Text>제로픽</Text>
-    </>
-  );
+   return (
+      <>
+         <LoginPage />
+      </>
+   );
 }
 
 export default App;
-const Text = styled.p`
-  color: blue;
-`;
