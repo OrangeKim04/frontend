@@ -49,8 +49,8 @@
 -**feat브랜치 생성 및 이름 규칙**
 
 create a branch -> feature 브랜치 만들기, 브랜치 source: develop
- * 브랜치 이름: feature/issue번호/기능이름
-   *ex)feature/2/Navbar*
+ * 브랜치 이름: feature/기능이름
+   *ex)feature/Navbar*
 
 ---
 ## ➡️ 깃 브랜치 전략 
