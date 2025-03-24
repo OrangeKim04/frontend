@@ -8,6 +8,7 @@
   - React.js
   - TypeScript
   - Vite
+  - Styled-components
 
     
 - **Linting & Formatting**:
@@ -16,16 +17,6 @@
     
 - **Package Manager**:
   - Yarn
-
----
-## 🚀 시작하기 (Getting Started)
-레포지토리를 클론하고 로컬에서 실행하는 방법
-
-1. **레포지토리 클론**
-   ```bash
-   git clone https://github.com/사용자명/레포지토리명.git
-   cd 레포지토리명
-
 
 ---
 
@@ -57,9 +48,22 @@
  
 -**feat브랜치 생성 및 이름 규칙**
 
-1. project board에 add item
-2. 클릭하여 convert to issue
-3. assignees 지정(본인), labels 지정
-4. create a branch -> feature 브랜치 만들기, 브랜치 source: develop
- * 브랜치 이름: feature/issue번호/기능이름
-   *ex)feature/2/Navbar*
+create a branch -> feature 브랜치 만들기, 브랜치 source: develop
+ * 브랜치 이름: feature/기능이름
+   *ex)feature/Navbar*
+
+---
+## ➡️ 깃 브랜치 전략 
+깃 플로우(gitflow)
+
+- main : 기준이 되는 브랜치로 제품을 배포하는 브랜치
+- develop : 개발 브랜치로 개발자들이 이 브랜치를 기준으로 각자 작업한 기능들을 Merge
+- feature : 단위 기능을 개발하는 브랜치로 기능 개발이 완료되면 develop 브랜치에 Merge
+
+과정
+- master 브랜치에서 develop 브랜치를 분기합니다.
+- 개발자들은 develop 브랜치에 자유롭게 커밋을 합니다.
+- 기능 구현이 있는 경우 develop 브랜치에서 feature-* 브랜치를 분기합니다.
+- 테스트가 완료되면 develop 브랜치를 main에 merge합니다.
+
+---
