@@ -20,11 +20,7 @@ const LoginPage = () => {
          .max(16, '비밀번호는 8~16자 사이로 입력해주세요!'),
    });
    // handleSubmit은 useForm에서 제공해준다.
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-   } = useForm({
+   const { register } = useForm({
       // 폼 제출 시 yup의 검증규칙 적용
       resolver: yupResolver(schema), // resolver: 외부 라이브러리와 통합하기 위한 옵션
    });

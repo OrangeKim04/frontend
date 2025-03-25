@@ -1,5 +1,4 @@
 import { Outlet, Link } from 'react-router-dom';
-import React, { useState } from 'react';
 import styled from 'styled-components';
 import home from '@/assets/homeG.svg';
 import recipe from '@/assets/forkG.svg';
@@ -22,17 +21,18 @@ const RootLayout = () => {
          activeIcon: homeActive, // 활성 상태 아이콘
       },
       {
-         title: '레시피',
-         link: '/recipe',
-         icon: recipe,
-         activeIcon: recipeActive,
-      },
-      {
          title: '검색',
          link: '/search',
          icon: search,
          activeIcon: searchActive,
       },
+      {
+         title: '레시피',
+         link: '/recipe',
+         icon: recipe,
+         activeIcon: recipeActive,
+      },
+
       {
          title: '커뮤니티',
          link: '/community',
@@ -71,11 +71,12 @@ const RootContainer = styled.div`
    flex-direction: column;
    height: 100vh;
    width: 100%;
+   overflow-y: hidden; /* 세로 스크롤 비활성화 */
 `;
 
 const Nav = styled.div`
    width: 100%;
-   height: 80px;
+   height: 70px;
    border-top: 1px solid #f1f1f1;
    display: flex;
    justify-content: space-between;
@@ -84,16 +85,19 @@ const Nav = styled.div`
    box-sizing: border-box;
    position: absolute;
    bottom: 0;
+   z-index: 10;
+   background-color: white;
+   border-radius: 15px;
 `;
 const Img = styled.img`
-   width: 24px;
+   width: 23px;
 `;
 const Item = styled(Link)`
    display: flex;
    flex-direction: column;
    justify-content: space-between;
    width: 49px;
-   height: 46px;
+   height: 44px;
    align-items: center;
    cursor: pointer;
    text-decoration: none;
@@ -102,5 +106,5 @@ const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;
-   color: ${({ isActive }) => (isActive ? 'black' : '#B3B3B3 ')};
+   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
 `;

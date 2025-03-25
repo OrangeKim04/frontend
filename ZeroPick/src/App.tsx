@@ -9,6 +9,7 @@ import RecipePage from './pages/RecipePage';
 import SearchPage from './pages/SearchPage';
 import CommunityPage from './pages/CommunityPage';
 import SettingPage from './pages/SettingPage';
+import CameraPage from './pages/CameraPage';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
    {
       path: '/signup',
       element: <SignUpPage />,
+   },
+   {
+      path: '/camera',
+      element: <CameraPage />,
    },
    {
       path: '/', // 루트 경로

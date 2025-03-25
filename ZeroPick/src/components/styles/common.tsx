@@ -4,7 +4,7 @@ export const Input = styled.input`
    width: 100%;
    height: 3.2rem;
    border-color: #ff9eb3;
-   border-radius: 10px;
+   border-radius: 20px;
    box-sizing: border-box;
    padding-left: 15px;
    outline: none;
@@ -25,7 +25,7 @@ export const Button = styled.button`
    background-color: #ff9eb3;
    height: 3.2rem;
    border: none;
-   border-radius: 10px;
+   border-radius: 20px;
    color: white;
    font-size: 1.1rem;
    font-family: SemiBold;
