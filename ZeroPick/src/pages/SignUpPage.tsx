@@ -1,15 +1,4 @@
-import {
-   Container,
-   Box,
-   Text,
-   Form,
-   InputBox,
-   Input,
-   Button,
-   TextBox,
-   SubText,
-   SubLink,
-} from '@/components/styles/common';
+import { Box, Title, Form, InputBox, Input, Button, TextBox, SubText, SubLink } from '@/components/styles/common';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -42,24 +31,18 @@ const SignUpPage = () => {
       resolver: yupResolver(schema), // resolver: 외부 라이브러리와 통합하기 위한 옵션
    });
    return (
-      <Container>
-         <Box>
-            <Text>회원가입</Text>
-            <Form>
-               <InputBox>
-                  <Input type={'email'} placeholder="이메일" {...register('email')} />
-                  <Input placeholder="아이디" />
-                  <Input type={'password'} placeholder="비밀번호" {...register('password')} />
-                  <Input type={'password'} placeholder="비밀번호를 다시 입력해주세요" {...register('passwordCheck')} />
-               </InputBox>
-               <Button type={'submit'}>가입하기</Button>
-            </Form>
-            <TextBox>
-               <SubText>이미 회원이신가요?</SubText>
-               <SubLink to="">로그인</SubLink>
-            </TextBox>
-         </Box>
-      </Container>
+      <Box>
+         <Title>회원가입</Title>
+         <Form>
+            <InputBox>
+               <Input type={'email'} placeholder="이메일" {...register('email')} />
+               <Input placeholder="아이디" />
+               <Input type={'password'} placeholder="비밀번호" {...register('password')} />
+               <Input type={'password'} placeholder="비밀번호를 다시 입력해주세요" {...register('passwordCheck')} />
+            </InputBox>
+            <Button type={'submit'}>가입하기</Button>
+         </Form>
+      </Box>
    );
 };
 export default SignUpPage;

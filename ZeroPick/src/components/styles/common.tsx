@@ -17,7 +17,7 @@ export const InputBox = styled.div`
    align-items: center;
    gap: 10px;
 `;
-export const Text = styled.p`
+export const Title = styled.p`
    font-family: Bold;
    font-size: 2rem;
 `;
@@ -30,6 +30,7 @@ export const Button = styled.button`
    color: white;
    font-size: 1.1rem;
    font-family: SemiBold;
+   cursor: pointer;
 `;
 export const Form = styled.div`
    display: flex;
