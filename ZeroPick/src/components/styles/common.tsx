@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 export const Input = styled.input`
-   width: 80%;
+   width: 100%;
    height: 3.2rem;
-   border-color: #ff005c;
+   border-color: #ff9eb3;
    border-radius: 10px;
    box-sizing: border-box;
    padding-left: 15px;
@@ -21,8 +21,8 @@ export const Title = styled.p`
    font-size: 2rem;
 `;
 export const Button = styled.button`
-   width: 80%;
-   background-color: #ff005c;
+   width: 100%;
+   background-color: #ff9eb3;
    height: 3.2rem;
    border: none;
    border-radius: 10px;
@@ -41,6 +41,7 @@ export const Form = styled.div`
 `;
 export const SubLink = styled(Link)`
    font-family: Regular;
+   font-size: 0.9rem;
 `;
 export const SubText = styled.p`
    font-family: Regular;
@@ -55,6 +56,8 @@ export const Box = styled.div`
    width: 100%;
    position: absolute;
    top: 30px;
+   padding: 0 30px;
+   box-sizing: border-box;
 `;
 export const TextBox = styled.div`
    display: flex;

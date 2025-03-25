@@ -2,7 +2,11 @@ import { Box, Title, Form, InputBox, Input, Button } from '@/components/styles/c
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import icon from '@/assets/Left Arrow.svg';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
+   const navigate = useNavigate();
    const schema = yup.object().shape({
       nickname: yup
          .string()
@@ -42,6 +46,7 @@ const SignUpPage = () => {
    });
    return (
       <Box>
+         <Img src={icon} onClick={() => navigate('/login')} />
          <Title>회원가입</Title>
          <Form>
             <InputBox>
@@ -57,3 +62,8 @@ const SignUpPage = () => {
    );
 };
 export default SignUpPage;
+const Img = styled.img`
+   position: absolute;
+   left: 30px;
+   cursor: pointer;
+`;

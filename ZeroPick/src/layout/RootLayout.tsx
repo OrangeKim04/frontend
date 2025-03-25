@@ -11,7 +11,9 @@ import recipeActive from '@/assets/forkB.svg';
 import communityActive from '@/assets/HeartB.svg';
 import settingActive from '@/assets/SettingB.svg';
 import searchActive from '@/assets/SearchB.svg';
+import { useLocation } from 'react-router-dom';
 const RootLayout = () => {
+   const location = useLocation();
    const categories = [
       {
          title: '홈',
@@ -45,27 +47,17 @@ const RootLayout = () => {
       },
    ];
 
-   const [selected, setSelected] = useState<string>(localStorage.getItem('selectedCategory') || '홈');
-   const handleClick = (title: string) => {
-      setSelected(title);
-      localStorage.setItem('selectedCategory', title);
-   };
-
    return (
       <RootContainer>
          <Outlet />
 
          <Nav>
             {categories.map((category, index) => (
-               <Item key={index} to={category.link} onClick={() => handleClick(category.title)}>
-                  <Img src={selected === category.title ? category.activeIcon : category.icon} />
-                  <NavText isActive={selected === category.title}>{category.title}</NavText>
+               <Item key={index} to={category.link}>
+                  <Img src={location.pathname.startsWith(category.link) ? category.activeIcon : category.icon} />
+                  <NavText isActive={location.pathname.startsWith(category.link)}>{category.title}</NavText>
                </Item>
             ))}
-            {/*   <Item>
-               <Img src={setting} />
-               <NavText>설정</NavText>
-            </Item> */}
          </Nav>
       </RootContainer>
    );

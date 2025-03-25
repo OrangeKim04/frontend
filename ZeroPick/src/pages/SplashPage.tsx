@@ -35,7 +35,7 @@ const Container = styled.div`
    align-items: center;
    justify-content: center;
    height: 100vh;
-   background-color: #ff005c;
+   background-color: #ff9eb3;
    color: white;
    text-align: center;
    z-index: 100;
@@ -44,12 +44,13 @@ const Container = styled.div`
 const Logo = styled.h1`
    font-size: 5rem;
    font-family: Bold;
+   margin-bottom: 15px;
 `;
 
 const Tagline = styled.p`
    font-size: 1.3rem;
    font-family: Regular;
-   margin-bottom: 100px;
+   margin-bottom: 80px;
 `;
 const checkIconAnimation = keyframes`
    0%, 33.33% {
@@ -86,7 +87,6 @@ const Icon = styled.img`
    top: 0;
    left: 0;
    width: 5rem;
-   color: white;
 
    &:nth-child(1) {
       animation: ${checkIconAnimation} 4s infinite;
