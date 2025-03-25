@@ -1,13 +1,23 @@
-import { Box, Title, Form, InputBox, Input, Button, TextBox, SubText, SubLink } from '@/components/styles/common';
+import { Box, Title, Form, InputBox, Input, Button } from '@/components/styles/common';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 const SignUpPage = () => {
    const schema = yup.object().shape({
+      nickname: yup
+         .string()
+         .email('올바른 닉네임 형식이 아닙니다. 다시 한번 확인해주세요!')
+         .required('닉네임을 반드시 입력해주세요.'),
       email: yup
          .string()
          .email('올바른 이메일 형식이 아닙니다. 다시 한번 확인해주세요!')
          .required('이메일을 반드시 입력해주세요.'),
+      id: yup
+         .string()
+         // required를 min보다 앞에 위치시켜 필수 필드 검증이 가장 먼저 실행되도록 수정
+         .required('아이디를 반드시 입력해주세요.')
+         .min(8, '아이디는 8~16자 사이로 입력해주세요!')
+         .max(16, '아이디는 8~16자 사이로 입력해주세요!'),
       password: yup
          .string()
          // required를 min보다 앞에 위치시켜 필수 필드 검증이 가장 먼저 실행되도록 수정
@@ -35,6 +45,7 @@ const SignUpPage = () => {
          <Title>회원가입</Title>
          <Form>
             <InputBox>
+               <Input placeholder="닉네임" {...register('nickname')} />
                <Input type={'email'} placeholder="이메일" {...register('email')} />
                <Input placeholder="아이디" />
                <Input type={'password'} placeholder="비밀번호" {...register('password')} />

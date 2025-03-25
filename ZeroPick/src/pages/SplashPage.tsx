@@ -1,28 +1,26 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import checkIcon from '@/assets/Check.svg';
 import searchIcon from '@/assets/Search.svg';
 import basketIcon from '@/assets/Basket.svg';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 const SplashPage = () => {
+   const icons = [checkIcon, searchIcon, basketIcon];
    const navigate = useNavigate();
-
-   // useEffect로 2초 후에 로그인 페이지로 이동하도록 설정
    useEffect(() => {
       const timer = setTimeout(() => {
          navigate('/login'); // 일정 시간 후 랜딩 페이지로 이동
-      }, 3900); // 3초 후 이동
+      }, 3900); // 3.9초 후 이동
 
       return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
    }, [navigate]);
-   const icons = [checkIcon, searchIcon, basketIcon];
    return (
       <Container>
          <Logo>제로픽</Logo>
          <Tagline>영양성분부터 대체당까지 분석해요</Tagline>
          <IconWrapper>
             {icons.map((icon, index) => (
-               <Icon key={index} src={icon} className={`icon${index + 1}`} />
+               <Icon key={index} src={icon} />
             ))}
          </IconWrapper>
       </Container>
@@ -40,6 +38,7 @@ const Container = styled.div`
    background-color: #ff005c;
    color: white;
    text-align: center;
+   z-index: 100;
 `;
 
 const Logo = styled.h1`

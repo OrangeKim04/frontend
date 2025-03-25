@@ -9,7 +9,6 @@ export const Input = styled.input`
    padding-left: 15px;
    outline: none;
 `;
-export const Container = styled.div``;
 export const InputBox = styled.div`
    display: flex;
    width: 100%;
@@ -47,6 +46,7 @@ export const SubText = styled.p`
    font-family: Regular;
    margin-top: 15px;
    margin: 0;
+   font-size: 0.9rem;
 `;
 export const Box = styled.div`
    display: flex;
