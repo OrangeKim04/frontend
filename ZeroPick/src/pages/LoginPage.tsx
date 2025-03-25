@@ -12,7 +12,10 @@ const LoginPage = () => {
                </InputBox>
                <Button>로그인</Button>
             </Form>
-            <SubText to="">회원가입</SubText>
+            <TextBox>
+               <SubText>회원이 아니신가요? </SubText>
+               <SubLink to="">회원가입</SubLink>
+            </TextBox>
          </Box>
       </Container>
    );
@@ -46,7 +49,7 @@ const Button = styled.button`
    border: none;
    border-radius: 10px;
    color: white;
-   font-size: 1.2rem;
+   font-size: 1.1rem;
    font-family: SemiBold;
 `;
 const Form = styled.div`
@@ -57,9 +60,13 @@ const Form = styled.div`
    width: 100%;
    margin-top: 20px;
 `;
-const SubText = styled(Link)`
+const SubLink = styled(Link)`
+   font-family: Regular;
+`;
+const SubText = styled.p`
    font-family: Regular;
    margin-top: 15px;
+   margin: 0;
 `;
 const Box = styled.div`
    display: flex;
@@ -67,5 +74,11 @@ const Box = styled.div`
    align-items: center;
    width: 100%;
    position: absolute;
-   bottom: 200px;
+   top: 100px;
+`;
+const TextBox = styled.div`
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   margin-top: 20px;
 `;
