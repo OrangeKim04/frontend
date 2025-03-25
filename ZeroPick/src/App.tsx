@@ -1,13 +1,13 @@
-import styled from 'styled-components';
+import '@/font.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+
 function App() {
    return (
-      <>
-         <Text>제로픽</Text>
-      </>
+      <Router>
+         <LoginPage />
+      </Router>
    );
 }
 
 export default App;
-const Text = styled.p`
-   color: blue;
-`;

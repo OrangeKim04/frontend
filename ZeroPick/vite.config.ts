@@ -8,4 +8,5 @@ export default defineConfig({
       alias: { find: '@', replacement: resolve(__dirname, 'src') },
    },
    plugins: [react(), tsconfigPaths()],
+   server: { host: true },
 });
