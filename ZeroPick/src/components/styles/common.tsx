@@ -8,6 +8,7 @@ export const Input = styled.input`
    box-sizing: border-box;
    padding-left: 15px;
    outline: none;
+   font-size: 0.9rem;
 `;
 export const InputBox = styled.div`
    display: flex;
@@ -64,4 +65,28 @@ export const TextBox = styled.div`
    align-items: center;
    gap: 10px;
    margin-top: 20px;
+`;
+
+export const Container = styled.div`
+   background-color: #f4f4f4;
+   width: 100%;
+   height: calc(100vh - 70px); /* 화면 높이에서 70px을 뺀 높이 */
+   padding: 15px;
+   box-sizing: border-box;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 12px;
+   overflow-y: auto; /* 세로 스크롤 활성화 */
+`;
+export const WhiteBox = styled.div`
+   background-color: white;
+   width: 100%;
+   border-radius: 20px;
+   padding: 20px;
+   box-sizing: border-box;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05);
 `;

@@ -16,3 +16,20 @@ export const reports = [
       link: 'https://www.k-health.com/news/articleView.html?idxno=76421',
    },
 ];
+export const Items = [
+   '코카콜라',
+   '칠성사이다',
+   '펩시콜라',
+   '스프라이트',
+   '환타 오렌지',
+   '환타 포도',
+   '마운틴듀',
+   '닥터페퍼',
+   '밀키스',
+   '포카리스웨트',
+   '게토레이',
+   '솔의눈',
+   '토레타',
+   '삼다수',
+   '백산수',
+];

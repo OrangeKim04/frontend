@@ -4,6 +4,7 @@ import searchIcon from '@/assets/Search.svg';
 import basketIcon from '@/assets/Basket.svg';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import backgroundImg from '@/assets/background.svg';
 const SplashPage = () => {
    const icons = [checkIcon, searchIcon, basketIcon];
    const navigate = useNavigate();
@@ -39,18 +40,39 @@ const Container = styled.div`
    color: white;
    text-align: center;
    z-index: 100;
+   background-image: url(${backgroundImg});
+   background-repeat: no-repeat;
+   background-size: cover; /* 이미지가 전체를 덮도록 조정 */
+   background-position: center; /* 이미지가 중앙에 위치하도록 설정 */
+   /* 아래를 추가하면 내부 요소는 블러 효과를 받지 않음 */
+   &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(100px); /* 배경 블러 */
+      z-index: -1;
+   }
 `;
 
 const Logo = styled.h1`
    font-size: 5rem;
    font-family: Bold;
    margin-bottom: 15px;
+   color: white;
+   /* text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.2),
+      0 0 20px rgba(255, 255, 255, 0.15),
+      0 0 30px rgba(255, 255, 255, 0.1); /* 빛번짐 효과 */ */
 `;
 
 const Tagline = styled.p`
    font-size: 1.3rem;
    font-family: Regular;
    margin-bottom: 80px;
+   color: white;
 `;
 const checkIconAnimation = keyframes`
    0%, 33.33% {
@@ -87,6 +109,9 @@ const Icon = styled.img`
    top: 0;
    left: 0;
    width: 5rem;
+   /* 빛번짐 효과 */
+   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.15))
+      drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 
    &:nth-child(1) {
       animation: ${checkIconAnimation} 4s infinite;

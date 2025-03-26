@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/styles/common';
 import checkIcon from '@/assets/checkG.svg';
 import bellIcon from '@/assets/Bell.svg';
+import { Container, WhiteBox } from '@/components/styles/common';
 const HomePage = () => {
    const navigate = useNavigate();
    return (
@@ -15,13 +16,13 @@ const HomePage = () => {
             </Logo>
             <Icon src={bellIcon} />
          </Top>
-         <Box>
+         <WhiteBox>
             <Title>제로제품 건강하게 선택하세요!</Title>
             <Button onClick={() => navigate('/camera')} style={{ fontSize: '1.1rem' }}>
                원재료 성분 확인하기
             </Button>
-         </Box>
-         <Box>
+         </WhiteBox>
+         <WhiteBox>
             <Title>관련 뉴스</Title>
             {reports.map((item, id) => (
                <News key={id} onClick={() => window.open(item.link)}>
@@ -33,33 +34,12 @@ const HomePage = () => {
                   {item.title}
                </News>
             ))}
-         </Box>
+         </WhiteBox>
       </Container>
    );
 };
 export default HomePage;
-const Container = styled.div`
-   background-color: #ededed;
-   width: 100%;
-   height: calc(100vh - 70px); /* 화면 높이에서 80px을 뺀 높이 */
-   padding: 10px;
-   box-sizing: border-box;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 10px;
-   overflow-y: auto; /* 세로 스크롤 활성화 */
-`;
-const Box = styled.div`
-   background-color: white;
-   width: 100%;
-   border-radius: 20px;
-   padding: 30px;
-   box-sizing: border-box;
-   display: flex;
-   flex-direction: column;
-   gap: 20px;
-`;
+
 const Top = styled.div`
    width: 100%;
    padding: 3px 7px;
@@ -88,6 +68,7 @@ const News = styled.p`
    text-decoration: underline;
    text-decoration-thickness: 0.5px; /* 언더라인 두께 조절 */
    text-underline-offset: 3px; /* 언더라인과 텍스트 간의 간격 */
+   margin-bottom: 4px;
 `;
 const Icon = styled.img`
    color: gray;

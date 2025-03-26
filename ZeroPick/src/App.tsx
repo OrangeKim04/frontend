@@ -10,6 +10,7 @@ import SearchPage from './pages/SearchPage';
 import CommunityPage from './pages/CommunityPage';
 import SettingPage from './pages/SettingPage';
 import CameraPage from './pages/CameraPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
          { path: 'home', element: <HomePage /> }, // /home 경로 추가
          { path: 'recipe', element: <RecipePage /> },
          { path: 'search', element: <SearchPage /> },
+         { path: 'search/:id', element: <ProductDetailPage /> },
          { path: 'community', element: <CommunityPage /> },
          { path: 'setting', element: <SettingPage /> },
       ],

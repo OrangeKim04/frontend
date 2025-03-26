@@ -32,7 +32,11 @@ const CameraPage = () => {
 
    return (
       <Wrapper>
-         <Camera ref={camera} aspectRatio="cover" numberOfCamerasCallback={setNumberOfCameras} />
+         <Camera
+            ref={camera}
+            aspectRatio="cover"
+            numberOfCamerasCallback={setNumberOfCameras}
+         />
          <Control>
             <TakePhotoButton
                src={icon}
