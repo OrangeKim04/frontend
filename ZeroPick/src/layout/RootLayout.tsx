@@ -54,8 +54,18 @@ const RootLayout = () => {
          <Nav>
             {categories.map((category, index) => (
                <Item key={index} to={category.link}>
-                  <Img src={location.pathname.startsWith(category.link) ? category.activeIcon : category.icon} />
-                  <NavText isActive={location.pathname.startsWith(category.link)}>{category.title}</NavText>
+                  <Img
+                     src={
+                        location.pathname.startsWith(category.link)
+                           ? category.activeIcon
+                           : category.icon
+                     }
+                  />
+                  <NavText
+                     isActive={location.pathname.startsWith(category.link)}
+                  >
+                     {category.title}
+                  </NavText>
                </Item>
             ))}
          </Nav>

@@ -18,7 +18,10 @@ const HomePage = () => {
          </Top>
          <WhiteBox>
             <Title>제로제품 건강하게 선택하세요!</Title>
-            <Button onClick={() => navigate('/camera')} style={{ fontSize: '1.1rem' }}>
+            <Button
+               onClick={() => navigate('/camera')}
+               style={{ fontSize: '1.1rem' }}
+            >
                원재료 성분 확인하기
             </Button>
          </WhiteBox>

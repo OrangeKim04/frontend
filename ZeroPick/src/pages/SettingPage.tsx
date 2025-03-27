@@ -4,7 +4,9 @@ import pencil from '@/assets/Pencil.svg';
 const SettingPage = () => {
    return (
       <Container>
-         <WhiteBox style={{ gap: '0', padding: '15px 0', position: 'relative' }}>
+         <WhiteBox
+            style={{ gap: '0', padding: '15px 0', position: 'relative' }}
+         >
             <TitleText>프로필</TitleText>
             <Icon src={pencil} />
             <ProfileBox>

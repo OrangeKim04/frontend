@@ -1,4 +1,11 @@
-import { Box, Title, Form, InputBox, Input, Button } from '@/components/styles/common';
+import {
+   Box,
+   Title,
+   Form,
+   InputBox,
+   Input,
+   Button,
+} from '@/components/styles/common';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -47,10 +54,22 @@ const SignUpPage = () => {
          <Form>
             <InputBox>
                <Input placeholder="닉네임" {...register('nickname')} />
-               <Input type={'email'} placeholder="이메일" {...register('email')} />
+               <Input
+                  type={'email'}
+                  placeholder="이메일"
+                  {...register('email')}
+               />
                <Input placeholder="아이디" />
-               <Input type={'password'} placeholder="비밀번호" {...register('password')} />
-               <Input type={'password'} placeholder="비밀번호를 다시 입력해주세요" {...register('passwordCheck')} />
+               <Input
+                  type={'password'}
+                  placeholder="비밀번호"
+                  {...register('password')}
+               />
+               <Input
+                  type={'password'}
+                  placeholder="비밀번호를 다시 입력해주세요"
+                  {...register('passwordCheck')}
+               />
             </InputBox>
             <Button type={'submit'}>가입하기</Button>
          </Form>

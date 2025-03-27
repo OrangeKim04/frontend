@@ -110,7 +110,8 @@ const Icon = styled.img`
    left: 0;
    width: 5rem;
    /* 빛번짐 효과 */
-   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.15))
+   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2))
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.15))
       drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 
    &:nth-child(1) {

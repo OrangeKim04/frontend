@@ -1,4 +1,14 @@
-import { Box, Title, Form, InputBox, Input, Button, TextBox, SubText, SubLink } from '@/components/styles/common';
+import {
+   Box,
+   Title,
+   Form,
+   InputBox,
+   Input,
+   Button,
+   TextBox,
+   SubText,
+   SubLink,
+} from '@/components/styles/common';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
