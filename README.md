@@ -14,6 +14,7 @@
 - **Linting & Formatting**:
   - ESLint
   - Prettier
+  - husky(commitLint)
     
 - **Package Manager**:
   - Yarn
@@ -37,14 +38,18 @@
   
 -**커밋 메시지 규칙: [태그]설명**
   
-  *ex) [feat] 로그인 기능 구현*
+  *ex) feat: initial commit*
   
-    - `feat`: 새로운 기능 추가
-    - `fix`: 버그 수정
-    - `docs`: 문서 변경
-    - `refactor`: 코드 리팩토링
-    - `style`: 코드 스타일 수정
-    - `test`: 테스트 추가/수정
+    - ci: CI 설정/스크립트 변경
+    - chore: 기타 작업 (빌드, 패키지 관리 등)
+    - docs: 문서 변경
+    - ticket: 이슈/티켓 관련 작업
+    - feat: 새로운 기능 추가
+    - fix: 버그 수정
+    - perf: 성능 개선
+    - refactor: 코드 리팩토링
+    - revert: 변경사항 되돌리기
+    - style: 코드 스타일 수정
  
 -**feat브랜치 생성 및 이름 규칙**
 
