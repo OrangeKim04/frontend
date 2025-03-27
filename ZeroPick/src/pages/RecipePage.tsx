@@ -1,4 +1,4 @@
-import { Container, Button, WhiteBox } from '@/components/styles/common';
+import { Container, Button } from '@/components/styles/common';
 import styled from 'styled-components';
 const RecipePage = () => {
    return (

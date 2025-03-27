@@ -53,6 +53,7 @@ const Container = styled.div`
       width: 100%;
       height: 100%;
       backdrop-filter: blur(100px); /* 배경 블러 */
+      -webkit-backdrop-filter: blur(100px); /* Webkit을 위한 접두사 */
       z-index: -1;
    }
 `;

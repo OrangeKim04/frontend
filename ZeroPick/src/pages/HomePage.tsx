@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { reports } from '@/data/mockdata';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/styles/common';
-import checkIcon from '@/assets/checkG.svg';
+import checkIcon from '@/assets/Circled Check.svg';
 import bellIcon from '@/assets/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 const HomePage = () => {
@@ -20,8 +20,7 @@ const HomePage = () => {
             <Title>제로제품 건강하게 선택하세요!</Title>
             <Button
                onClick={() => navigate('/camera')}
-               style={{ fontSize: '1.1rem' }}
-            >
+               style={{ fontSize: '1.1rem' }}>
                원재료 성분 확인하기
             </Button>
          </WhiteBox>

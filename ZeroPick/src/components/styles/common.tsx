@@ -31,6 +31,7 @@ export const Button = styled.button`
    font-size: 1.1rem;
    font-family: SemiBold;
    cursor: pointer;
+   flex-shrink: 0;
 `;
 export const Form = styled.div`
    display: flex;
