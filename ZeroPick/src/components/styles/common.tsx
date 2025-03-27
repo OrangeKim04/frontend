@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+// 회원가입, 로그인 페이지에 쓰이는 스타일 컴포넌트
+// 기본 페이지에 사용되는 Container, WhiteBox
 export const Input = styled.input`
    width: 100%;
    height: 3.2rem;
