@@ -6,7 +6,6 @@ import switchIcon from '@/assets/switch-camera.svg';
 
 const CameraPage = () => {
    const [image, setImage] = useState<string | null>(null);
-   const [numberOfCameras, setNumberOfCameras] = useState(0);
    const camera = useRef<CameraType>(null);
    useEffect(() => {
       setImage(null);
@@ -22,15 +21,13 @@ const CameraPage = () => {
                aspectRatio={3 / 5}
                errorMessages={{}}
                facingMode="environment"
-               numberOfCamerasCallback={setNumberOfCameras}
             />
          )}
          <Control>
             <SwitchButton
                src={switchIcon}
-               hidden={numberOfCameras <= 1}
                onClick={() => {
-                  camera.current?.switchCamera();
+                  setImage(null);
                }}
             />
             <TakePhotoButton
