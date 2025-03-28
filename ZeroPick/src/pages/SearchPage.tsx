@@ -1,4 +1,4 @@
-import searchIcon from '@/assets/SearchB.svg';
+import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
 import { Items } from '@/data/mockdata';
 import { useNavigate } from 'react-router-dom';

@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { reports } from '@/data/mockdata';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/styles/common';
-import checkIcon from '@/assets/Circled Check.svg';
-import bellIcon from '@/assets/Bell.svg';
+import checkIcon from '@/assets/home/Circled Check.svg';
+import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 const HomePage = () => {
    const navigate = useNavigate();

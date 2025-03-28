@@ -1,15 +1,15 @@
 import { Outlet, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import home from '@/assets/homeG.svg';
-import recipe from '@/assets/forkG.svg';
-import community from '@/assets/HeartG.svg';
-import setting from '@/assets/SettingG.svg';
-import search from '@/assets/SearchG.svg';
-import homeActive from '@/assets/homeB.svg';
-import recipeActive from '@/assets/forkB.svg';
-import communityActive from '@/assets/HeartB.svg';
-import settingActive from '@/assets/SettingB.svg';
-import searchActive from '@/assets/SearchB.svg';
+import home from '@/assets/navbar/homeG.svg';
+import recipe from '@/assets/navbar/forkG.svg';
+import community from '@/assets/navbar/HeartG.svg';
+import setting from '@/assets/navbar/SettingG.svg';
+import search from '@/assets/navbar/SearchG.svg';
+import homeActive from '@/assets/navbar/homeB.svg';
+import recipeActive from '@/assets/navbar/forkB.svg';
+import communityActive from '@/assets/navbar/HeartB.svg';
+import settingActive from '@/assets/navbar/SettingB.svg';
+import searchActive from '@/assets/navbar/SearchB.svg';
 import { useLocation } from 'react-router-dom';
 const RootLayout = () => {
    const location = useLocation();
@@ -62,8 +62,7 @@ const RootLayout = () => {
                      }
                   />
                   <NavText
-                     isActive={location.pathname.startsWith(category.link)}
-                  >
+                     isActive={location.pathname.startsWith(category.link)}>
                      {category.title}
                   </NavText>
                </Item>
