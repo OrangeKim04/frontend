@@ -5,7 +5,9 @@ import postIcon from '@/assets/setting/게시글.svg';
 import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
+import { useNavigate } from 'react-router-dom';
 const SettingPage = () => {
+   const navigate = useNavigate();
    return (
       <Container>
          <WhiteBox style={{ gap: '0', position: 'relative' }}>
@@ -29,7 +31,7 @@ const SettingPage = () => {
                <MenuIcon src={communityIcon} />
                <InfoText>커뮤니티 좋아요 목록</InfoText>
             </InfoBox>
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/setting/likedProducts')}>
                <MenuIcon src={likeIcon} />
                <InfoText>상품 좋아요 목록</InfoText>
             </InfoBox>

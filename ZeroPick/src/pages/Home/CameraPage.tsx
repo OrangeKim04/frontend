@@ -31,6 +31,9 @@ const CameraPage = () => {
          const dataURL = cropper.getCroppedCanvas().toDataURL();
          console.log(dataURL); // 크롭된 이미지 URL을 바로 확인
          setCroppedImage(dataURL); // 바로 croppedImage에 저장
+         navigate('/home/result');
+      } else {
+         alert('사진을 찍어주세요');
       }
    };
    return (
@@ -45,7 +48,7 @@ const CameraPage = () => {
                viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
                background={false}
                guides={false}
-               style={{ width: '100%', height: '80%' }}
+               style={{ width: '100%', height: '76.9%' }}
             />
          ) : (
             <Camera
@@ -132,6 +135,5 @@ const BackIcon = styled.img`
    position: absolute;
    left: 20px;
    top: 22px;
-   cursor: pointer;
    cursor: pointer;
 `;

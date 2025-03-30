@@ -4,13 +4,15 @@ import LoginPage from '@/pages/LoginPage';
 import SignUpPage from '@/pages/SignUpPage';
 import SplashPage from '@/pages/SplashPage';
 import RootLayout from '@/layout/RootLayout';
-import HomePage from '@/pages/HomePage';
+import HomePage from '@/pages/Home/HomePage';
 import RecipePage from './pages/RecipePage';
-import SearchPage from './pages/SearchPage';
+import SearchPage from './pages/Search/SearchPage';
 import CommunityPage from './pages/CommunityPage';
-import SettingPage from './pages/SettingPage';
-import CameraPage from './pages/CameraPage';
-import ProductDetailPage from './pages/ProductDetailPage';
+import SettingPage from './pages/Setting/SettingPage';
+import CameraPage from './pages/Home/CameraPage';
+import ProductDetailPage from './pages/Search/ProductDetailPage';
+import AnalysisPage from './pages/Home/AnalysisPage';
+import LikedProduct from './pages/Setting/LikedProductsPage';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -24,6 +26,7 @@ const router = createBrowserRouter([
       path: '/camera',
       element: <CameraPage />,
    },
+
    {
       path: '/', // 루트 경로
       element: <RootLayout />,
@@ -32,9 +35,11 @@ const router = createBrowserRouter([
          { path: 'home', element: <HomePage /> }, // /home 경로 추가
          { path: 'recipe', element: <RecipePage /> },
          { path: 'search', element: <SearchPage /> },
-         { path: 'search/:id', element: <ProductDetailPage /> },
+         { path: '/:id', element: <ProductDetailPage /> },
          { path: 'community', element: <CommunityPage /> },
          { path: 'setting', element: <SettingPage /> },
+         { path: 'home/result', element: <AnalysisPage /> },
+         { path: 'setting/likedProducts', element: <LikedProduct /> },
       ],
    },
 ]);

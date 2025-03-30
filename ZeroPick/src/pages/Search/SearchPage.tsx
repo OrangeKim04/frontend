@@ -1,10 +1,9 @@
 import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
 import { Items } from '@/data/mockdata';
-import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/styles/common';
+import Product from '@/components/Product';
 const SearchPage = () => {
-   const navigate = useNavigate();
    return (
       <Container style={{ backgroundColor: 'white', padding: '20px' }}>
          <SearchBar>
@@ -13,10 +12,7 @@ const SearchPage = () => {
          </SearchBar>
          <ItemList>
             {Items.map((item, id) => (
-               <Item key={id} onClick={() => navigate(`/search/${id}`)}>
-                  <ItemText>{item}</ItemText>
-                  <ItemText>&gt;</ItemText>
-               </Item>
+               <Product key={id} item={item} />
             ))}
          </ItemList>
       </Container>
@@ -55,26 +51,11 @@ const Img = styled.img`
    letf: 0;
    opacity: 0.4;
 `;
-const Item = styled.div`
-   width: 100%;
-   height: 70px;
-   border-bottom: 0.5px solid #ff9eb3;
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding: 0 20px;
-   box-sizing: border-box;
-   cursor: pointer;
-   flex-shrink: 0; /* 줄어들지 않도록 설정 */
-`;
+
 const ItemList = styled.div`
    width: 100%;
    height: calc(100vh - 152px);
    display: flex;
    flex-direction: column;
    overflow-y: auto; /* 세로 스크롤 활성화 */
-`;
-const ItemText = styled.p`
-   font-family: SemiBold;
-   margin: 0;
 `;

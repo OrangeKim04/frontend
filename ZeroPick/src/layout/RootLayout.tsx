@@ -1,4 +1,5 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import styled from 'styled-components';
 import home from '@/assets/navbar/homeG.svg';
 import recipe from '@/assets/navbar/forkG.svg';
@@ -10,7 +11,6 @@ import recipeActive from '@/assets/navbar/forkB.svg';
 import communityActive from '@/assets/navbar/HeartB.svg';
 import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
-import { useLocation } from 'react-router-dom';
 const RootLayout = () => {
    const location = useLocation();
    const categories = [
@@ -46,14 +46,22 @@ const RootLayout = () => {
          activeIcon: settingActive,
       },
    ];
-
+   const [selected, setSelected] = useState<string>(
+      localStorage.getItem('selectedCategory'),
+   );
+   const handleClick = (title: string) => {
+      setSelected(title);
+      localStorage.setItem('selectedCategory', title);
+   };
    return (
       <RootContainer>
          <Outlet />
-
          <Nav>
             {categories.map((category, index) => (
-               <Item key={index} to={category.link}>
+               <Item
+                  key={index}
+                  to={category.link}
+                  onClick={() => handleClick(category.title)}>
                   <Img
                      src={
                         location.pathname.startsWith(category.link)
