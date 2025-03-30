@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import home from '@/assets/navbar/homeG.svg';
 import recipe from '@/assets/navbar/forkG.svg';
@@ -47,12 +47,15 @@ const RootLayout = () => {
       },
    ];
    const [selected, setSelected] = useState<string>(
-      localStorage.getItem('selectedCategory'),
+      localStorage.getItem('selectedCategory') || '홈',
    );
    const handleClick = (title: string) => {
       setSelected(title);
       localStorage.setItem('selectedCategory', title);
    };
+   useEffect(() => {
+      console.log(localStorage.getItem('selectedCategory'));
+   }, [location.pathname]);
    return (
       <RootContainer>
          <Outlet />
@@ -64,13 +67,17 @@ const RootLayout = () => {
                   onClick={() => handleClick(category.title)}>
                   <Img
                      src={
-                        location.pathname.startsWith(category.link)
+                        location.pathname.startsWith(category.link) ||
+                        selected === category.title
                            ? category.activeIcon
                            : category.icon
                      }
                   />
                   <NavText
-                     isActive={location.pathname.startsWith(category.link)}>
+                     isActive={
+                        location.pathname.startsWith(category.link) ||
+                        selected === category.title
+                     }>
                      {category.title}
                   </NavText>
                </Item>
