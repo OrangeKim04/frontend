@@ -3,10 +3,10 @@ import { Camera, CameraType } from 'react-camera-pro';
 import styled from 'styled-components';
 import photoIcon from '@/assets/camera/camera_button.svg';
 import switchIcon from '@/assets/camera/switch-camera.svg';
-import backIcon from '@/assets/Left Arrow.svg';
 import checkIcon from '@/assets/camera/Circled Check Button.svg';
 import { useNavigate } from 'react-router-dom';
 import Cropper, { ReactCropperElement } from 'react-cropper';
+import BackArrow from '@/components/BackArrow';
 import 'cropperjs/dist/cropper.css';
 const CameraPage = () => {
    const navigate = useNavigate();
@@ -38,7 +38,7 @@ const CameraPage = () => {
    };
    return (
       <Wrapper>
-         <BackIcon src={backIcon} onClick={() => navigate('/home')} />
+         <BackArrow url="/home" />
          <Title>영양성분을 찍어주세요</Title>
          {image ? (
             <Cropper
@@ -129,11 +129,4 @@ const Title = styled.p`
    margin: 0;
    text-align: center;
    margin: 20px 0;
-`;
-
-const BackIcon = styled.img`
-   position: absolute;
-   left: 20px;
-   top: 22px;
-   cursor: pointer;
 `;
