@@ -33,3 +33,29 @@ export const Items = [
    { id: 14, name: '삼다수' },
    { id: 15, name: '백산수' },
 ];
+
+// 상품명 상세 검색 결과
+export const Nuturitions = {
+   foodNmKr: '김치',
+   itemReportNo: '123456789',
+   energy: 100.5,
+   protein: 5,
+   fat: 3.5,
+   carbohydrate: 15,
+   sugars: 5,
+   sodium: 200,
+   cholesterol: 10,
+   saturatedFat: 1,
+   transFat: 0.5,
+   galactose: 0.1,
+   fructose: 0.2,
+   sugarAlcohol: 0.3,
+   maltose: 0.4,
+   allulose: 0.5,
+   erythritol: 0.6,
+   lactose: 0.7,
+   sucrose: 0.8,
+   glucose: 0.9,
+   totalWeight: '500',
+   servingSize: '100',
+};

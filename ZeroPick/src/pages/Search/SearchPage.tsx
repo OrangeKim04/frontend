@@ -1,14 +1,47 @@
 import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
 import { Items } from '@/data/mockdata';
 import { Container } from '@/components/styles/common';
 import Product from '@/components/Product';
 const SearchPage = () => {
+   const [keyword, setKeyword] = useState('');
+   useEffect(() => {
+      if (!keyword) return; // 빈 문자열이면 fetch 방지
+      const timeoutId = setTimeout(() => {
+         fetchData();
+      }, 300); // 300ms 디바운스
+      return () => clearTimeout(timeoutId);
+   }, [keyword]);
+
+   const fetchData = async () => {
+      try {
+         const response = await fetch(
+            `http://zeropick.p-e.kr/api/v1/foods/search-names?keyword=${encodeURIComponent(keyword)}`,
+            {
+               method: 'GET',
+               headers: {
+                  accept: 'application/json',
+               },
+            },
+         );
+         if (!response.ok) throw new Error('Network response was not ok');
+         const data = await response.json();
+         console.log(data);
+      } catch (error) {
+         console.error('Fetch error:', error);
+      }
+   };
+
    return (
       <Container style={{ backgroundColor: 'white', padding: '20px' }}>
          <SearchBar>
             <Img src={searchIcon} />
-            <Input placeholder="상품을 검색해 보세요" />
+            <Input
+               placeholder="상품을 검색해 보세요"
+               value={keyword}
+               onChange={e => setKeyword(e.target.value)}
+            />
          </SearchBar>
          <ItemList>
             {Items.map((item, id) => (

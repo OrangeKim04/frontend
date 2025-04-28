@@ -5,6 +5,7 @@ import { Button } from '@/components/styles/common';
 import checkIcon from '@/assets/home/Circled Check.svg';
 import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
+import CameraIcon from '@/assets/home/img.svg';
 const HomePage = () => {
    const navigate = useNavigate();
    return (
@@ -17,7 +18,10 @@ const HomePage = () => {
             <Icon src={bellIcon} />
          </Top>
          <WhiteBox>
-            <Title>제로제품 건강하게 선택하세요!</Title>
+            <Title style={{ textAlign: 'center' }}>
+               제로제품 건강하게 선택하세요!
+            </Title>
+            <CameraImg src={CameraIcon} />
             <Button
                onClick={() => navigate('/camera')}
                style={{ fontSize: '1.1rem' }}>
@@ -74,4 +78,8 @@ const News = styled.p`
 `;
 const Icon = styled.img`
    color: gray;
+`;
+const CameraImg = styled.img`
+   width: 150px;
+   align-self: center;
 `;
