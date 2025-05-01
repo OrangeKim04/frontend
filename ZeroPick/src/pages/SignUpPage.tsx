@@ -60,8 +60,10 @@ const SignUpPage = () => {
          if (!response.ok) {
             throw new Error('회원가입 실패');
          }
-
+         const result = await response.json(); // 서버 응답 데이터
+         console.log('회원가입 성공:', result); // 회원가입 성공 시 출력
          // 회원가입 성공 후 로그인 페이지로 이동
+
          navigate('/login');
       } catch (error) {
          console.error('회원가입 오류:', error);
@@ -97,9 +99,7 @@ const SignUpPage = () => {
                />
                <ErrorTxt>{errors.passwordCheck?.message}</ErrorTxt>
             </InputBox>
-            <Button type={'submit'} onClick={() => console.log('눌러스')}>
-               가입하기
-            </Button>
+            <Button type={'submit'}>가입하기</Button>
          </Form>
       </Box>
    );
@@ -116,4 +116,6 @@ const Img = styled.img`
 const ErrorTxt = styled.p`
    color: red;
    font-size: 10px;
+   margin-top: 0;
+   margin-bottom: 5px;
 `;

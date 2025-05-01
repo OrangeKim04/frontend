@@ -63,10 +63,11 @@ const Logo = styled.h1`
    font-family: Bold;
    margin-bottom: 15px;
    color: white;
-   /* text-shadow:
+   font-family: HakgyoansimPuzzleTTF-Black;
+      /* text-shadow:
       0 0 10px rgba(255, 255, 255, 0.2),
       0 0 20px rgba(255, 255, 255, 0.15),
-      0 0 30px rgba(255, 255, 255, 0.1); /* 빛번짐 효과 */ */
+      0 0 30px rgba(255, 255, 255, 0.1); /* 빛번짐 효과 */ * /;
 `;
 
 const Tagline = styled.p`

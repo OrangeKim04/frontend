@@ -5,9 +5,35 @@ import { Button } from '@/components/styles/common';
 import checkIcon from '@/assets/home/Circled Check.svg';
 import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
+import { useEffect } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
 const HomePage = () => {
    const navigate = useNavigate();
+   const accessToken = localStorage.getItem('accessToken');
+   useEffect(() => {
+      console.log(accessToken);
+      fetchData();
+   }, [accessToken]);
+   const fetchData = async () => {
+      try {
+         const response = await fetch('https://zeropick.p-e.kr/api/v1/news', {
+            method: 'GET',
+            credentials: 'include', // 쿠키 포함
+            headers: {
+               Authorization: `Bearer ${accessToken}`,
+            },
+         });
+
+         if (!response.ok) {
+            throw new Error('API 요청 실패');
+         }
+
+         const data = await response.json(); // 응답 데이터
+         console.log('API 요청 성공:', data); // 성공 시 출력
+      } catch (error) {
+         console.error('API 요청 오류:', error); // 실패 시 오류 출력
+      }
+   };
    return (
       <Container>
          <Top>

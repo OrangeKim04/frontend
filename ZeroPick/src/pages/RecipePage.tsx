@@ -18,7 +18,7 @@ const TextArea = styled.textarea`
    border-radius: 20px;
    outline: none;
    font-size: 0.9rem;
-   fontfamily: Regular;
+   font-family: Regular;
    padding: 20px;
    box-sizing: border-box;
    resize: none;

@@ -16,7 +16,7 @@ const ItemText = styled.p`
 const Item = styled.div`
    width: 100%;
    height: 70px;
-   border-bottom: 0.5px solid #ff9eb3;
+   border-bottom: 0.5px solid #e1e1e1;
    display: flex;
    justify-content: space-between;
    align-items: center;
