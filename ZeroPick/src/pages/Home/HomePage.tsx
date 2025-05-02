@@ -11,14 +11,14 @@ const HomePage = () => {
    const navigate = useNavigate();
    const accessToken = localStorage.getItem('accessToken');
    useEffect(() => {
-      console.log(accessToken);
+      console.log('accessToken:', accessToken);
+      if (!accessToken) return;
       fetchData();
    }, [accessToken]);
    const fetchData = async () => {
       try {
          const response = await fetch('https://zeropick.p-e.kr/api/v1/news', {
             method: 'GET',
-            credentials: 'include', // 쿠키 포함
             headers: {
                Authorization: `Bearer ${accessToken}`,
             },

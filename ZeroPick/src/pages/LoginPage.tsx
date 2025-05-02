@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { loadEnvFile } from 'process';
 const LoginPage = () => {
    const navigate = useNavigate();
 
@@ -42,11 +43,13 @@ const LoginPage = () => {
    // 폼 제출 시 서버로 POST 요청 보내는 함수
    const onSubmit = async data => {
       console.log('onSubmit 실행됨', data); // 여기서 데이터를 확인
-      navigate('/home');
-      /*   try {
+
+      try {
          const response = await fetch('https://zeropick.p-e.kr/user/login', {
             method: 'POST',
-            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
             body: JSON.stringify(data),
          });
 
@@ -56,13 +59,13 @@ const LoginPage = () => {
 
          const result = await response.json(); // 서버 응답 데이터
          console.log('로그인 성공:', result); // 로그인 성공 시 출력
-
+         localStorage.setItem('accessToken', result.data.accessToken);
          // 로그인 성공 후, 예를 들어 홈 화면으로 이동:
 
          navigate('/home');
       } catch (error) {
          console.error('로그인 오류:', error);
-      } */
+      }
    };
    return (
       <Box>

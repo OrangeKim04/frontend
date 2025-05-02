@@ -178,8 +178,26 @@ const ProductDetailPage = () => {
                {table
                   .getRowModel()
                   .rows.filter(row => {
-                     const value = row.original.value;
-                     return !/^0\s*(g|mg|kcal)$/.test(value);
+                     const { nutrient, value } = row.original;
+                     const zeroPattern = /^0\s*g$/;
+                     const excludeIfZero = [
+                        '갈락토스',
+                        '과당',
+                        '당알코올',
+                        '맥아당',
+                        '알룰로스',
+                        '에리트리톨',
+                        '유당',
+                        '자당',
+                        '포도당',
+                     ];
+                     if (
+                        excludeIfZero.includes(nutrient) &&
+                        zeroPattern.test(value)
+                     ) {
+                        return false;
+                     }
+                     return true;
                   })
                   .map(row => (
                      <tr
