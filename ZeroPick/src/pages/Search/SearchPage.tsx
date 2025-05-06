@@ -23,10 +23,9 @@ const SearchPage = () => {
       queryFn: async ({
          pageParam,
       }): Promise<Array<{ foodNmKr: string; id: number }>> => {
-         if (!keyword) return [];
          console.log('Current pageParam:', pageParam);
          const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword)}&page=${pageParam}`,
+            `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
             {
                method: 'GET',
                credentials: 'include',
