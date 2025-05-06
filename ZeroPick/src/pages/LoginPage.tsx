@@ -40,7 +40,7 @@ const LoginPage = () => {
    });
 
    // 폼 제출 시 서버로 POST 요청 보내는 함수
-   const onSubmit = async data => {
+   /* const onSubmit = async data => {
       console.log('onSubmit 실행됨', data); // 여기서 데이터를 확인
 
       try {
@@ -64,8 +64,13 @@ const LoginPage = () => {
          navigate('/home');
       } catch (error) {
          console.error('로그인 오류:', error);
+         alert('로그인에 실패했어요');
       }
+   }; */
+   const onSubmit = () => {
+      navigate('/home');
    };
+
    return (
       <Box>
          <Title>로그인</Title>

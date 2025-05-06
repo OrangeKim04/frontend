@@ -1,22 +1,24 @@
-import { useState, useRef, useEffect, createRef } from 'react';
-import { Camera, CameraType } from 'react-camera-pro';
+import { useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
-import photoIcon from '@/assets/camera/camera_button.svg';
-import switchIcon from '@/assets/camera/switch-camera.svg';
-import checkIcon from '@/assets/camera/Circled Check Button.svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Cropper, { ReactCropperElement } from 'react-cropper';
 import BackArrow from '@/components/BackArrow';
 import 'cropperjs/dist/cropper.css';
+import { Button } from '@/components/styles/common';
 const CameraPage = () => {
    const navigate = useNavigate();
-   const [image, setImage] = useState<string | null>(null);
+   const location = useLocation();
+   const imageUrl = location.state?.imageUrl;
+
+   const [image, setImage] = useState<string | undefined>(undefined);
    const [croppedImage, setCroppedImage] = useState<string | null>(null);
-   const camera = useRef<CameraType>(null);
    const cropperRef = createRef<ReactCropperElement>();
    useEffect(() => {
-      setImage(null);
-   }, []);
+      if (imageUrl) {
+         setImage(imageUrl); // 넘어온 이미지 URL을 상태에 저장
+      }
+   }, [imageUrl]);
+
    const onCrop = () => {
       const cropper = cropperRef?.current?.cropper;
       if (cropper) {
@@ -37,72 +39,21 @@ const CameraPage = () => {
       }
    };
 
-   const [source, setSource] = useState('');
-   const handleCapture = target => {
-      if (target.files) {
-         if (target.files.length !== 0) {
-            const file = target.files[0];
-            const newUrl = URL.createObjectURL(file);
-            setSource(newUrl);
-         }
-      }
-   };
    return (
       <Wrapper>
          <BackArrow url="/home" />
          <Title>영양성분을 찍어주세요</Title>
-         {/*  {image ? (
-            <Cropper
-               src={image} // 사용자가 선택한 사진
-               crop={onCrop} // 크롭 함수 호출
-               ref={cropperRef}
-               viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
-               background={false}
-               guides={false}
-               style={{ width: '100%', height: '76.9%' }}
-            />
-         ) : (
-            <Camera
-               ref={camera}
-               aspectRatio={3 / 5}
-               errorMessages={{}}
-               facingMode="environment"
-            />
-         )} */}
-         {/* <img style={{ width: '100%' }} src={croppedImage} alt="cropped" /> */}
-         {/*  <Control>
-            <SwitchButton
-               src={switchIcon}
-               onClick={() => {
-                  setImage(null);
-               }}
-            />
-            <TakePhotoButton
-               src={photoIcon}
-               onClick={() => {
-                  if (camera.current) {
-                     const photo = camera.current.takePhoto();
-                     if (typeof photo === 'string') {
-                        setImage(photo); // photo가 string일 경우에만 setImage 호출
-                     } else {
-                        console.error('Photo is not a string');
-                     }
-                  }
-               }}
-            />
-            <CheckButton src={checkIcon} onClick={getCropData} />
-         </Control> */}
-         {source && (
-            <img src={source} alt={'snap'} width="500" height="500"></img>
-         )}
 
-         <input
-            accept="image/*"
-            id="icon-button-file"
-            type="file"
-            capture="environment"
-            onChange={e => handleCapture(e.target)}
+         <Cropper
+            src={image} // 사용자가 선택한 사진
+            crop={onCrop} // 크롭 함수 호출
+            ref={cropperRef}
+            viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
+            background={false}
+            guides={false}
+            style={{ width: '100%', height: '76.9%', marginBottom: '15px' }}
          />
+         <Button onClick={getCropData}>사진 제출하기</Button>
       </Wrapper>
    );
 };
@@ -116,34 +67,6 @@ const Wrapper = styled.div`
    box-sizing: border-box;
 `;
 
-const Control = styled.div`
-   width: 100%;
-   position: absolute;
-   right: 0;
-   bottom: 25px;
-   z-index: 10;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   box-sizing: border-box;
-`;
-
-const TakePhotoButton = styled.img`
-   width: 80px;
-   cursor: pointer;
-`;
-const SwitchButton = styled.img`
-   width: 40px;
-   position: absolute;
-   left: 30px;
-   cursor: pointer;
-`;
-const CheckButton = styled.img`
-   width: 40px;
-   position: absolute;
-   right: 30px;
-   cursor: pointer;
-`;
 const Title = styled.p`
    margin: 0;
    font-family: SemiBold;

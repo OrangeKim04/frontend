@@ -4,7 +4,7 @@ import { Button } from '@/components/styles/common';
 import checkIcon from '@/assets/home/Circled Check.svg';
 import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
 type NewsItem = {
    title: string;
@@ -12,6 +12,8 @@ type NewsItem = {
 };
 const HomePage = () => {
    const navigate = useNavigate();
+   const inputRef = useRef<HTMLInputElement>(null);
+   const [source, setSource] = useState('');
    const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태
    useEffect(() => {
       fetchData();
@@ -34,7 +36,17 @@ const HomePage = () => {
          console.error('API 요청 오류:', error); // 실패 시 오류 출력
       }
    };
+   const handleClick = () => {
+      inputRef.current?.click();
+   };
 
+   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+         const url = URL.createObjectURL(file);
+         navigate('/camera', { state: { imageUrl: url } });
+      }
+   };
    return (
       <Container>
          <Top>
@@ -49,11 +61,17 @@ const HomePage = () => {
                제로제품 건강하게 선택하세요!
             </Title>
             <CameraImg src={CameraIcon} />
-            <Button
-               onClick={() => navigate('/camera')}
-               style={{ fontSize: '1.1rem' }}>
+            <Button onClick={handleClick} style={{ fontSize: '1.1rem' }}>
                원재료 성분 확인하기
             </Button>
+            <input
+               ref={inputRef}
+               type="file"
+               accept="image/*"
+               capture="environment"
+               style={{ display: 'none' }}
+               onChange={handleFileChange}
+            />
          </WhiteBox>
          <WhiteBox>
             <Title>관련 뉴스</Title>

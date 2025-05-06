@@ -8,40 +8,49 @@ import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { ClipLoader } from 'react-spinners';
 const SearchPage = () => {
-   const [keyword, setKeyword] = useState('');
+   const [keyword, setKeyword] = useState(
+      localStorage.getItem('keyword') || '',
+   );
    const [searchParams] = useSearchParams();
    const { ref, inView } = useInView({
       threshold: 0,
    });
    const query = searchParams.get('');
    useEffect(() => {
-      if (query !== null) setKeyword(query);
+      if (query !== null) {
+         setKeyword(query);
+      }
    }, [query]);
 
-   const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
-      queryKey: ['ProductList', keyword],
-      queryFn: async ({
-         pageParam,
-      }): Promise<Array<{ foodNmKr: string; id: number }>> => {
-         console.log('Current pageParam:', pageParam);
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
-            {
-               method: 'GET',
-               credentials: 'include',
-               headers: {
-                  accept: 'application/json',
+   const { data, isFetching, fetchNextPage, hasNextPage, isError } =
+      useInfiniteQuery({
+         queryKey: ['ProductList', keyword],
+         queryFn: async ({
+            pageParam,
+         }): Promise<Array<{ foodNmKr: string; id: number }>> => {
+            console.log('Current pageParam:', pageParam);
+            localStorage.setItem('keyword', keyword);
+            const response = await fetch(
+               `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
+               {
+                  method: 'GET',
+                  credentials: 'include',
+                  headers: {
+                     accept: 'application/json',
+                  },
                },
-            },
-         );
-         return await response.json();
-      },
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
-         return lastPage.length < 10 ? undefined : allPages.length;
-         // 한 페이지에 10개씩 올 때, 10개 미만이면 마지막으로 판단
-      },
-   });
+            );
+            if (!response.ok) {
+               throw new Error('검색 중 오류가 발생했습니다.'); // 오류 발생 시 예외 처리
+            }
+            return await response.json();
+         },
+         initialPageParam: 0,
+         getNextPageParam: (lastPage, allPages) => {
+            return lastPage.length < 10 ? undefined : allPages.length;
+            // 한 페이지에 10개씩 올 때, 10개 미만이면 마지막으로 판단
+         },
+      });
    useEffect(() => {
       if (inView && hasNextPage) {
          fetchNextPage();
@@ -64,26 +73,30 @@ const SearchPage = () => {
             />
          </SearchBar>
          <ItemList>
-            {data?.pages?.map((page, pageIndex) => {
-               if (Array.isArray(page)) {
-                  return page.map((item, id) => (
-                     <Product key={`${pageIndex}-${id}`} item={item} />
-                  ));
-               } else {
-                  return null; // 배열이 아닐 경우 아무것도 렌더링하지 않음
-               }
-            })}
-            <div
-               ref={ref}
-               style={{
-                  width: '100%',
-                  minHeight: '50px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-               }}>
-               {isFetching && <ClipLoader color={'#FF9EB3'} />}
-            </div>
+            {isError ? (
+               <p style={{ textAlign: 'center' }}>검색 결과가 없습니다.</p>
+            ) : (
+               <>
+                  {data?.pages?.map((page, pageIndex) =>
+                     Array.isArray(page)
+                        ? page.map((item, id) => (
+                             <Product key={`${pageIndex}-${id}`} item={item} />
+                          ))
+                        : null,
+                  )}
+                  <div
+                     ref={ref}
+                     style={{
+                        width: '100%',
+                        minHeight: '50px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                     }}>
+                     {isFetching && <ClipLoader color={'#FF9EB3'} />}
+                  </div>
+               </>
+            )}
          </ItemList>
       </Container>
    );

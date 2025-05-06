@@ -5,7 +5,7 @@ const AnalysisPage = () => {
    const navigate = useNavigate();
    return (
       <>
-         <BackIcon src={backIcon} onClick={() => navigate('/camera')} />
+         <BackIcon src={backIcon} onClick={() => navigate('/home')} />
          <Title>분석 결과</Title>
       </>
    );

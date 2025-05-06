@@ -300,8 +300,12 @@ const Container = styled.div`
    padding: 20px;
    position: relative;
    padding-bottom: 100px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
 `;
 const Title = styled.h2`
+   width: 70%;
    font-size: 1.6rem;
    margin-bottom: 20px;
    font-family: Bold;
