@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import home from '@/assets/navbar/homeG.svg';
@@ -13,6 +13,7 @@ import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
 const RootLayout = () => {
    const location = useLocation();
+   const navigate = useNavigate();
    const categories = [
       {
          title: '홈',
@@ -56,6 +57,16 @@ const RootLayout = () => {
    useEffect(() => {
       console.log(localStorage.getItem('selectedCategory'));
    }, [location.pathname]);
+
+   useEffect(() => {
+      console.log(document.cookie);
+      /*  if (document.cookie) {
+         console.log('쿠키 있음');
+      } else {
+         console.log('쿠키 없음');
+         navigate('/login');
+      } */
+   }, [navigate]);
    return (
       <RootContainer>
          <Outlet />

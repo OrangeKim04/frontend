@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-const Product = ({ item }) => {
+type ProductProps = {
+   item: { foodNmKr: string; id: number };
+};
+const Product = ({ item }: ProductProps) => {
    const navigate = useNavigate();
    return (
-      <Item onClick={() => navigate(`/${item.id}`, { state: item })}>
-         <ItemText>{item.name}</ItemText>
+      <Item onClick={() => navigate(`/${item.id}`, { state: item.id })}>
+         <ItemText>{item.foodNmKr}</ItemText>
          <ItemText>&gt;</ItemText>
       </Item>
    );

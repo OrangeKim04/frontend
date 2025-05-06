@@ -36,11 +36,22 @@ const CameraPage = () => {
          alert('사진을 찍어주세요');
       }
    };
+
+   const [source, setSource] = useState('');
+   const handleCapture = target => {
+      if (target.files) {
+         if (target.files.length !== 0) {
+            const file = target.files[0];
+            const newUrl = URL.createObjectURL(file);
+            setSource(newUrl);
+         }
+      }
+   };
    return (
       <Wrapper>
          <BackArrow url="/home" />
          <Title>영양성분을 찍어주세요</Title>
-         {image ? (
+         {/*  {image ? (
             <Cropper
                src={image} // 사용자가 선택한 사진
                crop={onCrop} // 크롭 함수 호출
@@ -57,9 +68,9 @@ const CameraPage = () => {
                errorMessages={{}}
                facingMode="environment"
             />
-         )}
+         )} */}
          {/* <img style={{ width: '100%' }} src={croppedImage} alt="cropped" /> */}
-         <Control>
+         {/*  <Control>
             <SwitchButton
                src={switchIcon}
                onClick={() => {
@@ -80,7 +91,18 @@ const CameraPage = () => {
                }}
             />
             <CheckButton src={checkIcon} onClick={getCropData} />
-         </Control>
+         </Control> */}
+         {source && (
+            <img src={source} alt={'snap'} width="500" height="500"></img>
+         )}
+
+         <input
+            accept="image/*"
+            id="icon-button-file"
+            type="file"
+            capture="environment"
+            onChange={e => handleCapture(e.target)}
+         />
       </Wrapper>
    );
 };

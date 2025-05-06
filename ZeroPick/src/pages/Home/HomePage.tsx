@@ -1,39 +1,40 @@
 import styled from 'styled-components';
-import { reports } from '@/data/mockdata';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/styles/common';
 import checkIcon from '@/assets/home/Circled Check.svg';
 import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
+type NewsItem = {
+   title: string;
+   link: string;
+};
 const HomePage = () => {
    const navigate = useNavigate();
-   const accessToken = localStorage.getItem('accessToken');
+   const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태
    useEffect(() => {
-      console.log('accessToken:', accessToken);
-      if (!accessToken) return;
       fetchData();
-   }, [accessToken]);
+   }, []);
    const fetchData = async () => {
       try {
          const response = await fetch('https://zeropick.p-e.kr/api/v1/news', {
             method: 'GET',
-            headers: {
-               Authorization: `Bearer ${accessToken}`,
-            },
+            credentials: 'include',
          });
 
          if (!response.ok) {
             throw new Error('API 요청 실패');
          }
 
-         const data = await response.json(); // 응답 데이터
-         console.log('API 요청 성공:', data); // 성공 시 출력
+         const result = await response.json(); // 응답 데이터
+         console.log('API 요청 성공:', result); // 성공 시 출력
+         setData(result || []); // 받아온 데이터를 상태에 저장
       } catch (error) {
          console.error('API 요청 오류:', error); // 실패 시 오류 출력
       }
    };
+
    return (
       <Container>
          <Top>
@@ -56,14 +57,9 @@ const HomePage = () => {
          </WhiteBox>
          <WhiteBox>
             <Title>관련 뉴스</Title>
-            {reports.map((item, id) => (
+            {data?.map((item, id) => (
                <News key={id} onClick={() => window.open(item.link)}>
-                  {item.title}
-               </News>
-            ))}
-            {reports.map((item, id) => (
-               <News key={id} onClick={() => window.open(item.link)}>
-                  {item.title}
+                  <span dangerouslySetInnerHTML={{ __html: item.title }} />
                </News>
             ))}
          </WhiteBox>
