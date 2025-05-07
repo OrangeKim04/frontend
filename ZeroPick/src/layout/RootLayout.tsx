@@ -13,6 +13,7 @@ import searchActive from '@/assets/navbar/SearchB.svg';
 import { useLocation } from 'react-router-dom';
 const RootLayout = () => {
    const location = useLocation();
+   console.log('현재 경로:', location.pathname);
    const categories = [
       {
          title: '홈',

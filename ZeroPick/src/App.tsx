@@ -11,6 +11,9 @@ import CommunityPage from './pages/CommunityPage';
 import SettingPage from './pages/SettingPage';
 import CameraPage from './pages/CameraPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import WritePostPage from '@/pages/WritePostPage'; // 추가: 게시글 작성 페이지 import
+import PostDetailPage from '@/pages/PostDetailPage';
+
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -34,7 +37,10 @@ const router = createBrowserRouter([
          { path: 'search', element: <SearchPage /> },
          { path: 'search/:id', element: <ProductDetailPage /> },
          { path: 'community', element: <CommunityPage /> },
+         { path: 'community/write', element: <WritePostPage /> },
+         { path: 'community/post/:postId', element: <PostDetailPage /> },
          { path: 'setting', element: <SettingPage /> },
+         { path: 'write', element: <WritePostPage /> }, // 추가: 게시글 작성 페이지 경로
       ],
    },
 ]);
