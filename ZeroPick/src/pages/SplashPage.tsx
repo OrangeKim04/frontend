@@ -1,10 +1,10 @@
 import styled, { keyframes } from 'styled-components';
-import checkIcon from '@/assets/Check.svg';
-import searchIcon from '@/assets/Search.svg';
-import basketIcon from '@/assets/Basket.svg';
+import checkIcon from '@/assets/splash/Check.svg';
+import searchIcon from '@/assets/splash/Search.svg';
+import basketIcon from '@/assets/splash/Basket.svg';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import backgroundImg from '@/assets/background.svg';
+import backgroundImg from '@/assets/splash/background.svg';
 const SplashPage = () => {
    const icons = [checkIcon, searchIcon, basketIcon];
    const navigate = useNavigate();
@@ -63,10 +63,11 @@ const Logo = styled.h1`
    font-family: Bold;
    margin-bottom: 15px;
    color: white;
-   /* text-shadow:
+   font-family: HakgyoansimPuzzleTTF-Black;
+      /* text-shadow:
       0 0 10px rgba(255, 255, 255, 0.2),
       0 0 20px rgba(255, 255, 255, 0.15),
-      0 0 30px rgba(255, 255, 255, 0.1); /* 빛번짐 효과 */ */
+      0 0 30px rgba(255, 255, 255, 0.1); /* 빛번짐 효과 */ * /;
 `;
 
 const Tagline = styled.p`

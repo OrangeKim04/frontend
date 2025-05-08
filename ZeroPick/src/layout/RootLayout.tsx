@@ -1,18 +1,19 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import home from '@/assets/homeG.svg';
-import recipe from '@/assets/forkG.svg';
-import community from '@/assets/HeartG.svg';
-import setting from '@/assets/SettingG.svg';
-import search from '@/assets/SearchG.svg';
-import homeActive from '@/assets/homeB.svg';
-import recipeActive from '@/assets/forkB.svg';
-import communityActive from '@/assets/HeartB.svg';
-import settingActive from '@/assets/SettingB.svg';
-import searchActive from '@/assets/SearchB.svg';
-import { useLocation } from 'react-router-dom';
+import home from '@/assets/navbar/homeG.svg';
+import recipe from '@/assets/navbar/forkG.svg';
+import community from '@/assets/navbar/HeartG.svg';
+import setting from '@/assets/navbar/SettingG.svg';
+import search from '@/assets/navbar/SearchG.svg';
+import homeActive from '@/assets/navbar/homeB.svg';
+import recipeActive from '@/assets/navbar/forkB.svg';
+import communityActive from '@/assets/navbar/HeartB.svg';
+import settingActive from '@/assets/navbar/SettingB.svg';
+import searchActive from '@/assets/navbar/SearchB.svg';
 const RootLayout = () => {
    const location = useLocation();
+
    const categories = [
       {
          title: '홈',
@@ -46,24 +47,39 @@ const RootLayout = () => {
          activeIcon: settingActive,
       },
    ];
+   const [selected, setSelected] = useState<string>(
+      sessionStorage.getItem('selectedCategory') || '홈',
+   );
+   const handleClick = (title: string) => {
+      setSelected(title);
+      sessionStorage.setItem('selectedCategory', title);
+   };
+   useEffect(() => {
+      console.log(sessionStorage.getItem('selectedCategory'));
+   }, [location.pathname]);
 
    return (
       <RootContainer>
          <Outlet />
-
          <Nav>
             {categories.map((category, index) => (
-               <Item key={index} to={category.link}>
+               <Item
+                  key={index}
+                  to={category.link}
+                  onClick={() => handleClick(category.title)}>
                   <Img
                      src={
-                        location.pathname.startsWith(category.link)
+                        location.pathname.startsWith(category.link) ||
+                        selected === category.title
                            ? category.activeIcon
                            : category.icon
                      }
                   />
                   <NavText
-                     isActive={location.pathname.startsWith(category.link)}
-                  >
+                     isactive={
+                        location.pathname.startsWith(category.link) ||
+                        selected === category.title
+                     }>
                      {category.title}
                   </NavText>
                </Item>
@@ -112,9 +128,9 @@ const Item = styled(Link)`
    cursor: pointer;
    text-decoration: none;
 `;
-const NavText = styled.p<{ isActive: boolean }>`
+const NavText = styled.p<{ isactive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;
-   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
+   color: ${({ isactive }) => (isactive ? 'black' : '#808080 ')};
 `;

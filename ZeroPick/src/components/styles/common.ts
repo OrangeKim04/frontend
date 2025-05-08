@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 // 회원가입, 로그인 페이지에 쓰이는 스타일 컴포넌트
-// 기본 페이지에 사용되는 Container, WhiteBox
+// 기본 페이지(홈,레시피, 설정)에 사용되는 Container, WhiteBox
 export const Input = styled.input`
    width: 100%;
    height: 3.2rem;
@@ -35,7 +35,7 @@ export const Button = styled.button`
    cursor: pointer;
    flex-shrink: 0;
 `;
-export const Form = styled.div`
+export const Form = styled.form`
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -52,6 +52,7 @@ export const SubText = styled.p`
    margin-top: 15px;
    margin: 0;
    font-size: 0.9rem;
+   line-height: 20px;
 `;
 export const Box = styled.div`
    display: flex;
