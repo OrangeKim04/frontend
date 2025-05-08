@@ -6,6 +6,7 @@ import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 import { useEffect, useState, useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
+import { logout } from '@/hooks/Logout';
 type NewsItem = {
    title: string;
    link: string;
@@ -13,7 +14,6 @@ type NewsItem = {
 const HomePage = () => {
    const navigate = useNavigate();
    const inputRef = useRef<HTMLInputElement>(null);
-   const [source, setSource] = useState('');
    const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태
    useEffect(() => {
       fetchData();
@@ -34,6 +34,7 @@ const HomePage = () => {
          setData(result || []); // 받아온 데이터를 상태에 저장
       } catch (error) {
          console.error('API 요청 오류:', error); // 실패 시 오류 출력
+         logout(navigate);
       }
    };
    const handleClick = () => {

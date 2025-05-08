@@ -6,10 +6,10 @@ import { Container } from '@/components/styles/common';
 import Product from '@/components/Product';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ClipLoader } from 'react-spinners';
+import LoadingIndicator from '@/components/LoadingIndicator';
 const SearchPage = () => {
    const [keyword, setKeyword] = useState(
-      localStorage.getItem('keyword') || '',
+      sessionStorage.getItem('keyword') || '',
    );
    const [searchParams] = useSearchParams();
    const { ref, inView } = useInView({
@@ -29,7 +29,7 @@ const SearchPage = () => {
             pageParam,
          }): Promise<Array<{ foodNmKr: string; id: number }>> => {
             console.log('Current pageParam:', pageParam);
-            localStorage.setItem('keyword', keyword);
+            sessionStorage.setItem('keyword', keyword);
             const response = await fetch(
                `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
                {
@@ -84,17 +84,7 @@ const SearchPage = () => {
                           ))
                         : null,
                   )}
-                  <div
-                     ref={ref}
-                     style={{
-                        width: '100%',
-                        minHeight: '50px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                     }}>
-                     {isFetching && <ClipLoader color={'#FF9EB3'} />}
-                  </div>
+                  <LoadingIndicator ref={ref} isFetching={isFetching} />
                </>
             )}
          </ItemList>

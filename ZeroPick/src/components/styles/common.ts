@@ -52,6 +52,7 @@ export const SubText = styled.p`
    margin-top: 15px;
    margin: 0;
    font-size: 0.9rem;
+   line-height: 20px;
 `;
 export const Box = styled.div`
    display: flex;

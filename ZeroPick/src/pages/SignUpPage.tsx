@@ -12,7 +12,11 @@ import { useForm } from 'react-hook-form';
 import icon from '@/assets/Left Arrow.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
+interface FormData {
+   email: string;
+   password: string;
+   passwordCheck: string;
+}
 const SignUpPage = () => {
    const navigate = useNavigate();
 
@@ -44,10 +48,9 @@ const SignUpPage = () => {
    });
 
    // 폼 제출 시 서버로 POST 요청 보내는 함수
-   const onSubmit = async data => {
-      const { passwordCheck, ...dataToSend } = data;
+   const onSubmit = async ({ passwordCheck, ...dataToSend }: FormData) => {
       console.log('onSubmit 실행됨', dataToSend); // 여기서 데이터를 확인
-
+      console.log(passwordCheck);
       try {
          const response = await fetch('https://zeropick.p-e.kr/auth/join', {
             method: 'POST',

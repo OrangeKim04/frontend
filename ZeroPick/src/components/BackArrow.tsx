@@ -1,11 +1,22 @@
 import styled from 'styled-components';
 import backIcon from '@/assets/Left Arrow.svg';
 import { useNavigate } from 'react-router-dom';
-const BackArrow = ({ url }) => {
+interface BackArrowProps {
+   url: string | number;
+}
+const BackArrow = ({ url }: BackArrowProps) => {
    const navigate = useNavigate();
+   const handleNavigate = () => {
+      if (typeof url === 'number') {
+         navigate(url);
+      } else {
+         navigate(url);
+      }
+   };
+
    return (
       <>
-         <BackIcon src={backIcon} onClick={() => navigate(url)} />
+         <BackIcon src={backIcon} onClick={handleNavigate} />
       </>
    );
 };
