@@ -35,7 +35,9 @@ const Modal = ({
             {makerNm && makerNm.trim() !== 'null' && (
                <Message>{makerNm}</Message>
             )}
-            <Message>{foodNmKr} 맞나요?</Message>
+            <Message>
+               <span style={{ color: 'blue' }}>{foodNmKr}</span> 맞나요?
+            </Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
                <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
