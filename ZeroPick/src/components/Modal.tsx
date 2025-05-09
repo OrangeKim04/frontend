@@ -32,7 +32,7 @@ const Modal = ({
    return (
       <Overlay>
          <ModalBox>
-            {makerNm && <Message>{makerNm}</Message>}
+            {makerNm && makerNm.trim() !== '' && <Message>{makerNm}</Message>}
             <Message>{foodNmKr} 맞나요?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
