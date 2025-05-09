@@ -8,12 +8,14 @@ import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
 import { customFetch } from '@/hooks/CustomFetch';
+import LogoutModal from '@/components/LogoutModal';
 type User = {
    email: string;
    name: string;
 };
 const SettingPage = () => {
    const navigate = useNavigate();
+   const [isOpen, setIsOpen] = useState(false);
    const [user, setUser] = useState<User>();
    const [isEditing, setIsEditing] = useState(false);
    const [newName, setNewName] = useState('');
@@ -113,6 +115,8 @@ const SettingPage = () => {
                <MenuIcon src={scrapIcon} />
                <InfoText>레시피 북마크</InfoText>
             </InfoBox>
+            <LogoutText onClick={() => setIsOpen(true)}>로그아웃</LogoutText>
+            {isOpen && <LogoutModal onClose={() => setIsOpen(false)} />}
          </WhiteBox>
       </Container>
    );
@@ -122,7 +126,13 @@ const InfoText = styled.p`
    margin: 0;
    font-family: Medium;
 `;
-
+const LogoutText = styled.p`
+   margin: 0;
+   font-family: Medium;
+   text-align: center;
+   color: red;
+   margin: 10px 0;
+`;
 const TitleText = styled.p`
    margin: 0;
    font-family: SemiBold;
