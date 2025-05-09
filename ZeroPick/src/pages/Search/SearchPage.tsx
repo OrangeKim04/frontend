@@ -1,16 +1,18 @@
 import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Container } from '@/components/styles/common';
 import Product from '@/components/Product';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { customFetch } from '@/hooks/CustomFetch';
 const SearchPage = () => {
    const [keyword, setKeyword] = useState(
       sessionStorage.getItem('keyword') || '',
    );
+   const navigate = useNavigate();
    const [searchParams] = useSearchParams();
    const { ref, inView } = useInView({
       threshold: 0,
@@ -30,27 +32,22 @@ const SearchPage = () => {
          }): Promise<Array<{ foodNmKr: string; id: number }>> => {
             console.log('Current pageParam:', pageParam);
             sessionStorage.setItem('keyword', keyword);
-            const response = await fetch(
-               `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
+            const result = await customFetch(
+               `/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
                {
                   method: 'GET',
-                  credentials: 'include',
-                  headers: {
-                     accept: 'application/json',
-                  },
+                  headers: { accept: 'application/json' },
                },
+               navigate,
             );
-            if (!response.ok) {
-               throw new Error('검색 중 오류가 발생했습니다.'); // 오류 발생 시 예외 처리
-            }
-            return await response.json();
+            return result;
          },
          initialPageParam: 0,
          getNextPageParam: (lastPage, allPages) => {
             return lastPage.length < 10 ? undefined : allPages.length;
-            // 한 페이지에 10개씩 올 때, 10개 미만이면 마지막으로 판단
          },
       });
+
    useEffect(() => {
       if (inView && hasNextPage) {
          fetchNextPage();

@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import icon from '@/assets/Left Arrow.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { customFetch } from '@/hooks/CustomFetch';
 interface FormData {
    email: string;
    password: string;
@@ -49,24 +50,23 @@ const SignUpPage = () => {
 
    // 폼 제출 시 서버로 POST 요청 보내는 함수
    const onSubmit = async ({ passwordCheck, ...dataToSend }: FormData) => {
-      console.log('onSubmit 실행됨', dataToSend); // 여기서 데이터를 확인
+      console.log('onSubmit 실행됨', dataToSend);
       console.log(passwordCheck);
+
       try {
-         const response = await fetch('https://zeropick.p-e.kr/auth/join', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json',
+         const result = await customFetch(
+            '/auth/join',
+            {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+               },
+               body: JSON.stringify(dataToSend),
             },
-            body: JSON.stringify(dataToSend),
-         });
+            navigate,
+         );
 
-         if (!response.ok) {
-            throw new Error('회원가입 실패');
-         }
-         const result = await response.json(); // 서버 응답 데이터
-         console.log('회원가입 성공:', result); // 회원가입 성공 시 출력
-         // 회원가입 성공 후 로그인 페이지로 이동
-
+         console.log('회원가입 성공:', result);
          navigate('/login');
       } catch (error) {
          console.error('회원가입 오류:', error);

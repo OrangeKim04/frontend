@@ -1,11 +1,12 @@
 import { useState, useEffect, createRef } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cropper, { ReactCropperElement } from 'react-cropper';
 import BackArrow from '@/components/BackArrow';
 import 'cropperjs/dist/cropper.css';
 import { Button } from '@/components/styles/common';
 import Modal from '@/components/Modal';
+import { customFetch } from '@/hooks/CustomFetch';
 type Data = {
    id?: string;
    itemReportNo?: string;
@@ -16,6 +17,7 @@ type Data = {
 
 const CameraPage = () => {
    const location = useLocation();
+   const navigate = useNavigate();
    const imageUrl = location.state?.imageUrl;
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [image, setImage] = useState<string | undefined>(undefined);
@@ -34,16 +36,14 @@ const CameraPage = () => {
       const formData = new FormData();
       formData.append('file', blob, 'image.png');
       try {
-         const response = await fetch(
-            'https://zeropick.p-e.kr/api/v1/ocr/scan',
+         const result = await customFetch(
+            '/api/v1/ocr/scan',
             {
                method: 'POST',
-               credentials: 'include',
                body: formData,
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('OCR request failed');
-         const result = await response.json();
          console.log('OCR 스캔');
          console.log(result);
          setData(result);
@@ -57,18 +57,15 @@ const CameraPage = () => {
    };
    const searchProduct = async (itemReportNo: string) => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/search-item-name?itemReportNo=${itemReportNo}`,
+         const result = await customFetch(
+            `/api/v1/foods/search-item-name?itemReportNo=${itemReportNo}`,
             {
                method: 'GET',
-               credentials: 'include',
                headers: { accept: 'application/json' },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Product search failed');
-         const result = await response.json();
          console.log('품목보고번호로 상품명 검색', result);
-
          setData(result);
          setIsModalOpen(true);
       } catch (error) {

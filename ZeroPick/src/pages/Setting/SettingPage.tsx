@@ -1,52 +1,57 @@
 import styled from 'styled-components';
 import { Container, WhiteBox } from '@/components/styles/common';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import pencil from '@/assets/setting/Pencil.svg';
 import postIcon from '@/assets/setting/게시글.svg';
 import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
+import { customFetch } from '@/hooks/CustomFetch';
+import LogoutModal from '@/components/LogoutModal';
 type User = {
    email: string;
    name: string;
 };
 const SettingPage = () => {
+   const navigate = useNavigate();
+   const [isOpen, setIsOpen] = useState(false);
    const [user, setUser] = useState<User>();
    const [isEditing, setIsEditing] = useState(false);
    const [newName, setNewName] = useState('');
    // 사용자 정보 조회
    const fetchUser = async () => {
       try {
-         const response = await fetch(`https://zeropick.p-e.kr/user`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-               accept: 'application/json',
+         const result = await customFetch(
+            '/user',
+            {
+               method: 'GET',
+               headers: { accept: 'application/json' },
             },
-         });
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
+            navigate,
+         );
          console.log('사용자 정보 조회', result.data);
          setUser(result.data);
       } catch (error) {
-         console.error('Fetch error:', error);
+         console.error('사용자 정보 조회 실패', error);
       }
    };
    // 사용자 이름 수정
    const fetchEditName = async (name: string) => {
       try {
-         const response = await fetch(`https://zeropick.p-e.kr/user/name`, {
-            method: 'PUT',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ newName: name }),
-         });
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
+         const result = await customFetch(
+            '/user/name',
+            {
+               method: 'PUT',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ newName: name }),
+            },
+            navigate,
+         );
          console.log('이름 수정 성공', result);
          fetchUser();
       } catch (error) {
-         console.error('Fetch error:', error);
+         console.error('이름 수정 실패', error);
          alert('닉네임 수정에 실패했어요.');
       }
    };
@@ -110,6 +115,8 @@ const SettingPage = () => {
                <MenuIcon src={scrapIcon} />
                <InfoText>레시피 북마크</InfoText>
             </InfoBox>
+            <LogoutText onClick={() => setIsOpen(true)}>로그아웃</LogoutText>
+            {isOpen && <LogoutModal onClose={() => setIsOpen(false)} />}
          </WhiteBox>
       </Container>
    );
@@ -119,7 +126,13 @@ const InfoText = styled.p`
    margin: 0;
    font-family: Medium;
 `;
-
+const LogoutText = styled.p`
+   margin: 0;
+   font-family: Medium;
+   text-align: center;
+   color: red;
+   margin: 10px 0;
+`;
 const TitleText = styled.p`
    margin: 0;
    font-family: SemiBold;

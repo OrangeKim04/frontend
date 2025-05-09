@@ -1,39 +1,37 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { customFetch } from '@/hooks/CustomFetch';
 type ModalProps = {
    onClose: () => void;
-   foodNmKr?: string;
-   makerNm?: string | null;
-   id?: string | null;
-   itemReportNo?: string | null;
-   ocrText?: string | null;
 };
 
-const Modal = ({
-   onClose,
-   foodNmKr,
-   makerNm,
-   id,
-   itemReportNo,
-   ocrText,
-}: ModalProps) => {
+const LogoutModal = ({ onClose }: ModalProps) => {
    const navigate = useNavigate();
-   const onSubmit = () => {
-      if (id) {
-         navigate('/home/result', {
-            state: { id },
-         });
-      } else {
-         navigate('/home/result', {
-            state: { itemReportNo, ocrText },
-         });
+   const logout = async () => {
+      try {
+         const result = await customFetch(
+            '/user/logout',
+            {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+            },
+            navigate,
+         );
+         console.log('로그아웃 성공:', result);
+         navigate('/login');
+      } catch (error) {
+         console.error('로그아웃 오류:', error);
+         alert('로그아웃에 실패했어요.');
       }
+   };
+
+   const onSubmit = () => {
+      logout();
    };
    return (
       <Overlay>
          <ModalBox>
-            {makerNm && <Message>{makerNm}</Message>}
-            <Message>{foodNmKr} 맞나요?</Message>
+            <Message>로그아웃 하시겠습니까?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
                <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
@@ -43,7 +41,7 @@ const Modal = ({
    );
 };
 
-export default Modal;
+export default LogoutModal;
 
 const Overlay = styled.div`
    position: fixed;

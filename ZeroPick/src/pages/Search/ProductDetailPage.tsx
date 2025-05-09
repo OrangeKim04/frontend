@@ -1,9 +1,10 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BackArrow from '@/components/BackArrow';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NutrientTable from '@/components/NutrientTable';
 import { SugarBox } from '@/components/SugarBox';
+import { customFetch } from '@/hooks/CustomFetch';
 import {
    createNutrientTableData,
    ExtendedNutrientData,
@@ -12,6 +13,7 @@ import {
 
 const ProductDetailPage = () => {
    const { state } = useLocation();
+   const navigate = useNavigate();
    const [data, setData] = useState<ExtendedNutrientData | null>();
    const [sugar, setSugar] = useState<Substitute[]>([]);
    const tableData = data ? createNutrientTableData(data) : [];
@@ -21,41 +23,34 @@ const ProductDetailPage = () => {
       if (data) console.log(data);
    }, [state]);
 
+   //ID 기반 식품 상세 조회
    const fetchData = async () => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/${state}`,
+         const result = await customFetch(
+            `/api/v1/foods/${state}`,
             {
                method: 'GET',
-               credentials: 'include',
-               headers: {
-                  accept: 'application/json',
-               },
+               headers: { accept: 'application/json' },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
-         console.log(result);
+         console.log('식품 상세 조회 성공', result);
          setData(result);
       } catch (error) {
-         console.error('Fetch error:', error);
+         console.error('식품 상세 조회 실패', error);
       }
    };
    // ID기반 대체당 목록 조회
    const fetchSugarByID = async (id: string) => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/${id}/sweeteners`,
+         const result = await customFetch(
+            `/api/v1/foods/${id}/sweeteners`,
             {
                method: 'GET',
-               credentials: 'include',
-               headers: {
-                  accept: 'application/json',
-               },
+               headers: { accept: 'application/json' },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
          console.log('ID기반 대체당 목록 조회', result);
          setSugar(result);
       } catch (error) {

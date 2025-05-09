@@ -6,7 +6,7 @@ import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 import { useEffect, useState, useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
-import { logout } from '@/hooks/Logout';
+import { customFetch } from '@/hooks/CustomFetch';
 type NewsItem = {
    title: string;
    link: string;
@@ -20,23 +20,18 @@ const HomePage = () => {
    }, []);
    const fetchData = async () => {
       try {
-         const response = await fetch('https://zeropick.p-e.kr/api/v1/news', {
-            method: 'GET',
-            credentials: 'include',
-         });
-
-         if (!response.ok) {
-            throw new Error('API 요청 실패');
-         }
-
-         const result = await response.json(); // 응답 데이터
-         console.log('API 요청 성공:', result); // 성공 시 출력
-         setData(result || []); // 받아온 데이터를 상태에 저장
+         const result = await customFetch(
+            '/api/v1/news',
+            { method: 'GET' },
+            navigate,
+         );
+         console.log('뉴스 조회:', result);
+         setData(result || []);
       } catch (error) {
-         console.error('API 요청 오류:', error); // 실패 시 오류 출력
-         logout(navigate);
+         console.error('뉴스 조회:', error);
       }
    };
+
    const handleClick = () => {
       inputRef.current?.click();
    };

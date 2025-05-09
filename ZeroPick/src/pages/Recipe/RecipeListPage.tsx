@@ -1,14 +1,15 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Container, Title } from '@/components/styles/common';
 import { RecipeBox } from '@/components/RecipeBox';
+import { customFetch } from '@/hooks/CustomFetch';
 export type Recipe = {
    title: string;
    ingredients: string[];
 };
 const RecipeListPage = () => {
    const location = useLocation();
-
+   const navigate = useNavigate();
    const { keyword } = location.state || {}; // null-safe 접근
    const [data, setData] = useState<Recipe[]>();
    useEffect(() => {
@@ -19,20 +20,18 @@ const RecipeListPage = () => {
       if (storedKeyword !== keyword) {
          (async () => {
             try {
-               const response = await fetch(
-                  'https://zeropick.p-e.kr/recipes/suggest',
+               const result = await customFetch(
+                  '/recipes/suggest',
                   {
                      method: 'POST',
-                     credentials: 'include',
                      headers: { 'Content-Type': 'application/json' },
                      body: JSON.stringify({ ingredients: keyword }),
                   },
+                  navigate,
                );
-               if (!response.ok) throw new Error('레시피 추천 실패');
-               const result = await response.json();
                console.log('레시피 추천 성공:', result);
                setData(result.data.suggestions);
-               sessionStorage.setItem('recipeKeyword', keyword || ''); // `keyword`가 null일 경우 빈 문자열 처리
+               sessionStorage.setItem('recipeKeyword', keyword || '');
                sessionStorage.setItem(
                   'recipeData',
                   JSON.stringify(result.data.suggestions),
@@ -50,7 +49,7 @@ const RecipeListPage = () => {
          }
       }
    }, [keyword]);
-
+   if (!data) return <p>loading...</p>;
    return (
       <Container>
          <Title>레시피 생성 완료!</Title>
