@@ -1,12 +1,39 @@
 import styled from 'styled-components';
 import { Container, WhiteBox } from '@/components/styles/common';
+import { useEffect, useState } from 'react';
 import pencil from '@/assets/setting/Pencil.svg';
 import postIcon from '@/assets/setting/게시글.svg';
 import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
-
+type User = {
+   email: string;
+   name: string;
+};
 const SettingPage = () => {
+   const [user, setUser] = useState<User>();
+   // 사용자 정보 조회
+   const fetchUser = async () => {
+      try {
+         const response = await fetch(`https://zeropick.p-e.kr/user`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+               accept: 'application/json',
+            },
+         });
+         if (!response.ok) throw new Error('Network response was not ok');
+         const result = await response.json();
+         console.log('사용자 정보 조회', result.data);
+         setUser(result.data);
+      } catch (error) {
+         console.error('Fetch error:', error);
+      }
+   };
+   useEffect(() => {
+      fetchUser();
+   }, []);
+   if (!user) return <p>loading...</p>;
    return (
       <Container>
          <WhiteBox style={{ gap: '0', position: 'relative' }}>
@@ -14,11 +41,11 @@ const SettingPage = () => {
             <EditIcon src={pencil} />
             <ProfileBox>
                <InfoText>닉네임</InfoText>
-               <DetailText>홍길동</DetailText>
+               <DetailText>{user.name}</DetailText>
             </ProfileBox>
             <ProfileBox>
                <InfoText>이메일</InfoText>
-               <DetailText>111@gmail.com</DetailText>
+               <DetailText>{user.email}</DetailText>
             </ProfileBox>
             <Br />
 
