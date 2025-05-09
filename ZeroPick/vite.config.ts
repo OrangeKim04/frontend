@@ -10,7 +10,7 @@ export default defineConfig({
       alias: { find: '@', replacement: resolve(__dirname, 'src') },
    },
    plugins: [react(), tsconfigPaths()],
-   /*  server: {
+   /* server: {
       https: {
          key: fs.readFileSync('./cert/localhost+1-key.pem'),
          cert: fs.readFileSync('./cert/localhost+1.pem'),
