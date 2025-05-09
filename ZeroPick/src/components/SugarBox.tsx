@@ -8,7 +8,7 @@ export const SugarBox = ({ item, id }: { item: Substitute; id: number }) => {
    const [isOpen, setIsOpen] = useState(false);
 
    return (
-      <WhiteBox key={id} onClick={() => setIsOpen(prev => !prev)}>
+      <ClickableWhiteBox key={id} onClick={() => setIsOpen(prev => !prev)}>
          <Row>
             <MainInfo>
                <Label>{item.name}</Label>
@@ -37,10 +37,12 @@ export const SugarBox = ({ item, id }: { item: Substitute; id: number }) => {
                </InfoItem>
             </>
          )}
-      </WhiteBox>
+      </ClickableWhiteBox>
    );
 };
-
+const ClickableWhiteBox = styled(WhiteBox)`
+   cursor: pointer;
+`;
 const Row = styled.div`
    display: flex;
    align-items: center;

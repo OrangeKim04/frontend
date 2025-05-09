@@ -21,7 +21,7 @@ export const RecipeBox = ({ item, id }: RecipeBoxProps) => {
 
    const navigate = useNavigate();
    return (
-      <WhiteBox
+      <ClickableWhiteBox
          key={id}
          onClick={() => navigate(`/recipe/${item.title}`, { state: { item } })}>
          <RecipeTitle>{item.title}</RecipeTitle>
@@ -32,9 +32,12 @@ export const RecipeBox = ({ item, id }: RecipeBoxProps) => {
                ? `${ingredientsStr.slice(0, 26)}...`
                : ingredientsStr}
          </RecipeIngredients>
-      </WhiteBox>
+      </ClickableWhiteBox>
    );
 };
+const ClickableWhiteBox = styled(WhiteBox)`
+   cursor: pointer;
+`;
 const RecipeTitle = styled.p`
    margin: 0 5px;
    margin-top: 8px;

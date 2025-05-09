@@ -92,21 +92,22 @@ const CameraPage = () => {
       <Wrapper>
          <BackArrow url="/home" />
          <Title>영양성분을 찍어주세요</Title>
-
          <Cropper
             src={image} // 사용자가 선택한 사진
             ref={cropperRef}
             viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
             background={false}
             guides={false}
-            style={{ width: '100%', height: '76.9%', marginBottom: '15px' }}
+            style={{ width: '100%', height: '500px', marginBottom: '15px' }}
          />
+
          <Input
             placeholder="품목제조보고번호를 입력하세요."
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             disabled={isLoading}
          />
+
          {isLoading ? (
             <Loading>로딩중...</Loading>
          ) : (
