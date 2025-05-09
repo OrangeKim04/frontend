@@ -109,7 +109,7 @@ const CameraPage = () => {
          />
 
          {isLoading ? (
-            <Loading>로딩중...</Loading>
+            <Loading>분석중...</Loading>
          ) : (
             <Button onClick={onSubmit}>제출하기</Button>
          )}

@@ -69,19 +69,20 @@ const RecipePage = () => {
             />
             <SubmitButton src={buttonIcon} onClick={onsubmit} />
          </Wrapper>
-         <Title>🍴 저장한 레시피</Title>
-         {isError ? (
+
+         {data?.pages && data.pages[0] && data.pages[0].length > 0 ? (
             <>
-               <Img src={cookIcon} />
-               <Title>저장한 레시피가 없어요!</Title>
-            </>
-         ) : (
-            <>
+               <Title>🍴 저장한 레시피</Title>
                {data?.pages[0].map((item, id) => (
                   <RecipeBox key={id} item={item} id={id} />
                ))}
 
                <LoadingIndicator ref={ref} isFetching={isFetching} />
+            </>
+         ) : (
+            <>
+               <Img src={cookIcon} />
+               <Title>저장한 레시피가 없어요!</Title>
             </>
          )}
       </Container>
@@ -129,5 +130,6 @@ const SubmitButton = styled.img`
    cursor: pointer;
 `;
 const Img = styled.img`
-   margin-top: 30px;
+   margin-top: 20px;
+   width: 200px;
 `;
