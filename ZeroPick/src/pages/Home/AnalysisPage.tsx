@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import NutrientTable from '@/components/NutrientTable';
 import { SugarBox } from '@/components/SugarBox';
+import { customFetch } from '@/hooks/CustomFetch';
 import {
    createNutrientTableData,
    ExtendedNutrientData,
@@ -21,22 +22,20 @@ const AnalysisPage = () => {
    // OCR로 감미료 정보 확인
    const fetchOcrData = async () => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/ocr/confirm`,
+         const result = await customFetch(
+            '/api/v1/ocr/confirm',
             {
                method: 'POST',
-               credentials: 'include',
                headers: {
                   'Content-Type': 'application/json',
                },
                body: JSON.stringify({
-                  itemReportNo: itemReportNo,
-                  ocrText: ocrText,
+                  itemReportNo,
+                  ocrText,
                }),
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
          console.log('감미료 정보 확인', result);
          setSugar(result.matchedSubstitutes);
       } catch (error) {
@@ -46,18 +45,16 @@ const AnalysisPage = () => {
    // 품목제조보고번호로 상세 정보 검색
    const fetchNutritientsByNum = async (itemReportNo: string) => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/search-item-detail?itemReportNo=${itemReportNo}`,
+         const result = await customFetch(
+            `/api/v1/foods/search-item-detail?itemReportNo=${itemReportNo}`,
             {
                method: 'GET',
-               credentials: 'include',
                headers: {
                   accept: 'application/json',
                },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
          console.log('품목제조보고번호로 상세 정보 검색', result);
          setData(result);
       } catch (error) {
@@ -67,18 +64,16 @@ const AnalysisPage = () => {
    // ID기반 식품 상세 조회
    const fetchNutritientsByID = async (id: string) => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/${id}`,
+         const result = await customFetch(
+            `/api/v1/foods/${id}`,
             {
                method: 'GET',
-               credentials: 'include',
                headers: {
                   accept: 'application/json',
                },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
          console.log('ID기반 식품 상세 조회', result);
          setData(result);
       } catch (error) {
@@ -88,18 +83,16 @@ const AnalysisPage = () => {
    // ID기반 대체당 목록 조회
    const fetchSugarByID = async (id: string) => {
       try {
-         const response = await fetch(
-            `https://zeropick.p-e.kr/api/v1/foods/${id}/sweeteners`,
+         const result = await customFetch(
+            `/api/v1/foods/${id}/sweeteners`,
             {
                method: 'GET',
-               credentials: 'include',
                headers: {
                   accept: 'application/json',
                },
             },
+            navigate,
          );
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
          console.log('ID기반 대체당 목록 조회', result);
          setSugar(result);
       } catch (error) {

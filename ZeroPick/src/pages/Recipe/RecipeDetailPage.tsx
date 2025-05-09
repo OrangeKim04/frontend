@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Title, WhiteBox } from '@/components/styles/common';
 import BackArrow from '@/components/BackArrow';
+import { customFetch } from '@/hooks/CustomFetch';
 /* import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
 import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg'; */
 import styled from 'styled-components';
@@ -18,6 +19,7 @@ export type RecipeResponse = {
 
 const RecipeDetailPage = () => {
    const location = useLocation();
+   const navigate = useNavigate();
    const item = location.state?.item;
    const [data, setData] = useState<RecipeResponse | null>(null);
    /* const [scrapped, setScrapped] = useState(false); */
@@ -30,20 +32,18 @@ const RecipeDetailPage = () => {
             const createRecipe = async () => {
                try {
                   const ingredientsStr = item.ingredients.join(',\u00A0');
-                  const response = await fetch(
-                     'https://zeropick.p-e.kr/recipes/createRecipe',
+                  const result = await customFetch(
+                     '/recipes/createRecipe',
                      {
                         method: 'POST',
-                        credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                            title: item.title,
                            ingredients: ingredientsStr,
                         }),
                      },
+                     navigate,
                   );
-                  if (!response.ok) throw new Error('레시피 생성 실패');
-                  const result = await response.json();
                   console.log('레시피 생성 성공:', result);
                   setData(result.data);
                   sessionStorage.setItem(
@@ -54,6 +54,7 @@ const RecipeDetailPage = () => {
                   console.error('레시피 생성 오류:', error);
                }
             };
+
             const stored = sessionStorage.getItem(item.title);
             if (stored) {
                setData(JSON.parse(stored));

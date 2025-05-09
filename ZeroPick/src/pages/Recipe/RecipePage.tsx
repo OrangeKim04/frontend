@@ -9,6 +9,7 @@ import { RecipeBox } from '@/components/RecipeBox';
 import cookIcon from '@/assets/recipe/cooking.svg';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { RecipeResponse } from './RecipeDetailPage';
+import { customFetch } from '@/hooks/CustomFetch';
 
 const RecipePage = () => {
    const [keyword, setKeyword] = useState<string>('');
@@ -32,29 +33,23 @@ const RecipePage = () => {
          queryKey: ['ScrappedRecipeList'],
          queryFn: async ({ pageParam }): Promise<RecipeResponse[]> => {
             sessionStorage.setItem('keyword', keyword);
-            const response = await fetch(
-               `https://zeropick.p-e.kr/recipes?page=${pageParam}&size=10`,
+            const result = await customFetch(
+               `/recipes?page=${pageParam}&size=10`,
                {
                   method: 'GET',
-                  credentials: 'include',
-                  headers: {
-                     accept: 'application/json',
-                  },
+                  headers: { accept: 'application/json' },
                },
+               navigate,
             );
-            if (!response.ok) {
-               throw new Error('검색 중 오류가 발생했습니다.'); // 오류 발생 시 예외 처리
-            }
-            const result = await response.json();
             console.log('스크랩 레시피 전체 조회', result.data.recipes);
             return result.data.recipes;
          },
          initialPageParam: 0,
          getNextPageParam: (lastPage, allPages) => {
             return lastPage.length < 10 ? undefined : allPages.length;
-            // 한 페이지에 10개씩 올 때, 10개 미만이면 마지막으로 판단
          },
       });
+
    useEffect(() => {
       if (inView && hasNextPage) {
          fetchNextPage();
