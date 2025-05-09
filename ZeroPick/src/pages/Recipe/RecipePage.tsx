@@ -28,27 +28,26 @@ const RecipePage = () => {
          });
       }
    };
-   const { data, isFetching, fetchNextPage, hasNextPage, isError } =
-      useInfiniteQuery({
-         queryKey: ['ScrappedRecipeList'],
-         queryFn: async ({ pageParam }): Promise<RecipeResponse[]> => {
-            sessionStorage.setItem('keyword', keyword);
-            const result = await customFetch(
-               `/recipes?page=${pageParam}&size=10`,
-               {
-                  method: 'GET',
-                  headers: { accept: 'application/json' },
-               },
-               navigate,
-            );
-            console.log('스크랩 레시피 전체 조회', result.data.recipes);
-            return result.data.recipes;
-         },
-         initialPageParam: 0,
-         getNextPageParam: (lastPage, allPages) => {
-            return lastPage.length < 10 ? undefined : allPages.length;
-         },
-      });
+   const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+      queryKey: ['ScrappedRecipeList'],
+      queryFn: async ({ pageParam }): Promise<RecipeResponse[]> => {
+         sessionStorage.setItem('keyword', keyword);
+         const result = await customFetch(
+            `/recipes?page=${pageParam}&size=10`,
+            {
+               method: 'GET',
+               headers: { accept: 'application/json' },
+            },
+            navigate,
+         );
+         console.log('스크랩 레시피 전체 조회', result.data.recipes);
+         return result.data.recipes;
+      },
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+         return lastPage.length < 10 ? undefined : allPages.length;
+      },
+   });
 
    useEffect(() => {
       if (inView && hasNextPage) {

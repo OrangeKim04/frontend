@@ -131,7 +131,8 @@ const LogoutText = styled.p`
    font-family: Medium;
    text-align: center;
    color: red;
-   margin: 10px 0;
+   margin-top: 20px;
+   margin-bottom: 10px;
    cursor: pointer;
 `;
 const TitleText = styled.p`
