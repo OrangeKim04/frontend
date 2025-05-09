@@ -14,7 +14,6 @@ export interface NutrientData {
    proteinPercent: number;
    carbohydrate: number;
    carbohydratePercent: number;
-   calcium: number;
    sodium: number;
    sodiumPercent: number;
    cholesterol: number;
@@ -26,15 +25,15 @@ export interface NutrientData {
    transFat: number;
    sugars: number;
    sugarsPercent: number;
-   galactose: number;
-   fructose: number;
-   sugarAlcohol: number;
-   maltose: number;
-   allulose: number;
-   erythritol: number;
-   lactose: number;
-   sucrose: number;
-   glucose: number;
+   galactose?: number;
+   fructose?: number;
+   sugarAlcohol?: number;
+   maltose?: number;
+   allulose?: number;
+   erythritol?: number;
+   lactose?: number;
+   sucrose?: number;
+   glucose?: number;
 }
 export type ExtendedNutrientData = NutrientData & {
    id: number;
@@ -71,7 +70,6 @@ export const createNutrientTableData = (
          percent: `${data.carbohydratePercent}%`,
          indent: false,
       },
-      { nutrient: '칼슘', value: `${data.calcium} mg`, indent: false },
       {
          nutrient: '나트륨',
          value: `${data.sodium} mg`,
