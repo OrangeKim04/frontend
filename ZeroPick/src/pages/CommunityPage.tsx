@@ -1,61 +1,82 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import { FaRegComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  likeCount: number;
+  commentCount: number;
+}
 
 const HomePage: React.FC = () => {
   const [categories] = useState<string[]>(['카테고리1', '카테고리2', '카테고리3']);
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const navigate = useNavigate();
 
-  // 전체 게시글
-  const allPosts = Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    title: `타이틀 ${i + 1}`,
-    content: `내용입니다. 내용입니다. 내용입니다. ${i + 1}`,
-  }));
-
+  // 게시글 상태 및 페이징
+  const [posts, setPosts] = useState<Post[]>([]);
   const [visibleCount, setVisibleCount] = useState(10);
-  const visiblePosts = allPosts.slice(0, visibleCount);
-
-  const [likedPosts, setLikedPosts] = useState<boolean[]>(
-    new Array(allPosts.length).fill(false)
-  );
-  const [likeCounts, setLikeCounts] = useState<number[]>(
-    new Array(allPosts.length).fill(0)
-  );
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // 게시글 목록 API 연동
+  const fetchPosts = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/v1/boards/scroll', {
+        params: { category: activeCategory, page, size: 10 },
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') ?? ''}` }
+      });
+      const data = res.data; // { items: Post[], hasNext: boolean }
+      setPosts(prev => [...prev, ...data.items]);
+      setHasMore(data.hasNext);
+      setPage(prev => prev + 1);
+    } catch (err) {
+      console.error('게시글 조회 실패', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeCategory, page, hasMore, loading]);
+
+  // 카테고리 변경 시 초기화
+  useEffect(() => {
+    setPosts([]);
+    setPage(0);
+    setHasMore(true);
+  }, [activeCategory]);
+
+  // 초기 렌더 및 페치 호출
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  // 무한 스크롤 관찰자
   const lastPostRef = useCallback((node: HTMLDivElement) => {
     if (observerRef.current) observerRef.current.disconnect();
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && visibleCount < allPosts.length) {
-        setVisibleCount((prev) => prev + 10);
-      }
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) fetchPosts();
     });
-
     if (node) observerRef.current.observe(node);
-  }, [visibleCount]);
+  }, [fetchPosts, hasMore]);
 
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
   };
 
-  const handleLike = (index: number) => {
-    const isCurrentlyLiked = likedPosts[index];
-    const updatedLikedPosts = [...likedPosts];
-    updatedLikedPosts[index] = !isCurrentlyLiked;
-    setLikedPosts(updatedLikedPosts);
-
-    const updatedLikeCounts = [...likeCounts];
-    updatedLikeCounts[index] += isCurrentlyLiked ? -1 : 1;
-    setLikeCounts(updatedLikeCounts);
+  const handleLike = (postId: number) => {
+    // TODO: 좋아요 API 연동
   };
 
-  const handleComment = (index: number) => {
-    console.log(`Comment on post ${index}`);
+  const handleComment = (postId: number) => {
+    // TODO: 댓글 API 연동
   };
 
   const handleFloatingButtonClick = () => {
@@ -82,45 +103,39 @@ const HomePage: React.FC = () => {
       </CategoryTabsContainer>
 
       <PostsContainer>
-        {visiblePosts.map((post, index) => {
-          const globalIndex = post.id - 1;
-          const isLastPost = index === visiblePosts.length - 1;
-
+        {posts.slice(0, visibleCount).map((post, index) => {
+          const isLast = index === visibleCount - 1;
           return (
             <PostCard
               key={post.id}
-              ref={isLastPost ? lastPostRef : null}
+              ref={isLast ? lastPostRef : null}
               onClick={() => handlePostClick(post.id)}
             >
               <PostTitle>{post.title}</PostTitle>
               <PostContent>{post.content}</PostContent>
               <ActionsContainer>
-                <ActionButton
-                  as="div"
-                  onClick={(e) => {
-                    e.stopPropagation(); // 카드 클릭 방지
-                    handleLike(globalIndex);
-                  }}
-                >
+                <ActionButton as="div" onClick={e => { e.stopPropagation(); handleLike(post.id); }}>
                   <img
                     src={
-                      likedPosts[globalIndex]
+                      post.likeCount > 0
                         ? '/src/assets/setting/favorite_fill.svg'
                         : '/src/assets/setting/favorite_border.svg'
                     }
                     alt="like"
                     style={{ width: '16px', height: '16px', marginRight: '4px' }}
                   />
-                  {likeCounts[globalIndex]}
+                  {post.likeCount}
                 </ActionButton>
-                <ActionButton as="div">
+                <ActionButton as="div" onClick={e => { e.stopPropagation(); handleComment(post.id); }}>
                   <FaRegComment style={{ color: 'black', marginRight: '4px' }} />
-                  0
+                  {post.commentCount}
                 </ActionButton>
               </ActionsContainer>
             </PostCard>
           );
         })}
+        {loading && <LoadingMessage>로딩 중...</LoadingMessage>}
+        {!hasMore && <EndMessage>마지막 게시글입니다.</EndMessage>}
       </PostsContainer>
 
       <FloatingButton onClick={handleFloatingButtonClick} />
@@ -198,6 +213,16 @@ const ActionButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+`;
+
+const LoadingMessage = styled.p`
+  text-align: center;
+  color: #888;
+`;
+
+const EndMessage = styled.p`
+  text-align: center;
+  color: #888;
 `;
 
 const FloatingButton = styled.button`

@@ -35,7 +35,7 @@ export const Button = styled.button`
    cursor: pointer;
    flex-shrink: 0;
 `;
-export const Form = styled.div`
+export const Form = styled.form`
    display: flex;
    flex-direction: column;
    align-items: center;

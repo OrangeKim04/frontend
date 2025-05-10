@@ -12,73 +12,111 @@ import { useForm } from 'react-hook-form';
 import icon from '@/assets/Left Arrow.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+
 const SignUpPage = () => {
    const navigate = useNavigate();
+
    const schema = yup.object().shape({
-      nickname: yup
-         .string()
-         .email('올바른 닉네임 형식이 아닙니다. 다시 한번 확인해주세요!')
-         .required('닉네임을 반드시 입력해주세요.'),
+      username: yup.string().required('닉네임을 반드시 입력해주세요.'),
       email: yup
          .string()
          .email('올바른 이메일 형식이 아닙니다. 다시 한번 확인해주세요!')
          .required('이메일을 반드시 입력해주세요.'),
-      id: yup
-         .string()
-         // required를 min보다 앞에 위치시켜 필수 필드 검증이 가장 먼저 실행되도록 수정
-         .required('아이디를 반드시 입력해주세요.')
-         .min(8, '아이디는 8~16자 사이로 입력해주세요!')
-         .max(16, '아이디는 8~16자 사이로 입력해주세요!'),
       password: yup
          .string()
-         // required를 min보다 앞에 위치시켜 필수 필드 검증이 가장 먼저 실행되도록 수정
          .required('비밀번호를 반드시 입력해주세요.')
          .min(8, '비밀번호는 8~16자 사이로 입력해주세요!')
          .max(16, '비밀번호는 8~16자 사이로 입력해주세요!'),
       passwordCheck: yup
          .string()
          .required('비밀번호 검증 또한 필수 입력요소 입니다.')
-         .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.') // password와 일치하는지 확인
+         .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
          .min(8, '비밀번호는 8~16자 사이로 입력해주세요!')
          .max(16, '비밀번호는 8~16자 사이로 입력해주세요!'),
    });
-   // handleSubmit은 useForm에서 제공해준다.
-   const { register } = useForm({
-      // 폼 제출 시 yup의 검증규칙 적용
-      resolver: yupResolver(schema), // resolver: 외부 라이브러리와 통합하기 위한 옵션
+
+   const {
+      register,
+      handleSubmit,
+      formState: { errors },
+   } = useForm({
+      resolver: yupResolver(schema),
    });
+
+   // 폼 제출 시 서버로 POST 요청 보내는 함수
+   const onSubmit = async data => {
+      const { passwordCheck, ...dataToSend } = data;
+      console.log('onSubmit 실행됨', dataToSend); // 여기서 데이터를 확인
+
+      try {
+         const response = await fetch('https://zeropick.p-e.kr/auth/join', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+         });
+
+         if (!response.ok) {
+            throw new Error('회원가입 실패');
+         }
+         const result = await response.json(); // 서버 응답 데이터
+         console.log('회원가입 성공:', result); // 회원가입 성공 시 출력
+         // 회원가입 성공 후 로그인 페이지로 이동
+
+         navigate('/login');
+      } catch (error) {
+         console.error('회원가입 오류:', error);
+         alert('회원가입에 실패했어요');
+      }
+   };
+
    return (
       <Box>
          <Img src={icon} onClick={() => navigate('/login')} />
          <Title>회원가입</Title>
-         <Form>
+         {/* noValidate 제거하여 디버깅 */}
+         <Form onSubmit={handleSubmit(onSubmit)}>
             <InputBox>
-               <Input placeholder="닉네임" {...register('nickname')} />
+               <Input placeholder="닉네임" {...register('username')} />
+               <ErrorTxt>{errors.username?.message}</ErrorTxt>
                <Input
                   type={'email'}
                   placeholder="이메일"
                   {...register('email')}
                />
-               <Input placeholder="아이디" />
+               <ErrorTxt>{errors.email?.message}</ErrorTxt>
+
                <Input
                   type={'password'}
                   placeholder="비밀번호"
                   {...register('password')}
                />
+               <ErrorTxt>{errors.password?.message}</ErrorTxt>
                <Input
                   type={'password'}
                   placeholder="비밀번호를 다시 입력해주세요"
                   {...register('passwordCheck')}
                />
+               <ErrorTxt>{errors.passwordCheck?.message}</ErrorTxt>
             </InputBox>
             <Button type={'submit'}>가입하기</Button>
          </Form>
       </Box>
    );
 };
+
 export default SignUpPage;
+
 const Img = styled.img`
    position: absolute;
    left: 30px;
    cursor: pointer;
+`;
+
+const ErrorTxt = styled.p`
+   color: red;
+   font-size: 10px;
+   margin-top: 0;
+   margin-bottom: 5px;
 `;
