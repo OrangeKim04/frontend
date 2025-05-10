@@ -98,7 +98,7 @@ const CameraPage = () => {
             viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
             background={false}
             guides={false}
-            style={{ width: '100%', height: '500px', marginBottom: '15px' }}
+            style={{ width: '100%', height: '400px', marginBottom: '15px' }}
          />
 
          <Input
@@ -129,7 +129,6 @@ const CameraPage = () => {
 
 export default CameraPage;
 const Wrapper = styled.div`
-   position: fixed;
    width: 100%;
    height: 100dvh;
    z-index: 1;
