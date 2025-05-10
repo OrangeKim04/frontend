@@ -23,7 +23,7 @@ const AnalysisPage = () => {
    const fetchOcrData = async () => {
       try {
          const result = await customFetch(
-            '/api/v1/ocr/confirm',
+            '/ocr/confirm',
             {
                method: 'POST',
                headers: {
@@ -46,7 +46,7 @@ const AnalysisPage = () => {
    const fetchNutritientsByNum = async (itemReportNo: string) => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/search-item-detail?itemReportNo=${itemReportNo}`,
+            `/foods/search-item-detail?itemReportNo=${itemReportNo}`,
             {
                method: 'GET',
                headers: {
@@ -65,7 +65,7 @@ const AnalysisPage = () => {
    const fetchNutritientsByID = async (id: string) => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/${id}`,
+            `/foods/${id}`,
             {
                method: 'GET',
                headers: {
@@ -84,7 +84,7 @@ const AnalysisPage = () => {
    const fetchSugarByID = async (id: string) => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/${id}/sweeteners`,
+            `/foods/${id}/sweeteners`,
             {
                method: 'GET',
                headers: {
@@ -116,7 +116,11 @@ const AnalysisPage = () => {
          <Title>{data.foodNmKr}</Title>
 
          {data.itemReportNo && (
-            <Item>품목제조보고번호: {data.itemReportNo}</Item>
+            <Item>
+               품목제조보고번호:{'\u00A0'}
+               {'\u00A0'}
+               {data.itemReportNo}
+            </Item>
          )}
 
          <NutrientTable data={tableData} />
@@ -160,10 +164,10 @@ const Title = styled.p`
 `;
 
 const Item = styled.div`
-width: 100%;
-font-size: 0.95rem;
-font-family:  Regular
-padding: 8px;
-border-radius: 6px;
- word-wrap: break-word;
+   width: 100%;
+   font-size: 0.95rem;
+   font-family: Regular;
+   padding: 8px;
+   border-radius: 6px;
+   word-wrap: break-word;
 `;

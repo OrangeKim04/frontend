@@ -20,11 +20,7 @@ const HomePage = () => {
    }, []);
    const fetchData = async () => {
       try {
-         const result = await customFetch(
-            '/api/v1/news',
-            { method: 'GET' },
-            navigate,
-         );
+         const result = await customFetch('/news', { method: 'GET' }, navigate);
          console.log('뉴스 조회:', result);
          setData(result || []);
       } catch (error) {

@@ -27,7 +27,7 @@ const ProductDetailPage = () => {
    const fetchData = async () => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/${state}`,
+            `/foods/${state}`,
             {
                method: 'GET',
                headers: { accept: 'application/json' },
@@ -44,7 +44,7 @@ const ProductDetailPage = () => {
    const fetchSugarByID = async (id: string) => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/${id}/sweeteners`,
+            `/foods/${id}/sweeteners`,
             {
                method: 'GET',
                headers: { accept: 'application/json' },
@@ -64,7 +64,11 @@ const ProductDetailPage = () => {
          <BackArrow url={-1} />
          <Title> {data.foodNmKr}</Title>
          {data.itemReportNo && (
-            <Item>품목제조보고번호: {data.itemReportNo}</Item>
+            <Item>
+               품목제조보고번호:{'\u00A0'}
+               {'\u00A0'}
+               {data.itemReportNo}
+            </Item>
          )}
 
          <NutrientTable data={tableData} />

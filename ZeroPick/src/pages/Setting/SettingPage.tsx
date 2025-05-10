@@ -59,7 +59,7 @@ const SettingPage = () => {
    useEffect(() => {
       fetchUser();
    }, []);
-   if (!user) return <p>loading...</p>;
+   if (!user) return <Skeleton />;
    return (
       <Container>
          <WhiteBox style={{ gap: '0', position: 'relative' }}>
@@ -122,6 +122,25 @@ const SettingPage = () => {
    );
 };
 export default SettingPage;
+const Skeleton = styled.div`
+   width: 90%;
+   height: 490px; /* 필요에 따라 높이 지정 */
+   align-self: center;
+   background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+   border-radius: 20px;
+   background-size: 200% 100%;
+   animation: shimmer 1.5s infinite linear;
+   margin-top: 15px;
+   @keyframes shimmer {
+      0% {
+         background-position: -100%;
+      }
+      100% {
+         background-position: 100%;
+      }
+   }
+`;
+
 const InfoText = styled.p`
    margin: 0;
    font-family: Medium;
