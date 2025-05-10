@@ -95,7 +95,7 @@ export default RootLayout;
 const RootContainer = styled.div`
    display: flex;
    flex-direction: column;
-   height: 100vh;
+   height: 100dvh;
    width: 100%;
    overflow-y: hidden; /* 세로 스크롤 비활성화 */
 `;

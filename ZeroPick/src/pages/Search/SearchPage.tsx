@@ -124,7 +124,7 @@ const Img = styled.img`
 
 const ItemList = styled.div`
    width: 100%;
-   height: calc(100vh - 152px);
+   height: calc(100dvh - 152px);
    display: flex;
    flex-direction: column;
 `;
