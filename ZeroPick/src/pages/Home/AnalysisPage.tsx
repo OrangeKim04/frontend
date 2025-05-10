@@ -112,7 +112,7 @@ const AnalysisPage = () => {
 
    if (!sugar || !data) return <div>loading..</div>;
    return (
-      <Container style={{ height: '100vh', position: 'relative' }}>
+      <Container style={{ height: '100dvh', position: 'relative' }}>
          <BackIcon src={backIcon} onClick={() => navigate('/home')} />
          <Title>{data.foodNmKr}</Title>
 
