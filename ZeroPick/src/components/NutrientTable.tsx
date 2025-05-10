@@ -137,6 +137,7 @@ const NutrientTable = ({ data }: Props) => {
                                        : row.original.nutrient === '1회 제공량'
                                          ? '2px solid #4E4E4E'
                                          : '1px solid #DFDFDF',
+                                 fontFamily: 'Regular',
                               }}>
                               {flexRender(
                                  cell.column.columnDef.cell,

@@ -1,6 +1,6 @@
 import { NavigateFunction } from 'react-router-dom';
 
-const BASE_URL = 'https://zeropick.p-e.kr';
+const BASE_URL = '/api/v1';
 
 export const customFetch = async (
    endpoint: string,

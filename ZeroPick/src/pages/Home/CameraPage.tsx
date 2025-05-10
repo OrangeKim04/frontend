@@ -37,7 +37,7 @@ const CameraPage = () => {
       formData.append('file', blob, 'image.png');
       try {
          const result = await customFetch(
-            '/api/v1/ocr/scan',
+            '/ocr/scan',
             {
                method: 'POST',
                body: formData,
@@ -58,7 +58,7 @@ const CameraPage = () => {
    const searchProduct = async (itemReportNo: string) => {
       try {
          const result = await customFetch(
-            `/api/v1/foods/search-item-name?itemReportNo=${itemReportNo}`,
+            `/foods/search-item-name?itemReportNo=${itemReportNo}`,
             {
                method: 'GET',
                headers: { accept: 'application/json' },

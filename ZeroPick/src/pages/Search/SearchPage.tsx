@@ -33,7 +33,7 @@ const SearchPage = () => {
             console.log('Current pageParam:', pageParam);
             sessionStorage.setItem('keyword', keyword);
             const result = await customFetch(
-               `/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
+               `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
                {
                   method: 'GET',
                   headers: { accept: 'application/json' },
