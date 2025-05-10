@@ -8,7 +8,6 @@ export interface NutrientRow {
 
 export interface NutrientData {
    totalWeight: number;
-   servingSize: number;
    energy: number;
    protein: number;
    proteinPercent: number;
@@ -56,7 +55,6 @@ export const createNutrientTableData = (
 
    return [
       { nutrient: '총중량', value: data.totalWeight, indent: false },
-      { nutrient: '1회 제공량', value: data.servingSize, indent: false },
       { nutrient: '열량', value: `${data.energy} kcal`, indent: false },
       {
          nutrient: '단백질',

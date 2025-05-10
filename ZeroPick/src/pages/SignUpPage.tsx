@@ -65,8 +65,8 @@ const SignUpPage = () => {
             },
             navigate,
          );
-
-         console.log('회원가입 성공:', result);
+         console.log(result);
+         alert('회원가입 성공');
          navigate('/login');
       } catch (error) {
          console.error('회원가입 오류:', error);

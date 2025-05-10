@@ -9,7 +9,8 @@ import {
    createNutrientTableData,
    ExtendedNutrientData,
    Substitute,
-} from '@/data/nutritientData';
+} from '@/type/nutritientData';
+import { SubText } from '@/components/styles/common';
 
 const AnalysisPage = () => {
    const navigate = useNavigate();
@@ -133,6 +134,7 @@ const AnalysisPage = () => {
          {sugar.map((item, id) => (
             <SugarBox key={id} item={item} id={id} />
          ))}
+         <SubText>[출처] 식품의약품안전처</SubText>
       </Container>
    );
 };

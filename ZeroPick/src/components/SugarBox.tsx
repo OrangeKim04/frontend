@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { WhiteBox } from './styles/common';
 import arrowIcon from '@/assets/dropDownArrow.svg';
-import { Substitute } from '@/data/nutritientData';
+import { Substitute } from '@/type/nutritientData';
 
 export const SugarBox = ({ item, id }: { item: Substitute; id: number }) => {
    const [isOpen, setIsOpen] = useState(false);
