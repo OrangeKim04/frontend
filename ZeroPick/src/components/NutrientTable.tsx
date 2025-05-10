@@ -101,7 +101,7 @@ const NutrientTable = ({ data }: Props) => {
                      }
                      return true;
                   })
-                  .map((row, idx, arr) => (
+                  .map(row => (
                      <React.Fragment key={row.id}>
                         <tr
                            style={{
@@ -130,10 +130,7 @@ const NutrientTable = ({ data }: Props) => {
                                        )
                                           ? '#F8F3FF'
                                           : 'transparent',
-                                    borderBottom:
-                                       row.index === arr.length - 1
-                                          ? 'none'
-                                          : '1px solid #DFDFDF',
+                                    borderBottom: '1px solid #DFDFDF',
                                     fontFamily: 'Regular',
                                  }}>
                                  {flexRender(
