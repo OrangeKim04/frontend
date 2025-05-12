@@ -1,16 +1,23 @@
 import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
 import { Container } from '@/components/styles/common';
 import Product from '@/components/Product';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ClipLoader } from 'react-spinners';
+
+
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { customFetch } from '@/hooks/CustomFetch';
 const SearchPage = () => {
    const [keyword, setKeyword] = useState(
-      localStorage.getItem('keyword') || '',
+      sessionStorage.getItem('keyword') || '',
    );
+   const navigate = useNavigate();
+
    const [searchParams] = useSearchParams();
    const { ref, inView } = useInView({
       threshold: 0,
@@ -29,28 +36,27 @@ const SearchPage = () => {
             pageParam,
          }): Promise<Array<{ foodNmKr: string; id: number }>> => {
             console.log('Current pageParam:', pageParam);
-            localStorage.setItem('keyword', keyword);
-            const response = await fetch(
-               `https://zeropick.p-e.kr/api/v1/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
+
+            sessionStorage.setItem('keyword', keyword);
+            const result = await customFetch(
+               `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
                {
                   method: 'GET',
-                  credentials: 'include',
-                  headers: {
-                     accept: 'application/json',
-                  },
+                  headers: { accept: 'application/json' },
                },
+               navigate,
             );
-            if (!response.ok) {
-               throw new Error('검색 중 오류가 발생했습니다.'); // 오류 발생 시 예외 처리
-            }
-            return await response.json();
+            return result;
+
          },
          initialPageParam: 0,
          getNextPageParam: (lastPage, allPages) => {
             return lastPage.length < 10 ? undefined : allPages.length;
-            // 한 페이지에 10개씩 올 때, 10개 미만이면 마지막으로 판단
+
          },
       });
+
+
    useEffect(() => {
       if (inView && hasNextPage) {
          fetchNextPage();
@@ -84,17 +90,9 @@ const SearchPage = () => {
                           ))
                         : null,
                   )}
-                  <div
-                     ref={ref}
-                     style={{
-                        width: '100%',
-                        minHeight: '50px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                     }}>
-                     {isFetching && <ClipLoader color={'#FF9EB3'} />}
-                  </div>
+
+                  <LoadingIndicator ref={ref} isFetching={isFetching} />
+
                </>
             )}
          </ItemList>
@@ -137,7 +135,9 @@ const Img = styled.img`
 
 const ItemList = styled.div`
    width: 100%;
-   height: calc(100vh - 152px);
+
+   height: calc(100dvh - 152px);
+
    display: flex;
    flex-direction: column;
 `;

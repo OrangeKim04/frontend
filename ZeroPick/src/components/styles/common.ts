@@ -52,6 +52,7 @@ export const SubText = styled.p`
    margin-top: 15px;
    margin: 0;
    font-size: 0.9rem;
+   line-height: 20px;
 `;
 export const Box = styled.div`
    display: flex;
@@ -73,7 +74,7 @@ export const TextBox = styled.div`
 export const Container = styled.div`
    background-color: #f4f4f4;
    width: 100%;
-   height: calc(100vh - 70px); /* 화면 높이에서 70px을 뺀 높이 */
+   height: calc(100dvh - 70px); /* 화면 높이에서 70px을 뺀 높이 */
    padding: 15px;
    box-sizing: border-box;
    display: flex;
