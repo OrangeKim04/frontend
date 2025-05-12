@@ -14,6 +14,7 @@ export const customFetch = async (
 
    if (response.status === 401) {
       navigate('/login');
+      sessionStorage.setItem('selectedCategory', '홈');
       return;
    }
 
