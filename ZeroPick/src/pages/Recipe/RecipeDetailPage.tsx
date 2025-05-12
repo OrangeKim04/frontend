@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Title, WhiteBox } from '@/components/styles/common';
 import BackArrow from '@/components/BackArrow';
 import { customFetch } from '@/hooks/CustomFetch';
-/* import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
-import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg'; */
+import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
+import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
 type Ingredient = {
    name: string;
@@ -22,7 +22,7 @@ const RecipeDetailPage = () => {
    const navigate = useNavigate();
    const item = location.state?.item;
    const [data, setData] = useState<RecipeResponse | null>(null);
-   /* const [scrapped, setScrapped] = useState(false); */
+   const [scrapped, setScrapped] = useState(false);
    useEffect(() => {
       if (item) {
          if (item.steps) {
@@ -75,43 +75,42 @@ const RecipeDetailPage = () => {
         })
       : [];
 
-   /* const handleScrap = async () => {
+   const handleScrap = async () => {
       setScrapped(!scrapped);
       try {
-         const response = await fetch(`https://zeropick.p-e.kr/recipes`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
+         const result = await customFetch(
+            `/recipes`,
+            {
+               method: 'POST',
+               body: JSON.stringify({
+                  title: data?.title,
+                  ingredients: data?.ingredients,
+                  steps: data?.steps,
+               }),
+               headers: { 'Content-Type': 'application/json' },
             },
-            body: JSON.stringify({
-               title: data?.title,
-               ingredients: data?.ingredients,
-               steps: data?.steps,
-            }),
-         });
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
+            navigate,
+         );
          console.log('스크랩 성공', result);
       } catch (error) {
          console.error('Fetch error:', error);
       }
-   }; */
+   };
 
    if (!data) return <p>Loading...</p>;
    return (
       <Container>
          <Box>
             <BackArrow url={-1} />
-            {/*  <ScrapIcon
+            <ScrapIcon
                src={scrapped ? AfterScrapIcon : BeforeScrapIcon}
                onClick={handleScrap}
                alt="Scrap Icon"
-            /> */}
+            />
          </Box>
 
          <WhiteBox>
-            <StyledTitle>{data?.title}</StyledTitle>
+            <StyledTitle>🍽️{data?.title}</StyledTitle>
             <IngredientsContainer>
                <IngredientLabel>
                   재료: {'\u00A0'}
@@ -183,11 +182,10 @@ const StepText = styled.span`
    font-family: Regular;
    line-height: 20px;
 `;
-/* const ScrapIcon = styled.img`
+const ScrapIcon = styled.img`
    width: 18px;
    position: absolute;
    right: 20px;
    top: 22px;
    cursor: pointer;
 `;
- */
