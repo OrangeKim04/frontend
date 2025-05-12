@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { FaRegComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,30 +11,41 @@ interface Post {
   commentCount: number;
 }
 
-const HomePage: React.FC = () => {
+const CommunityPage: React.FC = () => {
   const [categories] = useState<string[]>(['카테고리1', '카테고리2', '카테고리3']);
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const navigate = useNavigate();
 
-  // 게시글 상태 및 페이징
   const [posts, setPosts] = useState<Post[]>([]);
-  const [visibleCount, setVisibleCount] = useState(10);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // 게시글 목록 API 연동
+  // fetch로 대체된 게시글 API 호출
   const fetchPosts = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const res = await axios.get('/api/v1/boards/scroll', {
-        params: { category: activeCategory, page, size: 10 },
-        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') ?? ''}` }
+      const token = localStorage.getItem('accessToken') ?? '';
+      const query = new URLSearchParams({
+        category: activeCategory,
+        page: page.toString(),
+        size: '10',
       });
-      const data = res.data; // { items: Post[], hasNext: boolean }
+
+      const res = await fetch(`/api/v1/boards/scroll?${query.toString()}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+      });
+
+      if (!res.ok) throw new Error('API 실패');
+
+      const data = await res.json(); // { items: Post[], hasNext: boolean }
       setPosts(prev => [...prev, ...data.items]);
       setHasMore(data.hasNext);
       setPage(prev => prev + 1);
@@ -46,19 +56,16 @@ const HomePage: React.FC = () => {
     }
   }, [activeCategory, page, hasMore, loading]);
 
-  // 카테고리 변경 시 초기화
   useEffect(() => {
     setPosts([]);
     setPage(0);
     setHasMore(true);
   }, [activeCategory]);
 
-  // 초기 렌더 및 페치 호출
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
-  // 무한 스크롤 관찰자
   const lastPostRef = useCallback((node: HTMLDivElement) => {
     if (observerRef.current) observerRef.current.disconnect();
     observerRef.current = new IntersectionObserver(entries => {
@@ -103,8 +110,8 @@ const HomePage: React.FC = () => {
       </CategoryTabsContainer>
 
       <PostsContainer>
-        {posts.slice(0, visibleCount).map((post, index) => {
-          const isLast = index === visibleCount - 1;
+        {posts.map((post, index) => {
+          const isLast = index === posts.length - 1;
           return (
             <PostCard
               key={post.id}
@@ -143,13 +150,13 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default CommunityPage;
 
-// ⬇️ 스타일 컴포넌트들
+// ⬇️ styled-components (기존 그대로 유지)
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
   min-height: 100vh;
-  overflow-y:  auto;
+  overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
