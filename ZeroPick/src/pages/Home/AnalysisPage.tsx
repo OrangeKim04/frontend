@@ -11,6 +11,7 @@ import {
    Substitute,
 } from '@/type/nutritientData';
 import { SubText } from '@/components/styles/common';
+import RingLoading from '@/components/RingLoader';
 
 const AnalysisPage = () => {
    const navigate = useNavigate();
@@ -81,36 +82,18 @@ const AnalysisPage = () => {
          console.error('Fetch error:', error);
       }
    };
-   // ID기반 대체당 목록 조회
-   const fetchSugarByID = async (id: string) => {
-      try {
-         const result = await customFetch(
-            `/foods/${id}/sweeteners`,
-            {
-               method: 'GET',
-               headers: {
-                  accept: 'application/json',
-               },
-            },
-            navigate,
-         );
-         console.log('ID기반 대체당 목록 조회', result);
-         setSugar(result);
-      } catch (error) {
-         console.error('Fetch error:', error);
-      }
-   };
+
    useEffect(() => {
       if (id) {
          fetchNutritientsByID(id);
-         fetchSugarByID(id);
+         fetchOcrData();
       } else {
          fetchOcrData();
          fetchNutritientsByNum(itemReportNo);
       }
    }, []);
 
-   if (!sugar || !data) return <div>loading..</div>;
+   if (!sugar || !data) return <RingLoading />;
    return (
       <Container style={{ height: '100dvh', position: 'relative' }}>
          <BackIcon src={backIcon} onClick={() => navigate('/home')} />

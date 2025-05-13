@@ -1,4 +1,4 @@
-import { useState, useEffect, createRef } from 'react';
+import { useState, useEffect, createRef, useRef } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cropper, { ReactCropperElement } from 'react-cropper';
@@ -14,6 +14,10 @@ type Data = {
    makerNm?: string | null;
    ocrText?: string;
 };
+type CustomError = Error & {
+   detail?: string;
+   errorCode?: string;
+};
 
 const CameraPage = () => {
    const location = useLocation();
@@ -24,7 +28,9 @@ const CameraPage = () => {
    const [data, setData] = useState<Data | null>(null);
    const [isLoading, setIsLoading] = useState(false);
    const [inputValue, setInputValue] = useState('');
+   const [isScanSuccess, setIsScanSuccess] = useState<boolean>(true);
    const cropperRef = createRef<ReactCropperElement>();
+   const lastErrorDetailRef = useRef<string | null>(null); // OCR 실패 시 저장할 ref
    useEffect(() => {
       if (imageUrl) {
          setImage(imageUrl); // 넘어온 이미지 URL을 상태에 저장
@@ -49,8 +55,12 @@ const CameraPage = () => {
          setData(result);
          setIsModalOpen(true);
       } catch (error) {
-         console.error('OCR error:', error);
+         const err = error as CustomError;
+         console.error('OCR error:', err.detail);
+         lastErrorDetailRef.current = err?.detail || '스캔 실패';
+
          alert('스캔을 실패했어요. 품목보고번호를 입력해주세요.');
+         setIsScanSuccess(false);
       } finally {
          setIsLoading(false);
       }
@@ -66,7 +76,11 @@ const CameraPage = () => {
             navigate,
          );
          console.log('품목보고번호로 상품명 검색', result);
-         setData(result);
+         setData({
+            ...result,
+            ocrText: lastErrorDetailRef.current || '',
+            itemReportNo: itemReportNo,
+         });
          setIsModalOpen(true);
       } catch (error) {
          console.error('Search error:', error);
@@ -91,25 +105,26 @@ const CameraPage = () => {
    return (
       <Wrapper>
          <BackArrow url="/home" />
-         <Title>영양성분을 찍어주세요</Title>
+         <Title>원재료명을 찍어주세요</Title>
          <Cropper
             src={image} // 사용자가 선택한 사진
             ref={cropperRef}
             viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
             background={false}
             guides={false}
-            style={{ width: '100%', height: '500px', marginBottom: '15px' }}
+            style={{ width: '100%', height: '400px', marginBottom: '15px' }}
          />
-
-         <Input
-            placeholder="품목제조보고번호를 입력하세요."
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            disabled={isLoading}
-         />
+         {!isScanSuccess && (
+            <Input
+               placeholder="품목제조보고번호를 입력하세요."
+               value={inputValue}
+               onChange={e => setInputValue(e.target.value)}
+               disabled={isLoading}
+            />
+         )}
 
          {isLoading ? (
-            <Loading>분석중...</Loading>
+            <Loading>찾는중...</Loading>
          ) : (
             <Button onClick={onSubmit}>제출하기</Button>
          )}
@@ -129,7 +144,6 @@ const CameraPage = () => {
 
 export default CameraPage;
 const Wrapper = styled.div`
-   position: fixed;
    width: 100%;
    height: 100dvh;
    z-index: 1;

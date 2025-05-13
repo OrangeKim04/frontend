@@ -21,7 +21,7 @@ export const InputBox = styled.div`
 `;
 export const Title = styled.p`
    font-family: Bold;
-   font-size: 2rem;
+   font-size: 1.9rem;
 `;
 export const Button = styled.button`
    width: 100%;

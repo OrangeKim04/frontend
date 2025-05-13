@@ -1,43 +1,38 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { customFetch } from '@/hooks/CustomFetch';
 type ModalProps = {
    onClose: () => void;
-   foodNmKr?: string;
-   makerNm?: string | null;
-   id?: string | null;
-   itemReportNo?: string | null;
-   ocrText?: string | null;
+   id: string;
 };
 
-const Modal = ({
-   onClose,
-   foodNmKr,
-   makerNm,
-   id,
-   itemReportNo,
-   ocrText,
-}: ModalProps) => {
+const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
    const navigate = useNavigate();
-   const onSubmit = () => {
-      if (id) {
-         navigate('/home/result', {
-            state: { id, itemReportNo, ocrText },
-         });
-      } else {
-         navigate('/home/result', {
-            state: { itemReportNo, ocrText },
-         });
+   const handleUnScrap = async () => {
+      try {
+         const result = await customFetch(
+            `/recipes/${id}`,
+            {
+               method: 'DELETE',
+               headers: {
+                  accept: 'application/json',
+               },
+            },
+            navigate,
+         );
+         console.log('스크랩 취소 성공', result);
+         navigate(-1);
+      } catch (error) {
+         console.error('Fetch error:', error);
       }
+   };
+   const onSubmit = () => {
+      handleUnScrap();
    };
    return (
       <Overlay>
          <ModalBox>
-            {makerNm && makerNm.trim() !== 'null' && (
-               <Message>{makerNm}</Message>
-            )}
-            <Message>
-               <span style={{ color: 'blue' }}>{foodNmKr}</span> 맞나요?
-            </Message>
+            <Message>레시피를 정말 삭제하시겠습니까?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
                <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
@@ -47,7 +42,7 @@ const Modal = ({
    );
 };
 
-export default Modal;
+export default RecipeDeleteModal;
 
 const Overlay = styled.div`
    position: fixed;
