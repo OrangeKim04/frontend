@@ -5,7 +5,7 @@ import Cropper, { ReactCropperElement } from 'react-cropper';
 import BackArrow from '@/components/BackArrow';
 import 'cropperjs/dist/cropper.css';
 import { Button } from '@/components/styles/common';
-import Modal from '@/components/Modal';
+import Modal from '@/components/Modal/Modal';
 import { customFetch } from '@/hooks/CustomFetch';
 type Data = {
    id?: string;

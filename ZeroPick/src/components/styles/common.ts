@@ -94,3 +94,10 @@ export const WhiteBox = styled.div`
    gap: 15px;
    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05);
 `;
+export const ScrapIcon = styled.img`
+   width: 18px;
+   position: absolute;
+   right: 20px;
+   top: 22px;
+   cursor: pointer;
+`;

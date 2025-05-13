@@ -76,9 +76,14 @@ const LoginPage = () => {
          <Title>로그인</Title>
          <Form onSubmit={handleSubmit(onSubmit)}>
             <InputBox>
-               <Input placeholder="이메일" {...register('email')} />
+               <Input
+                  type={'email'}
+                  placeholder="이메일"
+                  {...register('email')}
+               />
                <ErrorTxt>{errors.email?.message}</ErrorTxt>
                <Input
+                  type={'password'}
                   placeholder="비밀번호"
                   {...register('password')}
                   autoComplete="new-password"
@@ -102,5 +107,5 @@ const ErrorTxt = styled.p`
    margin-bottom: 5px;
 `;
 const Img = styled.img`
-   width: 115%;
+   width: 380px;
 `;

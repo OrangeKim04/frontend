@@ -12,14 +12,19 @@ export const customFetch = async (
       credentials: 'include',
    });
 
-   const data = await response.json().catch(() => null);
-
    if (response.status === 401) {
       navigate('/login');
       sessionStorage.setItem('selectedCategory', '홈');
       return;
    }
 
+   let data;
+   const text = await response.text();
+   try {
+      data = JSON.parse(text); // JSON이면 파싱
+   } catch {
+      data = text; // 아니면 그냥 문자열로 처리
+   }
    if (!response.ok) {
       const error = new Error(data?.message || '요청 실패');
       Object.assign(error, {

@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Title, WhiteBox } from '@/components/styles/common';
+import {
+   Container,
+   Title,
+   WhiteBox,
+   ScrapIcon,
+} from '@/components/styles/common';
 import BackArrow from '@/components/BackArrow';
 import { customFetch } from '@/hooks/CustomFetch';
 import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
 import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
-import RecipeDeleteModal from '@/components/RecipeDeleteModal';
+import RecipeDeleteModal from '@/components/Modal/RecipeDeleteModal';
 import ProgressBar from '@/components/RingLoader';
 type Ingredient = {
    name: string;
@@ -215,11 +220,4 @@ const StepNumber = styled.span`
 const StepText = styled.span`
    font-family: Regular;
    line-height: 20px;
-`;
-const ScrapIcon = styled.img`
-   width: 18px;
-   position: absolute;
-   right: 20px;
-   top: 22px;
-   cursor: pointer;
 `;

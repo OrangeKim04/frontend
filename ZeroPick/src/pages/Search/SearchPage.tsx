@@ -40,6 +40,7 @@ const SearchPage = () => {
                },
                navigate,
             );
+            console.log(result);
             return result;
          },
          initialPageParam: 0,
@@ -77,7 +78,11 @@ const SearchPage = () => {
                   {data?.pages?.map((page, pageIndex) =>
                      Array.isArray(page)
                         ? page.map((item, id) => (
-                             <Product key={`${pageIndex}-${id}`} item={item} />
+                             <Product
+                                key={`${pageIndex}-${id}`}
+                                foodNmKr={item.foodNmKr}
+                                foodId={item.id}
+                             />
                           ))
                         : null,
                   )}
