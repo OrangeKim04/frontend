@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import buttonIcon from '@/assets/recipeButton.svg';
-import { RecipeBox } from '@/components/RecipeBox';
+import { RecipeBox } from '@/components/Recipe/RecipeBox';
 import cookIcon from '@/assets/recipe/cooking.svg';
 import { RecipeResponse } from './RecipeDetailPage';
 import { customFetch } from '@/hooks/CustomFetch';
@@ -11,7 +11,7 @@ import { customFetch } from '@/hooks/CustomFetch';
 const RecipePage = () => {
    const [keyword, setKeyword] = useState<string>('');
    const [data, setData] = useState<RecipeResponse[]>();
-
+   const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
    const onsubmit = () => {
       if (keyword === '') {
@@ -40,6 +40,8 @@ const RecipePage = () => {
          setData(result.data);
       } catch (error) {
          console.error('Fetch error:', error);
+      } finally {
+         setLoading(false);
       }
    };
    useEffect(() => {
@@ -57,10 +59,12 @@ const RecipePage = () => {
             <SubmitButton src={buttonIcon} onClick={onsubmit} />
          </Wrapper>
 
-         {data ? (
+         {loading ? null : data && data.length > 0 ? (
             <>
                <Title>🍴 저장한 레시피</Title>
-               {data?.map((item, id) => <RecipeBox key={id} item={item} />)}
+               {data.map((item, id) => (
+                  <RecipeBox key={id} item={item} />
+               ))}
             </>
          ) : (
             <>

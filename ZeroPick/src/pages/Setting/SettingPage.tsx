@@ -8,7 +8,7 @@ import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
 import { customFetch } from '@/hooks/CustomFetch';
-import LogoutModal from '@/components/LogoutModal';
+import LogoutModal from '@/components/Modal/LogoutModal';
 type User = {
    email: string;
    name: string;
@@ -107,15 +107,13 @@ const SettingPage = () => {
                <MenuIcon src={communityIcon} />
                <InfoText>커뮤니티 좋아요 목록</InfoText>
             </InfoBox>
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/setting/ocr')}>
                <MenuIcon src={likeIcon} />
-               <InfoText>상품 좋아요 목록</InfoText>
+               <InfoText>상품 저장 목록</InfoText>
             </InfoBox>
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/setting/recipes')}>
                <MenuIcon src={scrapIcon} />
-               <InfoText onClick={() => navigate('/setting/recipes')}>
-                  레시피 북마크
-               </InfoText>
+               <InfoText>레시피 북마크</InfoText>
             </InfoBox>
             <LogoutText onClick={() => setIsOpen(true)}>로그아웃</LogoutText>
             {isOpen && <LogoutModal onClose={() => setIsOpen(false)} />}

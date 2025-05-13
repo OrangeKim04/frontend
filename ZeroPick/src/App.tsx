@@ -17,6 +17,7 @@ import AnalysisPage from './pages/Home/AnalysisPage';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
 import SavedRecipe from './pages/Setting/SavedRecipe';
+import SavedOCR from './pages/Setting/SavedOcr';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
          { path: 'recipe/list', element: <RecipeListPage /> },
          { path: 'recipe/:title', element: <RecipeDetailPage /> },
          { path: 'setting/recipes', element: <SavedRecipe /> },
+         { path: 'setting/ocr', element: <SavedOCR /> },
       ],
    },
 ]);

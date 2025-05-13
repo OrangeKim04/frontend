@@ -11,6 +11,7 @@ export default defineConfig({
    },
    plugins: [react(), tsconfigPaths()],
    server: {
+      port: 5174,
       https: {
          key: fs.readFileSync('./cert/localhost+1-key.pem'),
          cert: fs.readFileSync('./cert/localhost+1.pem'),
