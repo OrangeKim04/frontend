@@ -21,7 +21,7 @@ const Modal = ({
    const onSubmit = () => {
       if (id) {
          navigate('/home/result', {
-            state: { id },
+            state: { id, itemReportNo, ocrText },
          });
       } else {
          navigate('/home/result', {

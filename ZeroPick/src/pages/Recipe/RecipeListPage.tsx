@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Container, Title } from '@/components/styles/common';
 import { RecipeBox } from '@/components/RecipeBox';
 import { customFetch } from '@/hooks/CustomFetch';
+import RingLoading from '@/components/RingLoader';
 export type Recipe = {
    title: string;
    ingredients: string[];
@@ -49,7 +50,7 @@ const RecipeListPage = () => {
          }
       }
    }, [keyword]);
-   if (!data) return <p>loading...</p>;
+   if (!data) return <RingLoading />;
    return (
       <Container>
          <Title>레시피 생성 완료!</Title>

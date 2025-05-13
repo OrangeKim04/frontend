@@ -11,6 +11,7 @@ import {
    Substitute,
 } from '@/type/nutritientData';
 import { SubText } from '@/components/styles/common';
+import RingLoading from '@/components/RingLoader';
 
 const ProductDetailPage = () => {
    const { state } = useLocation();
@@ -58,7 +59,7 @@ const ProductDetailPage = () => {
          console.error('Fetch error:', error);
       }
    };
-   if (!data) return <div>Loading...</div>;
+   if (!data) return <RingLoading />;
 
    return (
       <Container>

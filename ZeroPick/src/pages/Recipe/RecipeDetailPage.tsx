@@ -7,6 +7,7 @@ import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
 import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
 import RecipeDeleteModal from '@/components/RecipeDeleteModal';
+import ProgressBar from '@/components/RingLoader';
 type Ingredient = {
    name: string;
 };
@@ -122,7 +123,7 @@ const RecipeDetailPage = () => {
       }
    };
 
-   if (!data) return <p>Loading...</p>;
+   if (!data) return <ProgressBar />;
    return (
       <Container>
          <Box>

@@ -12,6 +12,8 @@ export const customFetch = async (
       credentials: 'include',
    });
 
+   const data = await response.json().catch(() => null);
+
    if (response.status === 401) {
       navigate('/login');
       sessionStorage.setItem('selectedCategory', '홈');
@@ -19,8 +21,16 @@ export const customFetch = async (
    }
 
    if (!response.ok) {
-      throw new Error('요청 실패');
+      const error = new Error(data?.message || '요청 실패');
+      Object.assign(error, {
+         status: response.status,
+         statusText: response.statusText,
+         detail: data?.detail,
+         errorCode: data?.errorCode,
+         raw: data,
+      });
+      throw error;
    }
 
-   return response.json();
+   return data;
 };
