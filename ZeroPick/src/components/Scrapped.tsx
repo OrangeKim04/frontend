@@ -20,7 +20,7 @@ const Scrap = ({ foodId }: Props) => {
                navigate,
             );
             console.log('스크랩 여부', result);
-            setIsScrapped(result);
+            setIsScrapped(result.scrapped);
          } catch (error) {
             console.error('Fetch error:', error);
          }
