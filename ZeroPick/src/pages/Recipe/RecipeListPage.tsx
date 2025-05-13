@@ -54,8 +54,7 @@ const RecipeListPage = () => {
    return (
       <Container>
          <Title>레시피 생성 완료!</Title>
-         {data &&
-            data.map((item, id) => <RecipeBox key={id} item={item} id={id} />)}
+         {data && data.map((item, id) => <RecipeBox key={id} item={item} />)}
       </Container>
    );
 };

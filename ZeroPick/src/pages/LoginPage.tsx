@@ -102,5 +102,5 @@ const ErrorTxt = styled.p`
    margin-bottom: 5px;
 `;
 const Img = styled.img`
-   width: 115%;
+   width: 380px;
 `;

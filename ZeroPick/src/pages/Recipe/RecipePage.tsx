@@ -60,9 +60,7 @@ const RecipePage = () => {
          {data ? (
             <>
                <Title>🍴 저장한 레시피</Title>
-               {data?.map((item, id) => (
-                  <RecipeBox key={id} item={item} id={id} />
-               ))}
+               {data?.map((item, id) => <RecipeBox key={id} item={item} />)}
             </>
          ) : (
             <>

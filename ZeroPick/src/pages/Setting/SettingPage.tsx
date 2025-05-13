@@ -113,7 +113,9 @@ const SettingPage = () => {
             </InfoBox>
             <InfoBox>
                <MenuIcon src={scrapIcon} />
-               <InfoText>레시피 북마크</InfoText>
+               <InfoText onClick={() => navigate('/setting/recipes')}>
+                  레시피 북마크
+               </InfoText>
             </InfoBox>
             <LogoutText onClick={() => setIsOpen(true)}>로그아웃</LogoutText>
             {isOpen && <LogoutModal onClose={() => setIsOpen(false)} />}

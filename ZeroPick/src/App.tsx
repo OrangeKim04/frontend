@@ -16,6 +16,7 @@ import ProductDetailPage from './pages/Search/ProductDetailPage';
 import AnalysisPage from './pages/Home/AnalysisPage';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
+import SavedRecipe from './pages/Setting/SavedRecipe';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
          { path: 'setting', element: <SettingPage /> },
          { path: 'recipe/list', element: <RecipeListPage /> },
          { path: 'recipe/:title', element: <RecipeDetailPage /> },
+         { path: 'setting/recipes', element: <SavedRecipe /> },
       ],
    },
 ]);
