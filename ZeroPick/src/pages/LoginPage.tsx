@@ -76,7 +76,11 @@ const LoginPage = () => {
             <InputBox>
                <Input placeholder="이메일" {...register('email')} />
                <ErrorTxt>{errors.email?.message}</ErrorTxt>
-               <Input placeholder="비밀번호" {...register('password')} />
+               <Input
+                  placeholder="비밀번호"
+                  {...register('password')}
+                  autoComplete="new-password"
+               />
                <ErrorTxt>{errors.password?.message}</ErrorTxt>
             </InputBox>
             <Button type={'submit'}>로그인</Button>

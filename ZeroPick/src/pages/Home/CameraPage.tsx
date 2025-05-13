@@ -24,6 +24,7 @@ const CameraPage = () => {
    const [data, setData] = useState<Data | null>(null);
    const [isLoading, setIsLoading] = useState(false);
    const [inputValue, setInputValue] = useState('');
+   const [isScanSuccess, setIsScanSuccess] = useState<boolean>(true);
    const cropperRef = createRef<ReactCropperElement>();
    useEffect(() => {
       if (imageUrl) {
@@ -51,6 +52,7 @@ const CameraPage = () => {
       } catch (error) {
          console.error('OCR error:', error);
          alert('스캔을 실패했어요. 품목보고번호를 입력해주세요.');
+         setIsScanSuccess(false);
       } finally {
          setIsLoading(false);
       }
@@ -91,7 +93,7 @@ const CameraPage = () => {
    return (
       <Wrapper>
          <BackArrow url="/home" />
-         <Title>영양성분을 찍어주세요</Title>
+         <Title>원재료명을 찍어주세요</Title>
          <Cropper
             src={image} // 사용자가 선택한 사진
             ref={cropperRef}
@@ -100,13 +102,14 @@ const CameraPage = () => {
             guides={false}
             style={{ width: '100%', height: '400px', marginBottom: '15px' }}
          />
-
-         <Input
-            placeholder="품목제조보고번호를 입력하세요."
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            disabled={isLoading}
-         />
+         {!isScanSuccess && (
+            <Input
+               placeholder="품목제조보고번호를 입력하세요."
+               value={inputValue}
+               onChange={e => setInputValue(e.target.value)}
+               disabled={isLoading}
+            />
+         )}
 
          {isLoading ? (
             <Loading>분석중...</Loading>

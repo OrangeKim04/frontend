@@ -6,6 +6,7 @@ import { customFetch } from '@/hooks/CustomFetch';
 import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
 import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
+import RecipeDeleteModal from '@/components/RecipeDeleteModal';
 type Ingredient = {
    name: string;
 };
@@ -22,14 +23,40 @@ const RecipeDetailPage = () => {
    const navigate = useNavigate();
    const item = location.state?.item;
    const [data, setData] = useState<RecipeResponse | null>(null);
-   const [scrapped, setScrapped] = useState(false);
+   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+   const [isScrapped, setIsscrapped] = useState(false);
    useEffect(() => {
-      if (item) {
-         if (item.steps) {
-            console.log('스크랩된 레시피 조회');
-            setData(item);
+      const fetchOrCreateRecipe = async () => {
+         if (!item) return;
+
+         if (item.id) {
+            try {
+               const result = await customFetch(
+                  `/recipes/${item.id}`,
+                  {
+                     method: 'GET',
+                     headers: {
+                        accept: 'application/json',
+                     },
+                  },
+                  navigate,
+               );
+               console.log('레시피 단건 조회', result);
+               setData(result.data);
+            } catch (error) {
+               console.error('Fetch error:', error);
+            }
          } else {
-            const createRecipe = async () => {
+            const stored = sessionStorage.getItem(item.title);
+
+            if (stored) {
+               console.log('스토리지에서 불러옴', stored);
+               setData(JSON.parse(stored));
+               const scrapped =
+                  sessionStorage.getItem(`${item.title}스크랩`) ?? 'false';
+
+               if (scrapped === '저장') setIsscrapped(true);
+            } else {
                try {
                   const ingredientsStr = item.ingredients.join(',\u00A0');
                   const result = await customFetch(
@@ -53,17 +80,13 @@ const RecipeDetailPage = () => {
                } catch (error) {
                   console.error('레시피 생성 오류:', error);
                }
-            };
-
-            const stored = sessionStorage.getItem(item.title);
-            if (stored) {
-               setData(JSON.parse(stored));
-            } else {
-               createRecipe();
             }
          }
-      }
+      };
+
+      fetchOrCreateRecipe();
    }, [item]);
+
    const ingredientsStr = data?.ingredients
       .map(item => item.name)
       .join(',\u00A0');
@@ -76,7 +99,6 @@ const RecipeDetailPage = () => {
       : [];
 
    const handleScrap = async () => {
-      setScrapped(!scrapped);
       try {
          const result = await customFetch(
             `/recipes`,
@@ -92,6 +114,9 @@ const RecipeDetailPage = () => {
             navigate,
          );
          console.log('스크랩 성공', result);
+         setIsscrapped(true);
+         alert('레시피가 저장되었어요');
+         sessionStorage.setItem(`${item.title}스크랩`, '저장');
       } catch (error) {
          console.error('Fetch error:', error);
       }
@@ -102,11 +127,13 @@ const RecipeDetailPage = () => {
       <Container>
          <Box>
             <BackArrow url={-1} />
-            <ScrapIcon
-               src={scrapped ? AfterScrapIcon : BeforeScrapIcon}
-               onClick={handleScrap}
-               alt="Scrap Icon"
-            />
+            {!isScrapped && (
+               <ScrapIcon
+                  src={data?.id ? AfterScrapIcon : BeforeScrapIcon}
+                  onClick={data?.id ? () => setIsModalOpen(true) : handleScrap}
+                  alt="Scrap Icon"
+               />
+            )}
          </Box>
 
          <WhiteBox>
@@ -129,6 +156,12 @@ const RecipeDetailPage = () => {
                ))}
             </StepsContainer>
          </WhiteBox>
+         {isModalOpen && (
+            <RecipeDeleteModal
+               onClose={() => setIsModalOpen(false)}
+               id={item.id}
+            />
+         )}
       </Container>
    );
 };
