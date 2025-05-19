@@ -69,17 +69,12 @@ const RootLayout = () => {
                   onClick={() => handleClick(category.title)}>
                   <Img
                      src={
-                        location.pathname.startsWith(category.link) ||
                         selected === category.title
                            ? category.activeIcon
                            : category.icon
                      }
                   />
-                  <NavText
-                     isActive={
-                        location.pathname.startsWith(category.link) ||
-                        selected === category.title
-                     }>
+                  <NavText isActive={selected === category.title}>
                      {category.title}
                   </NavText>
                </Item>
