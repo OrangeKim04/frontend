@@ -82,6 +82,7 @@ export const Container = styled.div`
    align-items: center;
    gap: 12px;
    overflow-y: auto; /* 세로 스크롤 활성화 */
+   position: relative;
 `;
 export const WhiteBox = styled.div`
    background-color: white;

@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { customFetch } from '@/hooks/CustomFetch';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import ProductDeleteModal from './Modal/ProductDeleteModal';
 type Props = { foodId: number };
 const Scrap = ({ foodId }: Props) => {
    const navigate = useNavigate();
    const [isScrapped, setIsScrapped] = useState<boolean>();
+   const [isOpen, setIsOpen] = useState<boolean>(false);
    useEffect(() => {
       const ProductScrapped = async () => {
          try {
@@ -44,28 +46,16 @@ const Scrap = ({ foodId }: Props) => {
          console.error('Fetch error:', error);
       }
    };
-   const handleUnScrap = async () => {
-      try {
-         const result = await customFetch(
-            `/ocr/${foodId}`,
-            {
-               method: 'DELETE',
-               headers: { 'Content-Type': 'application/json' },
-            },
-            navigate,
-         );
-         console.log('스크랩 취소 성공', result);
-         setIsScrapped(false);
-      } catch (error) {
-         console.error('Fetch error:', error);
-      }
-   };
+
    return (
       <>
          <Img
             src={isScrapped ? AfterScrapIcon : BeforeScrapIcon}
-            onClick={isScrapped ? handleUnScrap : handleScrap}
+            onClick={isScrapped ? () => setIsOpen(true) : handleScrap}
          />
+         {isOpen && (
+            <ProductDeleteModal onClose={() => setIsOpen(false)} id={foodId} />
+         )}
       </>
    );
 };

@@ -69,17 +69,12 @@ const RootLayout = () => {
                   onClick={() => handleClick(category.title)}>
                   <Img
                      src={
-                        location.pathname.startsWith(category.link) ||
                         selected === category.title
                            ? category.activeIcon
                            : category.icon
                      }
                   />
-                  <NavText
-                     isactive={
-                        location.pathname.startsWith(category.link) ||
-                        selected === category.title
-                     }>
+                  <NavText isActive={selected === category.title}>
                      {category.title}
                   </NavText>
                </Item>
@@ -128,9 +123,9 @@ const Item = styled(Link)`
    cursor: pointer;
    text-decoration: none;
 `;
-const NavText = styled.p<{ isactive: boolean }>`
+const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;
-   color: ${({ isactive }) => (isactive ? 'black' : '#808080 ')};
+   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
 `;

@@ -13,6 +13,7 @@ import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
 import RecipeDeleteModal from '@/components/Modal/RecipeDeleteModal';
 import ProgressBar from '@/components/RingLoader';
+import FoodImg from '@/components/FoodImg';
 type Ingredient = {
    name: string;
 };
@@ -93,9 +94,7 @@ const RecipeDetailPage = () => {
       fetchOrCreateRecipe();
    }, [item]);
 
-   const ingredientsStr = data?.ingredients
-      .map(item => item.name)
-      .join(',\u00A0');
+   const ingredientsStr = data?.ingredients.map(item => item.name).join();
 
    const stepItems = data?.steps
       ? data.steps.split('\n').map(step => {
@@ -144,6 +143,7 @@ const RecipeDetailPage = () => {
 
          <WhiteBox>
             <StyledTitle>🍽️{data?.title}</StyledTitle>
+            <FoodImg foodNm={data?.title} />
             <IngredientsContainer>
                <IngredientLabel>
                   재료: {'\u00A0'}
@@ -154,9 +154,7 @@ const RecipeDetailPage = () => {
             <StepsContainer>
                {stepItems.map((item, index) => (
                   <StepItem key={index}>
-                     <StepNumber>
-                        {item.number}. {'\u00A0'}
-                     </StepNumber>
+                     <StepNumber>{item.number}.</StepNumber>
                      <StepText>{item.text}</StepText>
                   </StepItem>
                ))}
@@ -174,6 +172,7 @@ const RecipeDetailPage = () => {
 export default RecipeDetailPage;
 const StyledTitle = styled(Title)`
    text-align: center;
+   margin: 0;
 `;
 const IngredientsContainer = styled.div`
    display: flex;
@@ -195,6 +194,7 @@ const IngredientList = styled.p`
    font-size: 1.1rem;
    font-family: Regular;
    margin: 0;
+   line-height: 23px;
 `;
 
 const StepsContainer = styled.div`
@@ -208,9 +208,10 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div`
    display: flex;
+   gap: 4px;
 `;
 const Box = styled.div`
-   margin-bottom: 50px;
+   margin-bottom: 40px;
 `;
 
 const StepNumber = styled.span`

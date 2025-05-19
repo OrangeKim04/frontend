@@ -31,6 +31,7 @@ const SavedRecipe = () => {
       },
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
+         if (!lastPage || !Array.isArray(lastPage.data)) return undefined;
          return lastPage.data.recipes.length < 10 ? undefined : allPages.length;
       },
    });

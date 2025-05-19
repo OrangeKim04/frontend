@@ -1,6 +1,7 @@
 import { Title, SubText } from './styles/common';
 import { SugarBox } from './SugarBox';
 import { Substitute } from '@/type/nutritientData';
+import styled from 'styled-components';
 type Props = {
    sugar: Substitute[];
 };
@@ -9,9 +10,9 @@ const SugarComponents = ({ sugar }: Props) => {
    return (
       <>
          {sugar.length > 0 && (
-            <Title>
+            <StyledTitle>
                대체당 <span style={{ color: '#ff9eb3' }}>{sugar.length}</span>개
-            </Title>
+            </StyledTitle>
          )}
          {sugar.map((item, id) => (
             <SugarBox key={id} item={item} id={id} />
@@ -21,3 +22,6 @@ const SugarComponents = ({ sugar }: Props) => {
    );
 };
 export default SugarComponents;
+const StyledTitle = styled(Title)`
+   margin-bottom: 0;
+`;

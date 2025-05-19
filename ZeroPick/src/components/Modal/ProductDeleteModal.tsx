@@ -10,25 +10,24 @@ import { useNavigate } from 'react-router-dom';
 import { customFetch } from '@/hooks/CustomFetch';
 type ModalProps = {
    onClose: () => void;
-   id: string;
+   id: number;
 };
 
-const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
+const ProductDeleteModal = ({ onClose, id }: ModalProps) => {
    const navigate = useNavigate();
    const handleUnScrap = async () => {
       try {
          const result = await customFetch(
-            `/recipes/${id}`,
+            `/ocr/${id}`,
             {
                method: 'DELETE',
-               headers: {
-                  accept: 'application/json',
-               },
+               headers: { 'Content-Type': 'application/json' },
             },
             navigate,
          );
          console.log('스크랩 취소 성공', result);
-         navigate(-1);
+         onClose();
+         window.location.reload();
       } catch (error) {
          console.error('Fetch error:', error);
       }
@@ -39,7 +38,7 @@ const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
    return (
       <Overlay>
          <ModalBox>
-            <Message>레시피를 정말 삭제하시겠습니까?</Message>
+            <Message>상품을 정말 삭제하시겠습니까?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
                <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
@@ -49,4 +48,4 @@ const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
    );
 };
 
-export default RecipeDeleteModal;
+export default ProductDeleteModal;

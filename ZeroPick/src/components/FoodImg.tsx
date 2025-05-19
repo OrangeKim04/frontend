@@ -20,5 +20,6 @@ const FoodImg = ({ foodNm }: Props) => {
 };
 export default FoodImg;
 const Img = styled.img.attrs({ loading: 'lazy' })`
-   width: 350px;
+   width: 300px;
+   align-self: center;
 `;
