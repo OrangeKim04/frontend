@@ -132,5 +132,5 @@ const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;
-   color: ${({ isactive }) => (isactive ? 'black' : '#808080 ')};
+   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
 `;

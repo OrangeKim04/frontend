@@ -6,6 +6,7 @@ import {
    ModalButton,
    ModalButtonCancel,
 } from '../styles/ModalStyle';
+import FoodImg from '../FoodImg';
 import { useNavigate } from 'react-router-dom';
 type ModalProps = {
    onClose: () => void;
@@ -39,6 +40,7 @@ const Modal = ({
    return (
       <Overlay>
          <ModalBox>
+            <FoodImg foodNm={foodNmKr!} />
             {makerNm && makerNm.trim() !== 'null' && (
                <Message>{makerNm}</Message>
             )}
