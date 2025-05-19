@@ -1,7 +1,7 @@
 import { customFetch } from './CustomFetch';
 import { NavigateFunction } from 'react-router-dom';
 
-const BASE_URL = '/api/v1';
+const BASE_URL = 'https://zeropick.p-e.kr/api/v1';
 
 export const FetchImg = async (foodNm: string, navigate: NavigateFunction) => {
    try {

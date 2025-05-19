@@ -31,7 +31,8 @@ const SavedOCR = () => {
       },
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
-         return lastPage?.content.length < 10 ? undefined : allPages.length;
+         if (!lastPage || !Array.isArray(lastPage.content)) return undefined;
+         return lastPage.content.length < 10 ? undefined : allPages.length;
       },
    });
    useEffect(() => {
@@ -42,7 +43,6 @@ const SavedOCR = () => {
    useEffect(() => {
       if (data) console.log(data?.pages[0].content);
    }, [data]);
-
    return (
       <Container
          style={{

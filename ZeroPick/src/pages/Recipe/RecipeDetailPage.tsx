@@ -13,6 +13,7 @@ import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
 import RecipeDeleteModal from '@/components/Modal/RecipeDeleteModal';
 import ProgressBar from '@/components/RingLoader';
+import FoodImg from '@/components/FoodImg';
 type Ingredient = {
    name: string;
 };
@@ -144,6 +145,7 @@ const RecipeDetailPage = () => {
 
          <WhiteBox>
             <StyledTitle>🍽️{data?.title}</StyledTitle>
+            <FoodImg foodNm={data?.title} />
             <IngredientsContainer>
                <IngredientLabel>
                   재료: {'\u00A0'}
@@ -174,6 +176,7 @@ const RecipeDetailPage = () => {
 export default RecipeDetailPage;
 const StyledTitle = styled(Title)`
    text-align: center;
+   margin: 0;
 `;
 const IngredientsContainer = styled.div`
    display: flex;
@@ -210,7 +213,7 @@ const StepItem = styled.div`
    display: flex;
 `;
 const Box = styled.div`
-   margin-bottom: 50px;
+   margin-bottom: 40px;
 `;
 
 const StepNumber = styled.span`
