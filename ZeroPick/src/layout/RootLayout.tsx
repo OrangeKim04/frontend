@@ -76,7 +76,7 @@ const RootLayout = () => {
                      }
                   />
                   <NavText
-                     isactive={
+                     isActive={
                         location.pathname.startsWith(category.link) ||
                         selected === category.title
                      }>
@@ -128,7 +128,7 @@ const Item = styled(Link)`
    cursor: pointer;
    text-decoration: none;
 `;
-const NavText = styled.p<{ isactive: boolean }>`
+const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;

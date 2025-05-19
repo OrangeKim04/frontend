@@ -47,7 +47,6 @@ const ProductDetailPage = () => {
    };
    // ID기반 대체당 목록 조회
    const fetchSugarByID = async (id: string) => {
-      console.log('님아', id);
       try {
          const result = await customFetch(
             `/foods/${id}/sweeteners`,

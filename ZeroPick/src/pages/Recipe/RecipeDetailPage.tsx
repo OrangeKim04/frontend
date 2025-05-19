@@ -94,9 +94,7 @@ const RecipeDetailPage = () => {
       fetchOrCreateRecipe();
    }, [item]);
 
-   const ingredientsStr = data?.ingredients
-      .map(item => item.name)
-      .join(',\u00A0');
+   const ingredientsStr = data?.ingredients.map(item => item.name).join();
 
    const stepItems = data?.steps
       ? data.steps.split('\n').map(step => {
@@ -156,9 +154,7 @@ const RecipeDetailPage = () => {
             <StepsContainer>
                {stepItems.map((item, index) => (
                   <StepItem key={index}>
-                     <StepNumber>
-                        {item.number}. {'\u00A0'}
-                     </StepNumber>
+                     <StepNumber>{item.number}.</StepNumber>
                      <StepText>{item.text}</StepText>
                   </StepItem>
                ))}
@@ -198,6 +194,7 @@ const IngredientList = styled.p`
    font-size: 1.1rem;
    font-family: Regular;
    margin: 0;
+   line-height: 23px;
 `;
 
 const StepsContainer = styled.div`
@@ -211,6 +208,7 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div`
    display: flex;
+   gap: 4px;
 `;
 const Box = styled.div`
    margin-bottom: 40px;
