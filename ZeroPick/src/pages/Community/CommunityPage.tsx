@@ -2,7 +2,10 @@ import { categoryMap } from '@/type/community';
 import { Post } from '@/type/post';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FaRegComment } from 'react-icons/fa';
+import fillHeartIcon from '@/assets/setting/favorite_fill.svg';
+import blankHeartIcon from '@/assets/setting/favorite_border.svg';
 import { useNavigate } from 'react-router-dom';
+import pencilIcon from '@/assets/setting/PostButtonIcon.svg';
 import styled from 'styled-components';
 
 const CommunityPage: React.FC = () => {
@@ -122,13 +125,12 @@ const CommunityPage: React.FC = () => {
                            <img
                               src={
                                  post.likeCount > 0
-                                    ? '/src/assets/setting/favorite_fill.svg'
-                                    : '/src/assets/setting/favorite_border.svg'
+                                    ? fillHeartIcon
+                                    : blankHeartIcon
                               }
                               alt="like"
                               style={{
-                                 width: '16px',
-                                 height: '16px',
+                                 width: '14px',
                                  marginRight: '4px',
                               }}
                            />
@@ -155,7 +157,7 @@ const CommunityPage: React.FC = () => {
             {!hasMore && <EndMessage>마지막 게시글입니다.</EndMessage>}
          </PostsContainer>
 
-         <FloatingButton onClick={handleFloatingButtonClick} />
+         <FloatingButton src={pencilIcon} onClick={handleFloatingButtonClick} />
       </PageContainer>
    );
 };
@@ -283,20 +285,11 @@ const EndMessage = styled.p`
    margin-bottom: 80px;
 `;
 
-const FloatingButton = styled.button`
+const FloatingButton = styled.img`
    position: fixed;
    right: 1rem;
    bottom: 80px;
-   background-color: #ff9eb3;
-   border: none;
-   border-radius: 50%;
-   width: 50px;
-   height: 50px;
-   background-image: url('/src/assets/setting/PencilWhite.svg');
-   background-size: 60%;
-   background-repeat: no-repeat;
-   background-position: center;
-   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+   width: 60px;
    cursor: pointer;
    z-index: 1000;
 `;

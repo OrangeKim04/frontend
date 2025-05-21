@@ -116,8 +116,7 @@ const WritePostPage: React.FC = () => {
                         key={key}
                         selected={category === key}
                         onClick={() => setCategory(key)}
-                        type="button"
-                     >
+                        type="button">
                         <input
                            type="radio"
                            name="category"
@@ -253,6 +252,7 @@ const TextArea = styled.textarea`
    font-size: 1rem;
    height: 150px;
    resize: none;
+   font-family: Regular;
 `;
 
 const CategoryChipContainer = styled.div`

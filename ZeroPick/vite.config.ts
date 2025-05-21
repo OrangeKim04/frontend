@@ -11,7 +11,7 @@ export default defineConfig({
          '@': resolve(__dirname, 'src'),
       },
    },
-   /*   server: {
+   /*  server: {
       port: 5174,
       proxy: {
          '/api': {
