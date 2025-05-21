@@ -7,6 +7,7 @@ import blankHeartIcon from '@/assets/setting/favorite_border.svg';
 import { useNavigate } from 'react-router-dom';
 import pencilIcon from '@/assets/setting/PostButtonIcon.svg';
 import styled from 'styled-components';
+import { SubText } from '@/components/styles/common';
 
 const CommunityPage: React.FC = () => {
    const [categories] = useState<string[]>([
@@ -113,7 +114,12 @@ const CommunityPage: React.FC = () => {
                      onClick={() => handlePostClick(post.boardId)}>
                      <PostAuthor>{post.name}</PostAuthor>
                      <PostTitle>{post.title}</PostTitle>
-                     <PostContent>{post.content}</PostContent>
+                     <PostContent>
+                        {post.content.length > 25
+                           ? `${post.content.slice(0, 25)}...`
+                           : post.content}
+                     </PostContent>
+
                      <ActionsContainer>
                         <ActionButton
                            as="div"
@@ -148,6 +154,7 @@ const CommunityPage: React.FC = () => {
                            />
                            {post.commentCount}
                         </ActionButton>
+                        <DateText>{post.createdDate}</DateText>
                      </ActionsContainer>
                   </PostCard>
                );
@@ -196,7 +203,15 @@ const CategoryTabsContainer = styled.div`
    z-index: 10;
    position: relative;
 `;
-
+const DateText = styled(SubText)`
+   color: gray;
+   display: inline-block;
+   position: absolute;
+   bottom: 16px;
+   right: 16px;
+   margin: 0;
+   font-size: 0.8rem;
+`;
 const CategoryButton = styled.button<{ $isActive: boolean }>`
    flex: 1;
    background: white;
@@ -235,7 +250,7 @@ const PostsContainer = styled.div`
 
 const PostCard = styled.div`
    position: relative;
-   border: 1px solid black;
+   border: 1px solid #e1e1e1;
    border-radius: 10px;
    padding: 1rem;
    margin-bottom: 1rem;
@@ -244,19 +259,23 @@ const PostCard = styled.div`
 const PostAuthor = styled.p`
    display: inline-block;
    position: absolute;
-   top: calc(0.5rem + 16px);
+   top: 16px;
    right: 16px;
    margin: 0;
+   font-family: Regular;
+   font-size: 0.9rem;
 `;
 
 const PostTitle = styled.h2`
+   margin: 0;
    font-size: 1rem;
-   margin: 0.5rem 0;
+   font-family: Medium;
 `;
 
 const PostContent = styled.p`
    font-size: 0.9rem;
    color: #555;
+   font-family: Regular;
 `;
 
 const ActionsContainer = styled.div`

@@ -277,6 +277,7 @@ const TextArea = styled.textarea`
    font-size: 1rem;
    height: 150px;
    resize: none;
+   font-family: Regular;
 `;
 
 const CategoryChipContainer = styled.div`
