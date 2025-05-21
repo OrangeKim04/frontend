@@ -117,15 +117,18 @@ const AnalysisPage = () => {
 };
 export default AnalysisPage;
 const Container = styled.div`
-   gap: 16px;
-   position: relative;
-   padding: 20px;
-   position: relative;
-   padding-bottom: 20px;
+   width: 100%;
+   height: 100dvh;
+   box-sizing: border-box;
+   overflow-y: auto;
+   padding: 20px 20px 25px;
    display: flex;
    flex-direction: column;
    align-items: center;
+   gap: 16px;
+   position: relative;
 `;
+
 const BackIcon = styled.img`
    position: absolute;
    left: 20px;
@@ -148,5 +151,6 @@ const Item = styled.div`
    font-family: Regular;
    padding: 8px;
    border-radius: 6px;
+   box-sizing: border-box;
    word-wrap: break-word;
 `;
