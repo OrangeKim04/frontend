@@ -33,13 +33,14 @@ const SearchPage = () => {
             console.log('Current pageParam:', pageParam);
             sessionStorage.setItem('keyword', keyword);
             const result = await customFetch(
-               `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
+               `/foods/search-names?name=${encodeURIComponent(keyword || '제로')}&page=${pageParam}`,
                {
                   method: 'GET',
                   headers: { accept: 'application/json' },
                },
                navigate,
             );
+            console.log(result);
             return result;
          },
          initialPageParam: 0,
@@ -77,7 +78,11 @@ const SearchPage = () => {
                   {data?.pages?.map((page, pageIndex) =>
                      Array.isArray(page)
                         ? page.map((item, id) => (
-                             <Product key={`${pageIndex}-${id}`} item={item} />
+                             <Product
+                                key={`${pageIndex}-${id}`}
+                                foodNmKr={item.foodNmKr}
+                                foodId={item.id}
+                             />
                           ))
                         : null,
                   )}

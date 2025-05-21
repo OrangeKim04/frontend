@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Container, Title } from '@/components/styles/common';
-import { RecipeBox } from '@/components/RecipeBox';
+import { RecipeBox } from '@/components/Recipe/RecipeBox';
 import { customFetch } from '@/hooks/CustomFetch';
+import RingLoading from '@/components/RingLoader';
+import BackArrow from '@/components/BackArrow';
 export type Recipe = {
    title: string;
    ingredients: string[];
@@ -49,12 +51,12 @@ const RecipeListPage = () => {
          }
       }
    }, [keyword]);
-   if (!data) return <p>loading...</p>;
+   if (!data) return <RingLoading />;
    return (
       <Container>
+         <BackArrow url="/recipe" />
          <Title>레시피 생성 완료!</Title>
-         {data &&
-            data.map((item, id) => <RecipeBox key={id} item={item} id={id} />)}
+         {data && data.map((item, id) => <RecipeBox key={id} item={item} />)}
       </Container>
    );
 };

@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Title, WhiteBox } from '@/components/styles/common';
+import {
+   Container,
+   Title,
+   WhiteBox,
+   ScrapIcon,
+} from '@/components/styles/common';
 import BackArrow from '@/components/BackArrow';
 import { customFetch } from '@/hooks/CustomFetch';
-/* import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
-import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg'; */
+import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
+import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
+import RecipeDeleteModal from '@/components/Modal/RecipeDeleteModal';
+import ProgressBar from '@/components/RingLoader';
+import FoodImg from '@/components/FoodImg';
 type Ingredient = {
    name: string;
 };
@@ -22,14 +30,40 @@ const RecipeDetailPage = () => {
    const navigate = useNavigate();
    const item = location.state?.item;
    const [data, setData] = useState<RecipeResponse | null>(null);
-   /* const [scrapped, setScrapped] = useState(false); */
+   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+   const [isScrapped, setIsscrapped] = useState(false);
    useEffect(() => {
-      if (item) {
-         if (item.steps) {
-            console.log('스크랩된 레시피 조회');
-            setData(item);
+      const fetchOrCreateRecipe = async () => {
+         if (!item) return;
+
+         if (item.id) {
+            try {
+               const result = await customFetch(
+                  `/recipes/${item.id}`,
+                  {
+                     method: 'GET',
+                     headers: {
+                        accept: 'application/json',
+                     },
+                  },
+                  navigate,
+               );
+               console.log('레시피 단건 조회', result);
+               setData(result.data);
+            } catch (error) {
+               console.error('Fetch error:', error);
+            }
          } else {
-            const createRecipe = async () => {
+            const stored = sessionStorage.getItem(item.title);
+
+            if (stored) {
+               console.log('스토리지에서 불러옴', stored);
+               setData(JSON.parse(stored));
+               const scrapped =
+                  sessionStorage.getItem(`${item.title}스크랩`) ?? 'false';
+
+               if (scrapped === '저장') setIsscrapped(true);
+            } else {
                try {
                   const ingredientsStr = item.ingredients.join(',\u00A0');
                   const result = await customFetch(
@@ -53,20 +87,14 @@ const RecipeDetailPage = () => {
                } catch (error) {
                   console.error('레시피 생성 오류:', error);
                }
-            };
-
-            const stored = sessionStorage.getItem(item.title);
-            if (stored) {
-               setData(JSON.parse(stored));
-            } else {
-               createRecipe();
             }
          }
-      }
+      };
+
+      fetchOrCreateRecipe();
    }, [item]);
-   const ingredientsStr = data?.ingredients
-      .map(item => item.name)
-      .join(',\u00A0');
+
+   const ingredientsStr = data?.ingredients.map(item => item.name).join();
 
    const stepItems = data?.steps
       ? data.steps.split('\n').map(step => {
@@ -75,43 +103,47 @@ const RecipeDetailPage = () => {
         })
       : [];
 
-   /* const handleScrap = async () => {
-      setScrapped(!scrapped);
+   const handleScrap = async () => {
       try {
-         const response = await fetch(`https://zeropick.p-e.kr/recipes`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
+         const result = await customFetch(
+            `/recipes`,
+            {
+               method: 'POST',
+               body: JSON.stringify({
+                  title: data?.title,
+                  ingredients: data?.ingredients,
+                  steps: data?.steps,
+               }),
+               headers: { 'Content-Type': 'application/json' },
             },
-            body: JSON.stringify({
-               title: data?.title,
-               ingredients: data?.ingredients,
-               steps: data?.steps,
-            }),
-         });
-         if (!response.ok) throw new Error('Network response was not ok');
-         const result = await response.json();
+            navigate,
+         );
          console.log('스크랩 성공', result);
+         setIsscrapped(true);
+         alert('레시피가 저장되었어요');
+         sessionStorage.setItem(`${item.title}스크랩`, '저장');
       } catch (error) {
          console.error('Fetch error:', error);
       }
-   }; */
+   };
 
-   if (!data) return <p>Loading...</p>;
+   if (!data) return <ProgressBar />;
    return (
       <Container>
          <Box>
             <BackArrow url={-1} />
-            {/*  <ScrapIcon
-               src={scrapped ? AfterScrapIcon : BeforeScrapIcon}
-               onClick={handleScrap}
-               alt="Scrap Icon"
-            /> */}
+            {!isScrapped && (
+               <ScrapIcon
+                  src={data?.id ? AfterScrapIcon : BeforeScrapIcon}
+                  onClick={data?.id ? () => setIsModalOpen(true) : handleScrap}
+                  alt="Scrap Icon"
+               />
+            )}
          </Box>
 
          <WhiteBox>
-            <StyledTitle>{data?.title}</StyledTitle>
+            <StyledTitle>🍽️{data?.title}</StyledTitle>
+            <FoodImg foodNm={data?.title} />
             <IngredientsContainer>
                <IngredientLabel>
                   재료: {'\u00A0'}
@@ -122,20 +154,25 @@ const RecipeDetailPage = () => {
             <StepsContainer>
                {stepItems.map((item, index) => (
                   <StepItem key={index}>
-                     <StepNumber>
-                        {item.number}. {'\u00A0'}
-                     </StepNumber>
+                     <StepNumber>{item.number}.</StepNumber>
                      <StepText>{item.text}</StepText>
                   </StepItem>
                ))}
             </StepsContainer>
          </WhiteBox>
+         {isModalOpen && (
+            <RecipeDeleteModal
+               onClose={() => setIsModalOpen(false)}
+               id={item.id}
+            />
+         )}
       </Container>
    );
 };
 export default RecipeDetailPage;
 const StyledTitle = styled(Title)`
    text-align: center;
+   margin: 0;
 `;
 const IngredientsContainer = styled.div`
    display: flex;
@@ -157,6 +194,7 @@ const IngredientList = styled.p`
    font-size: 1.1rem;
    font-family: Regular;
    margin: 0;
+   line-height: 23px;
 `;
 
 const StepsContainer = styled.div`
@@ -170,9 +208,10 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div`
    display: flex;
+   gap: 4px;
 `;
 const Box = styled.div`
-   margin-bottom: 50px;
+   margin-bottom: 40px;
 `;
 
 const StepNumber = styled.span`
@@ -183,11 +222,3 @@ const StepText = styled.span`
    font-family: Regular;
    line-height: 20px;
 `;
-/* const ScrapIcon = styled.img`
-   width: 18px;
-   position: absolute;
-   right: 20px;
-   top: 22px;
-   cursor: pointer;
-`;
- */

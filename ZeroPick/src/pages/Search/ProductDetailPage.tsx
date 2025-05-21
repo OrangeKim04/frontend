@@ -3,24 +3,28 @@ import BackArrow from '@/components/BackArrow';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NutrientTable from '@/components/NutrientTable';
-import { SugarBox } from '@/components/SugarBox';
 import { customFetch } from '@/hooks/CustomFetch';
 import {
    createNutrientTableData,
    ExtendedNutrientData,
    Substitute,
 } from '@/type/nutritientData';
-import { SubText } from '@/components/styles/common';
+import RingLoading from '@/components/RingLoader';
+import FoodImg from '@/components/FoodImg';
+import Scrap from '@/components/Scrapped';
+import SugarComponents from '@/components/SugarComponents';
 
 const ProductDetailPage = () => {
    const { state } = useLocation();
    const navigate = useNavigate();
    const [data, setData] = useState<ExtendedNutrientData | null>();
    const [sugar, setSugar] = useState<Substitute[]>([]);
+
    const tableData = data ? createNutrientTableData(data) : [];
    useEffect(() => {
       fetchData();
       fetchSugarByID(state);
+
       if (data) console.log(data);
    }, [state]);
 
@@ -52,18 +56,22 @@ const ProductDetailPage = () => {
             },
             navigate,
          );
-         console.log('ID기반 대체당 목록 조회', result);
+         console.log(id, 'ID기반 대체당 목록 조회', result);
          setSugar(result);
       } catch (error) {
          console.error('Fetch error:', error);
       }
    };
-   if (!data) return <div>Loading...</div>;
+
+   if (!data) return <RingLoading />;
 
    return (
       <Container>
          <BackArrow url={-1} />
+
          <Title> {data.foodNmKr}</Title>
+         <Scrap foodId={data.id} />
+         <FoodImg foodNm={data.foodNmKr} />
          {data.itemReportNo && (
             <Item>
                품목제조보고번호:{'\u00A0'}
@@ -73,19 +81,13 @@ const ProductDetailPage = () => {
          )}
 
          <NutrientTable data={tableData} />
-         {sugar.length > 0 && (
-            <Title>
-               대체당 <span style={{ color: '#ff9eb3' }}>{sugar.length}</span>개
-            </Title>
-         )}
-         {sugar.map((item, id) => (
-            <SugarBox key={id} item={item} id={id} />
-         ))}
-         <SubText>[출처] 식품의약품안전처</SubText>
+
+         <SugarComponents sugar={sugar} />
       </Container>
    );
 };
 export default ProductDetailPage;
+
 const Container = styled.div`
    gap: 16px;
    overflow-y: auto;

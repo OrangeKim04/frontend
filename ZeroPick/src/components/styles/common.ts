@@ -21,7 +21,7 @@ export const InputBox = styled.div`
 `;
 export const Title = styled.p`
    font-family: Bold;
-   font-size: 2rem;
+   font-size: 1.9rem;
 `;
 export const Button = styled.button`
    width: 100%;
@@ -82,6 +82,7 @@ export const Container = styled.div`
    align-items: center;
    gap: 12px;
    overflow-y: auto; /* 세로 스크롤 활성화 */
+   position: relative;
 `;
 export const WhiteBox = styled.div`
    background-color: white;
@@ -93,4 +94,11 @@ export const WhiteBox = styled.div`
    flex-direction: column;
    gap: 15px;
    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05);
+`;
+export const ScrapIcon = styled.img`
+   width: 18px;
+   position: absolute;
+   right: 20px;
+   top: 22px;
+   cursor: pointer;
 `;

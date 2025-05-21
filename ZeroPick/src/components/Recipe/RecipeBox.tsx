@@ -5,9 +5,8 @@ import { Recipe } from '@/pages/Recipe/RecipeListPage';
 import { RecipeResponse } from '@/pages/Recipe/RecipeDetailPage';
 interface RecipeBoxProps {
    item: RecipeResponse | Recipe;
-   id: string | number;
 }
-export const RecipeBox = ({ item, id }: RecipeBoxProps) => {
+export const RecipeBox = ({ item }: RecipeBoxProps) => {
    const ingredientsStr =
       Array.isArray(item?.ingredients) &&
       item?.ingredients.every(ing => typeof ing === 'string')
@@ -22,7 +21,6 @@ export const RecipeBox = ({ item, id }: RecipeBoxProps) => {
    const navigate = useNavigate();
    return (
       <ClickableWhiteBox
-         key={id}
          onClick={() => navigate(`/recipe/${item.title}`, { state: { item } })}>
          <RecipeTitle>{item.title}</RecipeTitle>
          <RecipeIngredients>

@@ -28,24 +28,31 @@ const RootLayout = () => {
     { title: '설정', link: '/setting', icon: setting, activeIcon: settingActive },
   ];
 
-  return (
-    <RootContainer>
-      <Outlet />
-      <Nav>
-        {categories.map((category, index) => {
-          const isActive =
-            location.pathname.startsWith(category.link) ||
-            selected === category.title;
-          return (
-            <Item key={index} to={category.link} onClick={() => handleClick(category.title)}>
-              <Img src={isActive ? category.activeIcon : category.icon} />
-              <NavText isactive={isActive}>{category.title}</NavText>
-            </Item>
-          );
-        })}
-      </Nav>
-    </RootContainer>
-  );
+
+   return (
+      <RootContainer>
+         <Outlet />
+         <Nav>
+            {categories.map((category, index) => (
+               <Item
+                  key={index}
+                  to={category.link}
+                  onClick={() => handleClick(category.title)}>
+                  <Img
+                     src={
+                        selected === category.title
+                           ? category.activeIcon
+                           : category.icon
+                     }
+                  />
+                  <NavText isActive={selected === category.title}>
+                     {category.title}
+                  </NavText>
+               </Item>
+            ))}
+         </Nav>
+      </RootContainer>
+   );
 };
 
 export default RootLayout;
@@ -90,9 +97,10 @@ const Item = styled(Link)`
   text-decoration: none;
 `;
 
-const NavText = styled.p<{ isactive: boolean }>`
-  margin: 0;
-  font-size: 12px;
-  font-family: SemiBold;
-  color: ${({ isactive }) => (isactive ? 'black' : '#808080')};
+const NavText = styled.p<{ isActive: boolean }>`
+   margin: 0;
+   font-size: 12px;
+   font-family: SemiBold;
+   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
+
 `;
