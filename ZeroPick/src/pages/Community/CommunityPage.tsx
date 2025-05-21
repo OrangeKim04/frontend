@@ -7,11 +7,6 @@ import { FaRegComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-type User = {
-   email: string;
-   name: string;
-};
-
 const CommunityPage: React.FC = () => {
    const { name, email, setName, setEmail } = useUserStore();
    const [categories] = useState<string[]>([
@@ -29,22 +24,21 @@ const CommunityPage: React.FC = () => {
 
    const fetchUser = useCallback(async () => {
       try {
-         const result = await customFetch<{ data: User }>(
+         const result = await customFetch(
             '/user',
             {
                method: 'GET',
+               headers: { accept: 'application/json' },
             },
             navigate,
          );
-         console.log('사용자 정보 조회', result);
-         if (!result) throw new Error('사용자 정보가 없습니다.');
-
+         console.log('사용자 정보 조회', result.data);
          setName(result.data.name);
          setEmail(result.data.email);
       } catch (error) {
          console.error('사용자 정보 조회 실패', error);
       }
-   }, [navigate, setEmail, setName]);
+   }, [navigate, setName, setEmail]);
 
    // fetch로 대체된 게시글 API 호출
    const fetchPosts = useCallback(async () => {
@@ -129,8 +123,7 @@ const CommunityPage: React.FC = () => {
                <CategoryButton
                   key={category}
                   onClick={() => handleCategorySelect(category)}
-                  $isActive={activeCategory === category}
-               >
+                  $isActive={activeCategory === category}>
                   {categoryMap[category]}
                </CategoryButton>
             ))}
@@ -141,8 +134,7 @@ const CommunityPage: React.FC = () => {
                return (
                   <PostCard
                      key={post.boardId}
-                     onClick={() => handlePostClick(post.boardId)}
-                  >
+                     onClick={() => handlePostClick(post.boardId)}>
                      <PostAuthor>{post.name}</PostAuthor>
                      <PostTitle>{post.title}</PostTitle>
                      <PostContent>{post.content}</PostContent>
@@ -243,6 +235,7 @@ const CategoryButton = styled.button<{ $isActive: boolean }>`
    transition: all 0.2s ease-in-out;
    font-weight: ${props => (props.$isActive ? '600' : '400')};
    position: relative;
+   font-family: Regular;
 
    &:hover {
       color: #ff9eb3;

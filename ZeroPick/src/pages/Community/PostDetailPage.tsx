@@ -31,7 +31,7 @@ const PostDetailPage: React.FC = () => {
 
    const fetchPostDetail = async () => {
       try {
-         const res = await customFetch<PostDetail>(
+         const res = await customFetch(
             `/boards/${postId}/full`,
             {
                method: 'GET',
@@ -82,6 +82,10 @@ const PostDetailPage: React.FC = () => {
             `/comments/${postId}`,
             {
                method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+                  accept: 'application/json',
+               },
                body: JSON.stringify({
                   content: inputRef.current.value,
                }),
@@ -133,6 +137,10 @@ const PostDetailPage: React.FC = () => {
             `/comments/${postId}`,
             {
                method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+                  accept: 'application/json',
+               },
                body: JSON.stringify({
                   content: replyInput.value,
                   parentId: commentId,
@@ -185,8 +193,7 @@ const PostDetailPage: React.FC = () => {
                            <DropdownItem
                               onClick={() =>
                                  navigate(`/community/edit/${postId}`)
-                              }
-                           >
+                              }>
                               수정
                            </DropdownItem>
                            <DropdownItem onClick={deletePost}>
@@ -199,8 +206,7 @@ const PostDetailPage: React.FC = () => {
                               onClick={() => {
                                  handleLikeClick();
                                  setShowMenu(false);
-                              }}
-                           >
+                              }}>
                               좋아요
                            </DropdownItem>
                            <DropdownItem onClick={() => alert('신고 클릭')}>
@@ -223,8 +229,7 @@ const PostDetailPage: React.FC = () => {
                <IconRow>
                   <IconWithText
                      onClick={handleLikeClick}
-                     style={{ cursor: 'pointer' }}
-                  >
+                     style={{ cursor: 'pointer' }}>
                      <img
                         src={liked ? FavoriteFillIcon : FavoriteBorderIcon}
                         alt="like"
@@ -281,8 +286,7 @@ const PostDetailPage: React.FC = () => {
                            margin: showReplyInputs[c.id] ? '0.5rem 0' : '0',
                            opacity: showReplyInputs[c.id] ? 1 : 0,
                            transition: 'all 0.2s ease-in-out',
-                        }}
-                     >
+                        }}>
                         <ReplyInput
                            ref={(el: HTMLInputElement | null) => {
                               replyInputRefs.current[c.id] = el;

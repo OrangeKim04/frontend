@@ -2,13 +2,12 @@ import { NavigateFunction } from 'react-router-dom';
 
 const BASE_URL = '/api/v1';
 
-export async function customFetch<T>(
+export const customFetch = async (
    endpoint: string,
    options: RequestInit,
    navigate: NavigateFunction,
-): Promise<T | null> {
+) => {
    const response = await fetch(`${BASE_URL}${endpoint}`, {
-      headers: { 'Content-Type': 'application/json' },
       ...options,
       credentials: 'include',
    });
@@ -39,4 +38,4 @@ export async function customFetch<T>(
    }
 
    return data;
-}
+};

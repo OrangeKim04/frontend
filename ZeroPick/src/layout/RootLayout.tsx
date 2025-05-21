@@ -1,6 +1,5 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { useState } from 'react';
-
 import styled from 'styled-components';
 import home from '@/assets/navbar/homeG.svg';
 import recipe from '@/assets/navbar/forkG.svg';
@@ -12,16 +11,14 @@ import recipeActive from '@/assets/navbar/forkB.svg';
 import communityActive from '@/assets/navbar/HeartB.svg';
 import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
-
 const RootLayout = () => {
-   const location = useLocation();
-   const [selected, setSelected] = useState<string>('');
-   const handleClick = (title: string) => {
-      setSelected(title);
-   };
-
    const categories = [
-      { title: '홈', link: '/home', icon: home, activeIcon: homeActive },
+      {
+         title: '홈',
+         link: '/home',
+         icon: home, // 기본 아이콘
+         activeIcon: homeActive, // 활성 상태 아이콘
+      },
       {
          title: '검색',
          link: '/search',
@@ -34,6 +31,7 @@ const RootLayout = () => {
          icon: recipe,
          activeIcon: recipeActive,
       },
+
       {
          title: '커뮤니티',
          link: '/community',
@@ -47,6 +45,13 @@ const RootLayout = () => {
          activeIcon: settingActive,
       },
    ];
+   const [selected, setSelected] = useState<string>(
+      sessionStorage.getItem('selectedCategory') || '홈',
+   );
+   const handleClick = (title: string) => {
+      setSelected(title);
+      sessionStorage.setItem('selectedCategory', title);
+   };
 
    return (
       <RootContainer>
@@ -56,8 +61,7 @@ const RootLayout = () => {
                <Item
                   key={index}
                   to={category.link}
-                  onClick={() => handleClick(category.title)}
-               >
+                  onClick={() => handleClick(category.title)}>
                   <Img
                      src={
                         selected === category.title
@@ -101,11 +105,9 @@ const Nav = styled.div`
    background-color: white;
    border-radius: 15px;
 `;
-
 const Img = styled.img`
    width: 23px;
 `;
-
 const Item = styled(Link)`
    display: flex;
    flex-direction: column;
@@ -116,7 +118,6 @@ const Item = styled(Link)`
    cursor: pointer;
    text-decoration: none;
 `;
-
 const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;

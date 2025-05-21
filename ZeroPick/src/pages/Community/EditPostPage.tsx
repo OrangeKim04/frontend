@@ -5,7 +5,6 @@ import { Button as BaseButton } from '@/components/styles/common';
 import LeftArrow from '@/assets/Left Arrow.svg';
 import { categoryMap } from '@/type/community';
 import { customFetch } from '@/hooks/CustomFetch';
-import { PostDetail } from '@/type/post';
 import { ErrorModal } from '@/components/ErrorModal';
 
 const EditPostPage: React.FC = () => {
@@ -21,10 +20,11 @@ const EditPostPage: React.FC = () => {
 
    const fetchPostDetail = async () => {
       try {
-         const res = await customFetch<PostDetail>(
+         const res = await customFetch(
             `/boards/${postId}/full`,
             {
                method: 'GET',
+               headers: { accept: 'application/json' },
             },
             navigate,
          );
@@ -146,8 +146,7 @@ const EditPostPage: React.FC = () => {
                         key={key}
                         selected={category === key}
                         onClick={() => setCategory(key)}
-                        type="button"
-                     >
+                        type="button">
                         <input
                            type="radio"
                            name="category"
