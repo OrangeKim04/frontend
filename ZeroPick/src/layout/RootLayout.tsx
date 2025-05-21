@@ -34,8 +34,9 @@ const RootLayout = () => {
       <Nav>
         {categories.map((category, index) => {
           const isActive =
+            (category.title === '설정' ? location.pathname.startsWith('/setting') :
             location.pathname.startsWith(category.link) ||
-            selected === category.title;
+            selected === category.title);
           return (
             <Item key={index} to={category.link} onClick={() => handleClick(category.title)}>
               <Img src={isActive ? category.activeIcon : category.icon} />

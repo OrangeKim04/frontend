@@ -19,6 +19,8 @@ import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
 import WritePostPage from './pages/WritePostPage';
 import PostDetailPage from './pages/PostDetailPage';
 import EditPostPage from './pages/EditPostPage';
+import MyWritePost from './pages/MyWritePost';
+import CommunityLikes from './pages/CommunityLikes';
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
          { path: 'community/write', element: <WritePostPage /> },
          { path: 'community/post/:postId', element: <PostDetailPage /> },
          { path: 'community/edit/:postId', element: <EditPostPage /> },
+         { path: 'community/my', element: <MyWritePost />},
+         { path: 'community/likes', element: <CommunityLikes/>},
          { path: 'setting', element: <SettingPage /> },
          { path: 'recipe/list', element: <RecipeListPage /> },
          { path: 'recipe/:title', element: <RecipeDetailPage /> },

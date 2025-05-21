@@ -6,110 +6,123 @@ import NutrientTable from '@/components/NutrientTable';
 import { SugarBox } from '@/components/SugarBox';
 import { customFetch } from '@/hooks/CustomFetch';
 import {
-   createNutrientTableData,
-   ExtendedNutrientData,
-   Substitute,
+  createNutrientTableData,
+  ExtendedNutrientData,
+  Substitute,
 } from '@/type/nutritientData';
 import { SubText } from '@/components/styles/common';
 
 const ProductDetailPage = () => {
-   const { state } = useLocation();
-   const navigate = useNavigate();
-   const [data, setData] = useState<ExtendedNutrientData | null>();
-   const [sugar, setSugar] = useState<Substitute[]>([]);
-   const tableData = data ? createNutrientTableData(data) : [];
-   useEffect(() => {
-      fetchData();
-      fetchSugarByID(state);
-      if (data) console.log(data);
-   }, [state]);
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const [data, setData] = useState<ExtendedNutrientData | null>();
+  const [sugar, setSugar] = useState<Substitute[]>([]);
+  const tableData = data ? createNutrientTableData(data) : [];
 
-   //ID 기반 식품 상세 조회
-   const fetchData = async () => {
-      try {
-         const result = await customFetch(
-            `/foods/${state}`,
-            {
-               method: 'GET',
-               headers: { accept: 'application/json' },
-            },
-            navigate,
-         );
-         console.log('식품 상세 조회 성공', result);
-         setData(result);
-      } catch (error) {
-         console.error('식품 상세 조회 실패', error);
-      }
-   };
-   // ID기반 대체당 목록 조회
-   const fetchSugarByID = async (id: string) => {
-      try {
-         const result = await customFetch(
-            `/foods/${id}/sweeteners`,
-            {
-               method: 'GET',
-               headers: { accept: 'application/json' },
-            },
-            navigate,
-         );
-         console.log('ID기반 대체당 목록 조회', result);
-         setSugar(result);
-      } catch (error) {
-         console.error('Fetch error:', error);
-      }
-   };
-   if (!data) return <div>Loading...</div>;
+  useEffect(() => {
+    fetchData();
+    fetchSugarByID(state);
+    if (data) console.log(data);
+  }, [state]);
 
-   return (
-      <Container>
-         <BackArrow url={-1} />
-         <Title> {data.foodNmKr}</Title>
-         {data.itemReportNo && (
-            <Item>
-               품목제조보고번호:{'\u00A0'}
-               {'\u00A0'}
-               {data.itemReportNo}
-            </Item>
-         )}
+  // ID 기반 식품 상세 조회
+  const fetchData = async () => {
+    try {
+      const result = await customFetch(
+        `/foods/${state}`,
+        {
+          method: 'GET',
+          headers: { accept: 'application/json' },
+        },
+        navigate
+      );
+      console.log('식품 상세 조회 성공', result);
+      const typed = result as ExtendedNutrientData;
+      setData(typed);
+    } catch (error) {
+      console.error('식품 상세 조회 실패', error);
+    }
+  };
 
-         <NutrientTable data={tableData} />
-         {sugar.length > 0 && (
-            <Title>
-               대체당 <span style={{ color: '#ff9eb3' }}>{sugar.length}</span>개
-            </Title>
-         )}
-         {sugar.map((item, id) => (
-            <SugarBox key={id} item={item} id={id} />
-         ))}
-         <SubText>[출처] 식품의약품안전처</SubText>
-      </Container>
-   );
+  // ID기반 대체당 목록 조회
+  const fetchSugarByID = async (id: string) => {
+    try {
+      const result = await customFetch(
+        `/foods/${id}/sweeteners`,
+        {
+          method: 'GET',
+          headers: { accept: 'application/json' },
+        },
+        navigate
+      );
+      console.log('ID기반 대체당 목록 조회', result);
+      const typed = result as Substitute[];
+      setSugar(typed);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+  if (!data) return <div>Loading...</div>;
+
+  return (
+    <Container>
+      <BackArrow url={-1} />
+      <Title>{data.foodNmKr}</Title>
+
+      {data.itemReportNo && (
+        <Item>
+          품목제조보고번호:{'\u00A0'}
+          {'\u00A0'}
+          {data.itemReportNo}
+        </Item>
+      )}
+
+      <NutrientTable data={tableData} />
+
+      {sugar.length > 0 && (
+        <Title>
+          대체당 <span style={{ color: '#ff9eb3' }}>{sugar.length}</span>개
+        </Title>
+      )}
+
+      {sugar.map((item, id) => (
+        <SugarBox key={id} item={item} id={id} />
+      ))}
+
+      <SubText>[출처] 식품의약품안전처</SubText>
+    </Container>
+  );
 };
+
 export default ProductDetailPage;
+
+// ---------- Styled Components ----------
 const Container = styled.div`
-   gap: 16px;
-   overflow-y: auto;
-   padding: 20px;
-   position: relative;
-   padding-bottom: 100px;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
+  gap: 16px;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
+
 const Title = styled.p`
-   width: 70%;
-   font-size: 1.4rem;
-   margin-bottom: 20px;
-   font-family: Bold;
-   text-align: center;
-   margin-top: 0;
+  width: 70%;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  font-family: Bold;
+  text-align: center;
+  margin-top: 0;
 `;
 
 const Item = styled.div`
-width: 100%;
-font-size: 0.95rem;
-font-family:  Regular
-padding: 8px;
-border-radius: 6px;
- word-wrap: break-word;
+  width: 100%;
+  font-size: 0.95rem;
+  font-family: Regular;
+  padding: 8px;
+  border-radius: 6px;
+  word-wrap: break-word;
 `;
