@@ -24,4 +24,5 @@ const SugarComponents = ({ sugar }: Props) => {
 export default SugarComponents;
 const StyledTitle = styled(Title)`
    margin-bottom: 0;
+   margin-top: 10px;
 `;

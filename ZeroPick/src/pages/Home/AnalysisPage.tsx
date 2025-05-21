@@ -96,7 +96,7 @@ const AnalysisPage = () => {
 
    if (!sugar || !data) return <RingLoading />;
    return (
-      <Container style={{ height: '100dvh', position: 'relative' }}>
+      <Container>
          <BackIcon src={backIcon} onClick={() => navigate('/home')} />
          <Scrap foodId={data.id} />
          <Title>{data.foodNmKr}</Title>
@@ -118,10 +118,10 @@ const AnalysisPage = () => {
 export default AnalysisPage;
 const Container = styled.div`
    gap: 16px;
-   overflow-y: auto;
+   position: relative;
    padding: 20px;
    position: relative;
-   padding-bottom: 100px;
+   padding-bottom: 20px;
    display: flex;
    flex-direction: column;
    align-items: center;
