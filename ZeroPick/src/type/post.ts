@@ -5,6 +5,7 @@ export interface Post {
    likeCount: number;
    commentCount: number;
    name?: string;
+   createdDate: string;
 }
 
 export interface PostDetail extends Post {

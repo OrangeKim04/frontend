@@ -9,6 +9,8 @@ import { FaRegComment } from 'react-icons/fa';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { SubText } from '@/components/styles/common';
+import logoIcon from '@/assets/Logo.svg';
 
 const PostDetailPage: React.FC = () => {
    const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +45,7 @@ const PostDetailPage: React.FC = () => {
             alert('게시글을 불러오는데 실패하였습니다.');
             throw new Error('게시글을 불러오는데 실패하였습니다.');
          }
-
+         console.log(res);
          setPostDetail(res);
          setComments(res.comments);
          setLiked(res.liked);
@@ -166,7 +168,7 @@ const PostDetailPage: React.FC = () => {
    };
 
    if (!postDetail) {
-      return <div>게시글 불러오기 실패!</div>;
+      return <div>게시글 불러오는 중...</div>;
    }
 
    return (
@@ -222,8 +224,14 @@ const PostDetailPage: React.FC = () => {
          <ContentWrapper>
             {/* 게시글 내용 */}
             <PostContainer>
+               <Box>
+                  <Icon src={logoIcon} />
+                  <div>
+                     <Nickname>{postDetail.nickname}</Nickname>
+                     <DateText>{postDetail.createdDate}</DateText>
+                  </div>
+               </Box>
                <PostTitle>{postDetail.title}</PostTitle>
-               <Nickname>{postDetail.nickname}</Nickname>
                <Content>{postDetail.content}</Content>
                <img src={postDetail.postImage} />
                <IconRow>
@@ -314,8 +322,18 @@ const PostDetailPage: React.FC = () => {
 };
 
 export default PostDetailPage;
-// ---------------- 스타일 ----------------
-
+const Box = styled.div`
+   display: flex;
+   align-items: center;
+   gap: 10px;
+`;
+const Icon = styled.img`
+   width: 38px;
+`;
+const DateText = styled(SubText)`
+   color: gray;
+   font-size: 0.8rem;
+`;
 const Container = styled.div`
    display: flex;
    flex-direction: column;
@@ -396,7 +414,8 @@ const PostContainer = styled.div`
 `;
 
 const PostTitle = styled.h2`
-   font-size: 1.1rem;
+   font-size: 1.3rem;
+   margin: 0;
 `;
 
 const Nickname = styled.span`
@@ -407,6 +426,11 @@ const Nickname = styled.span`
 const Content = styled.p`
    font-size: 0.9rem;
    color: #333;
+   width: 100%;
+   word-wrap: break-word;
+   word-break: break-word;
+   white-space: pre-wrap;
+   margin-top: 0;
 `;
 
 // const ImageBox = styled.div`
