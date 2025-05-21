@@ -1,5 +1,3 @@
-import { customFetch } from '@/hooks/CustomFetch';
-import { useUserStore } from '@/stores/user';
 import { categoryMap } from '@/type/community';
 import { Post } from '@/type/post';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -8,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const CommunityPage: React.FC = () => {
-   const { name, email, setName, setEmail } = useUserStore();
    const [categories] = useState<string[]>([
       'ZERO_PRODUCT_REVIEW',
       'RECIPE',
@@ -21,24 +18,6 @@ const CommunityPage: React.FC = () => {
    const [page, setPage] = useState(0);
    const [hasMore, setHasMore] = useState(true);
    const [loading, setLoading] = useState(false);
-
-   const fetchUser = useCallback(async () => {
-      try {
-         const result = await customFetch(
-            '/user',
-            {
-               method: 'GET',
-               headers: { accept: 'application/json' },
-            },
-            navigate,
-         );
-         console.log('사용자 정보 조회', result.data);
-         setName(result.data.name);
-         setEmail(result.data.email);
-      } catch (error) {
-         console.error('사용자 정보 조회 실패', error);
-      }
-   }, [navigate, setName, setEmail]);
 
    // fetch로 대체된 게시글 API 호출
    const fetchPosts = useCallback(async () => {
@@ -107,12 +86,6 @@ const CommunityPage: React.FC = () => {
    const handlePostClick = (postId: number) => {
       navigate(`/community/post/${postId}`);
    };
-
-   useEffect(() => {
-      if (!name && !email) {
-         fetchUser();
-      }
-   }, [name, email, setName, setEmail, fetchUser]);
 
    return (
       <PageContainer>

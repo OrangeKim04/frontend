@@ -11,6 +11,10 @@ import recipeActive from '@/assets/navbar/forkB.svg';
 import communityActive from '@/assets/navbar/HeartB.svg';
 import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
+import { customFetch } from '@/hooks/CustomFetch';
+import { useEffect } from 'react';
+import { useUserStore } from '@/stores/user';
+import { useNavigate } from 'react-router-dom';
 const RootLayout = () => {
    const categories = [
       {
@@ -45,6 +49,8 @@ const RootLayout = () => {
          activeIcon: settingActive,
       },
    ];
+   const { name, email, setName, setEmail } = useUserStore();
+   const navigate = useNavigate();
    const [selected, setSelected] = useState<string>(
       sessionStorage.getItem('selectedCategory') || '홈',
    );
@@ -52,7 +58,26 @@ const RootLayout = () => {
       setSelected(title);
       sessionStorage.setItem('selectedCategory', title);
    };
-
+   const fetchUser = async () => {
+      try {
+         const result = await customFetch(
+            '/user',
+            {
+               method: 'GET',
+               headers: { accept: 'application/json' },
+            },
+            navigate,
+         );
+         console.log('사용자 정보 조회', result.data);
+         setName(result.data.name);
+         setEmail(result.data.email);
+      } catch (error) {
+         console.error('사용자 정보 조회 실패', error);
+      }
+   };
+   useEffect(() => {
+      if (!name || !email) fetchUser();
+   }, []);
    return (
       <RootContainer>
          <Outlet />

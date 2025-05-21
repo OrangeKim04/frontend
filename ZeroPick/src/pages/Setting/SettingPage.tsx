@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Container, WhiteBox } from '@/components/styles/common';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useUserStore } from '@/stores/user';
 import { useNavigate } from 'react-router-dom';
 import pencil from '@/assets/setting/Pencil.svg';
 import postIcon from '@/assets/setting/게시글.svg';
@@ -9,33 +10,14 @@ import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
 import { customFetch } from '@/hooks/CustomFetch';
 import LogoutModal from '@/components/Modal/LogoutModal';
-type User = {
-   email: string;
-   name: string;
-};
+
 const SettingPage = () => {
    const navigate = useNavigate();
    const [isOpen, setIsOpen] = useState(false);
-   const [user, setUser] = useState<User>();
+   const { name, email } = useUserStore();
    const [isEditing, setIsEditing] = useState(false);
    const [newName, setNewName] = useState('');
-   // 사용자 정보 조회
-   const fetchUser = async () => {
-      try {
-         const result = await customFetch(
-            '/user',
-            {
-               method: 'GET',
-               headers: { accept: 'application/json' },
-            },
-            navigate,
-         );
-         console.log('사용자 정보 조회', result.data);
-         setUser(result.data);
-      } catch (error) {
-         console.error('사용자 정보 조회 실패', error);
-      }
-   };
+
    // 사용자 이름 수정
    const fetchEditName = async (name: string) => {
       try {
@@ -49,17 +31,13 @@ const SettingPage = () => {
             navigate,
          );
          console.log('이름 수정 성공', result);
-         fetchUser();
+         window.location.reload();
       } catch (error) {
          console.error('이름 수정 실패', error);
          alert('닉네임 수정에 실패했어요.');
       }
    };
-
-   useEffect(() => {
-      fetchUser();
-   }, []);
-   if (!user) return <Skeleton />;
+   if (!name || !email) return <Skeleton />;
    return (
       <Container>
          <WhiteBox style={{ gap: '0', position: 'relative' }}>
@@ -68,7 +46,7 @@ const SettingPage = () => {
                src={pencil}
                onClick={() => {
                   setIsEditing(true);
-                  setNewName(user.name);
+                  setNewName(name);
                }}
             />
             <ProfileBox>
@@ -81,22 +59,21 @@ const SettingPage = () => {
                      />
                      <Button
                         onClick={() => {
-                           if (newName !== user.name) {
+                           if (newName !== name) {
                               fetchEditName(newName);
                            }
                            setIsEditing(false);
-                        }}
-                     >
+                        }}>
                         확인
                      </Button>
                   </>
                ) : (
-                  <DetailText>{user.name}</DetailText>
+                  <DetailText>{name}</DetailText>
                )}
             </ProfileBox>
             <ProfileBox>
                <InfoText>이메일</InfoText>
-               <DetailText>{user.email}</DetailText>
+               <DetailText>{email}</DetailText>
             </ProfileBox>
             <Br />
 
