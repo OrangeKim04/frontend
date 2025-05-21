@@ -14,13 +14,11 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-
 import { customFetch } from '@/hooks/CustomFetch';
 interface LoginFormData {
    email: string;
    password: string;
 }
-
 const LoginPage = () => {
    const navigate = useNavigate();
 
@@ -41,15 +39,12 @@ const LoginPage = () => {
       register,
       handleSubmit,
       formState: { errors },
-
    } = useForm<LoginFormData>({
-
       // 폼 제출 시 yup의 검증규칙 적용
       resolver: yupResolver(schema), // resolver: 외부 라이브러리와 통합하기 위한 옵션
    });
 
    // 폼 제출 시 서버로 POST 요청 보내는 함수
-
    const onSubmit = async (data: LoginFormData) => {
       console.log('onSubmit 실행됨', data);
 
@@ -67,14 +62,11 @@ const LoginPage = () => {
          );
 
          console.log('로그인 성공:', result);
-
          navigate('/home');
       } catch (error) {
          console.error('로그인 오류:', error);
          alert('로그인에 실패했어요');
       }
-
-
    };
 
    return (

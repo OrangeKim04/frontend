@@ -12,14 +12,12 @@ import { useForm } from 'react-hook-form';
 import icon from '@/assets/Left Arrow.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
 import { customFetch } from '@/hooks/CustomFetch';
 interface FormData {
    email: string;
    password: string;
    passwordCheck: string;
 }
-
 const SignUpPage = () => {
    const navigate = useNavigate();
 
@@ -51,7 +49,6 @@ const SignUpPage = () => {
    });
 
    // 폼 제출 시 서버로 POST 요청 보내는 함수
-
    const onSubmit = async ({ passwordCheck, ...dataToSend }: FormData) => {
       console.log('onSubmit 실행됨', dataToSend);
       console.log(passwordCheck);
@@ -70,7 +67,6 @@ const SignUpPage = () => {
          );
          console.log(result);
          alert('회원가입 성공');
-
          navigate('/login');
       } catch (error) {
          console.error('회원가입 오류:', error);

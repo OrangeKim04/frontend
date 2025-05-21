@@ -6,9 +6,7 @@ import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 import { useEffect, useState, useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
-
 import { customFetch } from '@/hooks/CustomFetch';
-
 type NewsItem = {
    title: string;
    link: string;
@@ -16,15 +14,12 @@ type NewsItem = {
 const HomePage = () => {
    const navigate = useNavigate();
    const inputRef = useRef<HTMLInputElement>(null);
-
-
    const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태
    useEffect(() => {
       fetchData();
    }, []);
    const fetchData = async () => {
       try {
-
          const result = await customFetch('/news', { method: 'GET' }, navigate);
          console.log('뉴스 조회:', result);
          setData(result || []);
@@ -32,7 +27,6 @@ const HomePage = () => {
          console.error('뉴스 조회:', error);
       }
    };
-
 
    const handleClick = () => {
       inputRef.current?.click();
@@ -66,7 +60,6 @@ const HomePage = () => {
                ref={inputRef}
                type="file"
                accept="image/*"
-
                style={{ display: 'none' }}
                onChange={handleFileChange}
             />

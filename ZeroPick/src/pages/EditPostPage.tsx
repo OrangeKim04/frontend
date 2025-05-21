@@ -1,14 +1,15 @@
-import React, { useState, ChangeEvent, useRef } from 'react';
+import React, { useRef, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button as BaseButton } from '@/components/styles/common';
 import LeftArrow from '@/assets/Left Arrow.svg';
-
-import { customFetch } from '@/hooks/CustomFetch';
 import { categoryMap } from '@/type/community';
+import { customFetch } from '@/hooks/CustomFetch';
+import { PostDetail } from '@/type/post';
 import { ErrorModal } from '@/components/ErrorModal';
 
-const WritePostPage: React.FC = () => {
+const EditPostPage: React.FC = () => {
+  const { postId } = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -18,37 +19,33 @@ const WritePostPage: React.FC = () => {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim() || !content.trim() || !category) {
-      setError('제목, 내용, 카테고리를 모두 입력/선택해주세요.');
-      return;
+  const fetchPostDetail = async () => {
+    try {
+      const res = await customFetch<PostDetail>(
+        `/boards/${postId}/full`,
+        {
+          method: 'GET',
+        },
+        navigate,
+      );
+
+      if (!res) {
+        alert('게시글을 불러오는데 실패하였습니다.');
+        throw new Error('게시글을 불러오는데 실패하였습니다.');
+      }
+
+      setTitle(res.title);
+      setContent(res.content);
+      setImagePreview(res.postImage);
+    } catch (err) {
+      navigate(-1);
+      console.log(err);
     }
-    setError('');
-    const formData = new FormData();
-    if (image) {
-      formData.append('image', image);
-    }
-    const request = {
-      content,
-      categoryName: category,
-      title,
-    };
-    const blob = new Blob([JSON.stringify(request)], {
-      type: 'application/json',
-    });
-    formData.append('request', blob);
-    await customFetch(
-      '/boards',
-      {
-        method: 'POST',
-        body: formData,
-        headers: {},
-      },
-      navigate,
-    );
-    navigate(-1);
   };
+
+  if (!title && !content) {
+    fetchPostDetail();
+  }
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -71,6 +68,44 @@ const WritePostPage: React.FC = () => {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !content.trim() || !category) {
+      setError('제목, 내용, 카테고리를 모두 입력/선택해주세요.');
+      return;
+    }
+    setError('');
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image);
+    }
+    const request = {
+      content,
+      categoryName: category,
+      title,
+    };
+    const blob = new Blob([JSON.stringify(request)], {
+      type: 'application/json',
+    });
+    formData.append('request', blob);
+
+    try {
+      if (!postId) {
+        setError('게시글 ID가 없습니다.');
+        return;
+      }
+      await fetch(`/api/v1/boards/${postId}`, {
+        method: 'PUT',
+        body: formData,
+        headers: {},
+      });
+      navigate(-2);
+    } catch (err) {
+      console.log(err);
+      setError('게시글 수정에 실패했습니다.');
+    }
+  };
+
   return (
     <PageContainer>
       <Header>
@@ -81,31 +116,26 @@ const WritePostPage: React.FC = () => {
             style={{ width: '24px', height: '24px' }}
           />
         </BackButton>
-        <HeaderTitle>게시글 작성</HeaderTitle>
+        <HeaderTitle>게시글 수정</HeaderTitle>
         <HeaderSpacer />
       </Header>
-
       <FormContainer onSubmit={handleSubmit}>
         {error && <ErrorModal message={error} onClose={() => setError('')} />}
         <FormGroup>
           <Label>제목</Label>
           <Input
             type="text"
-            placeholder="글 제목을 입력하세요"
             value={title}
             onChange={e => setTitle(e.target.value)}
           />
         </FormGroup>
-
         <FormGroup>
           <Label>내용</Label>
           <TextArea
-            placeholder="내용을 입력하세요"
             value={content}
             onChange={e => setContent(e.target.value)}
           />
         </FormGroup>
-
         <FormGroup>
           <Label>카테고리</Label>
           <CategoryChipContainer>
@@ -128,7 +158,6 @@ const WritePostPage: React.FC = () => {
             ))}
           </CategoryChipContainer>
         </FormGroup>
-
         <FormGroup>
           <Label>이미지</Label>
           <ImageUploadRow>
@@ -152,18 +181,14 @@ const WritePostPage: React.FC = () => {
             )}
           </ImageUploadRow>
         </FormGroup>
-
-        <SubmitButton type="submit">게시글 등록</SubmitButton>
+        <SubmitButton type="submit">수정 완료</SubmitButton>
       </FormContainer>
     </PageContainer>
   );
 };
 
-export default WritePostPage;
+export default EditPostPage;
 
-/* ------------ Styled Components ------------ */
-
-// 게시글 등록 버튼 색상에 맞춘 칩 색상 상수
 const CHIP_PRIMARY_COLOR = '#ff9eb3';
 const CHIP_PRIMARY_BG = '#ffe3ec';
 

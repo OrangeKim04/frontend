@@ -1,15 +1,11 @@
 import searchIcon from '@/assets/navbar/SearchB.svg';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-
 import { useSearchParams, useNavigate } from 'react-router-dom';
-
 import { Container } from '@/components/styles/common';
 import Product from '@/components/Product';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
-
-
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { customFetch } from '@/hooks/CustomFetch';
 const SearchPage = () => {
@@ -17,7 +13,6 @@ const SearchPage = () => {
       sessionStorage.getItem('keyword') || '',
    );
    const navigate = useNavigate();
-
    const [searchParams] = useSearchParams();
    const { ref, inView } = useInView({
       threshold: 0,
@@ -36,7 +31,6 @@ const SearchPage = () => {
             pageParam,
          }): Promise<Array<{ foodNmKr: string; id: number }>> => {
             console.log('Current pageParam:', pageParam);
-
             sessionStorage.setItem('keyword', keyword);
             const result = await customFetch(
                `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
@@ -47,15 +41,12 @@ const SearchPage = () => {
                navigate,
             );
             return result;
-
          },
          initialPageParam: 0,
          getNextPageParam: (lastPage, allPages) => {
             return lastPage.length < 10 ? undefined : allPages.length;
-
          },
       });
-
 
    useEffect(() => {
       if (inView && hasNextPage) {
@@ -90,9 +81,7 @@ const SearchPage = () => {
                           ))
                         : null,
                   )}
-
                   <LoadingIndicator ref={ref} isFetching={isFetching} />
-
                </>
             )}
          </ItemList>
@@ -135,9 +124,7 @@ const Img = styled.img`
 
 const ItemList = styled.div`
    width: 100%;
-
    height: calc(100dvh - 152px);
-
    display: flex;
    flex-direction: column;
 `;

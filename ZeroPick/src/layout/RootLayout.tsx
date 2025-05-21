@@ -1,6 +1,6 @@
-import { Outlet, Link, useLocation, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+
 import styled from 'styled-components';
 import home from '@/assets/navbar/homeG.svg';
 import recipe from '@/assets/navbar/forkG.svg';
@@ -12,112 +12,87 @@ import recipeActive from '@/assets/navbar/forkB.svg';
 import communityActive from '@/assets/navbar/HeartB.svg';
 import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
+
 const RootLayout = () => {
-   const location = useLocation();
-   const categories = [
-      {
-         title: '홈',
-         link: '/home',
-         icon: home, // 기본 아이콘
-         activeIcon: homeActive, // 활성 상태 아이콘
-      },
-      {
-         title: '검색',
-         link: '/search',
-         icon: search,
-         activeIcon: searchActive,
-      },
-      {
-         title: '레시피',
-         link: '/recipe',
-         icon: recipe,
-         activeIcon: recipeActive,
-      },
+  const location = useLocation();
+  const [selected, setSelected] = useState<string>('');
+  const handleClick = (title: string) => {
+    setSelected(title);
+  };
 
-      {
-         title: '커뮤니티',
-         link: '/community',
-         icon: community,
-         activeIcon: communityActive,
-      },
-      {
-         title: '설정',
-         link: '/setting',
-         icon: setting,
-         activeIcon: settingActive,
-      },
-   ];
+  const categories = [
+    { title: '홈', link: '/home', icon: home, activeIcon: homeActive },
+    { title: '검색', link: '/search', icon: search, activeIcon: searchActive },
+    { title: '레시피', link: '/recipe', icon: recipe, activeIcon: recipeActive },
+    { title: '커뮤니티', link: '/community', icon: community, activeIcon: communityActive },
+    { title: '설정', link: '/setting', icon: setting, activeIcon: settingActive },
+  ];
 
-   return (
-      <RootContainer>
-         <Outlet />
-         <Nav>
-            {categories.map((category, index) => (
-               <Item
-                  key={index}
-                  to={category.link}
-                  onClick={() => handleClick(category.title)}>
-                  <Img
-                     src={
-                        location.pathname.startsWith(category.link) ||
-                        selected === category.title
-                           ? category.activeIcon
-                           : category.icon
-                     }
-                  />
-                  <NavText
-                     isActive={location.pathname.startsWith(category.link)}>
-                     {category.title}
-                  </NavText>
-               </Item>
-            ))}
-         </Nav>
-      </RootContainer>
-   );
+  return (
+    <RootContainer>
+      <Outlet />
+      <Nav>
+        {categories.map((category, index) => {
+          const isActive =
+            location.pathname.startsWith(category.link) ||
+            selected === category.title;
+          return (
+            <Item key={index} to={category.link} onClick={() => handleClick(category.title)}>
+              <Img src={isActive ? category.activeIcon : category.icon} />
+              <NavText isactive={isActive}>{category.title}</NavText>
+            </Item>
+          );
+        })}
+      </Nav>
+    </RootContainer>
+  );
 };
 
 export default RootLayout;
 
 // Styled Components
 const RootContainer = styled.div`
-   display: flex;
-   flex-direction: column;
-   height: 100dvh;
-   width: 100%;
-   overflow-y: hidden; /* 세로 스크롤 비활성화 */
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
+  overflow-y: hidden; /* 세로 스크롤 비활성화 */
 `;
 
 const Nav = styled.div`
-   width: 100%;
-   height: 70px;
-   border-top: 1px solid #f1f1f1;
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding: 0 20px;
-   box-sizing: border-box;
-   position: fixed;
-   bottom: 0;
-   z-index: 10;
-   background-color: white;
-   border-radius: 15px;
+  width: 100%;
+  height: 70px;
+  border-top: 1px solid #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  background-color: white;
+  border-radius: 15px;
 `;
+
 const Img = styled.img`
-   width: 23px;
+  width: 23px;
 `;
+
 const Item = styled(Link)`
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   width: 49px;
-   height: 44px;
-   align-items: center;
-   cursor: pointer;
-   text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 49px;
+  height: 44px;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
 `;
+
 const NavText = styled.p<{ isactive: boolean }>`
-   margin: 0;
-   font-size: 12px;
-   font-family: SemiBold;
-   color: ${({ isactive }) => (isactive ? 'black' : '#808080 ')};
+  margin: 0;
+  font-size: 12px;
+  font-family: SemiBold;
+  color: ${({ isactive }) => (isactive ? 'black' : '#808080')};
 `;

@@ -1,34 +1,56 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import styled from 'styled-components';
+import { customFetch } from '@/hooks/CustomFetch';
+import { useUserStore } from '@/stores/user';
+import { categoryMap } from '@/type/community';
+import { Post } from '@/type/post';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FaRegComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  likeCount: number;
-  commentCount: number;
-}
+type User = {
+  email: string;
+  name: string;
+};
 
 const CommunityPage: React.FC = () => {
-  const [categories] = useState<string[]>(['카테고리1', '카테고리2', '카테고리3']);
+  const { name, email, setName, setEmail } = useUserStore();
+  const [categories] = useState<string[]>([
+    'ZERO_PRODUCT_REVIEW',
+    'RECIPE',
+    'FREE_BOARD',
+  ]);
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const navigate = useNavigate();
-
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const fetchUser = useCallback(async () => {
+    try {
+      const result = await customFetch<{ data: User }>(
+        '/user',
+        {
+          method: 'GET',
+        },
+        navigate,
+      );
+      console.log('사용자 정보 조회', result);
+      if (!result) throw new Error('사용자 정보가 없습니다.');
+
+      setName(result.data.name);
+      setEmail(result.data.email);
+    } catch (error) {
+      console.error('사용자 정보 조회 실패', error);
+    }
+  }, [navigate, setEmail, setName]);
 
   // fetch로 대체된 게시글 API 호출
   const fetchPosts = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const token = localStorage.getItem('accessToken') ?? '';
       const query = new URLSearchParams({
         category: activeCategory,
         page: page.toString(),
@@ -37,17 +59,15 @@ const CommunityPage: React.FC = () => {
 
       const res = await fetch(`/api/v1/boards/scroll?${query.toString()}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: 'include',
       });
 
       if (!res.ok) throw new Error('API 실패');
 
       const data = await res.json(); // { items: Post[], hasNext: boolean }
-      setPosts(prev => [...prev, ...data.items]);
-      setHasMore(data.hasNext);
+      console.log('API 응답:', data);
+      setPosts(prev => [...prev, ...data.content]);
+      setHasMore(!data.last);
       setPage(prev => prev + 1);
     } catch (err) {
       console.error('게시글 조회 실패', err);
@@ -62,29 +82,29 @@ const CommunityPage: React.FC = () => {
     setHasMore(true);
   }, [activeCategory]);
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-  const lastPostRef = useCallback((node: HTMLDivElement) => {
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) fetchPosts();
-    });
-    if (node) observerRef.current.observe(node);
-  }, [fetchPosts, hasMore]);
+  const lastPostRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (observerRef.current) observerRef.current.disconnect();
+      observerRef.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasMore) fetchPosts();
+      });
+      if (node) observerRef.current.observe(node);
+    },
+    [fetchPosts, hasMore],
+  );
 
   const handleCategorySelect = (category: string) => {
     setActiveCategory(category);
   };
 
-  const handleLike = (postId: number) => {
-    // TODO: 좋아요 API 연동
-  };
+  // 이건 상세 페이지에서!
+  // const handleLike = (postId: number) => {
+  //   // TODO: 좋아요 API 연동
+  // };
 
-  const handleComment = (postId: number) => {
-    // TODO: 댓글 API 연동
-  };
+  // const handleComment = (postId: number) => {
+  //   // TODO: 댓글 API 연동
+  // };
 
   const handleFloatingButtonClick = () => {
     navigate('/community/write');
@@ -94,34 +114,44 @@ const CommunityPage: React.FC = () => {
     navigate(`/community/post/${postId}`);
   };
 
+  useEffect(() => {
+    if (!name && !email) {
+      fetchUser();
+    }
+  }, [name, email, setName, setEmail, fetchUser]);
+
   return (
     <PageContainer>
       <Header>키워드별 잡다한 이야기</Header>
 
       <CategoryTabsContainer>
-        {categories.map((category, index) => (
+        {categories.map(category => (
           <CategoryButton
-            key={index}
+            key={category}
             onClick={() => handleCategorySelect(category)}
-          >
-            {category}
+            $isActive={activeCategory === category}>
+            {categoryMap[category]}
           </CategoryButton>
         ))}
       </CategoryTabsContainer>
 
       <PostsContainer>
-        {posts.map((post, index) => {
-          const isLast = index === posts.length - 1;
+        {posts.map(post => {
           return (
             <PostCard
-              key={post.id}
-              ref={isLast ? lastPostRef : null}
-              onClick={() => handlePostClick(post.id)}
-            >
+              key={post.boardId}
+              onClick={() => handlePostClick(post.boardId)}>
+              <PostAuthor>{post.name}</PostAuthor>
               <PostTitle>{post.title}</PostTitle>
               <PostContent>{post.content}</PostContent>
               <ActionsContainer>
-                <ActionButton as="div" onClick={e => { e.stopPropagation(); handleLike(post.id); }}>
+                <ActionButton
+                  as="div"
+                  // onClick={e => {
+                  //   e.stopPropagation();
+                  //   handleLike(post.boardId);
+                  // }}
+                >
                   <img
                     src={
                       post.likeCount > 0
@@ -129,18 +159,31 @@ const CommunityPage: React.FC = () => {
                         : '/src/assets/setting/favorite_border.svg'
                     }
                     alt="like"
-                    style={{ width: '16px', height: '16px', marginRight: '4px' }}
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      marginRight: '4px',
+                    }}
                   />
                   {post.likeCount}
                 </ActionButton>
-                <ActionButton as="div" onClick={e => { e.stopPropagation(); handleComment(post.id); }}>
-                  <FaRegComment style={{ color: 'black', marginRight: '4px' }} />
+                <ActionButton
+                  as="div"
+                  // onClick={e => {
+                  //   e.stopPropagation();
+                  //   handleComment(post.boardId);
+                  // }}
+                >
+                  <FaRegComment
+                    style={{ color: 'black', marginRight: '4px' }}
+                  />
                   {post.commentCount}
                 </ActionButton>
               </ActionsContainer>
             </PostCard>
           );
         })}
+        <ObserverDiv ref={hasMore ? lastPostRef : null} />
         {loading && <LoadingMessage>로딩 중...</LoadingMessage>}
         {!hasMore && <EndMessage>마지막 게시글입니다.</EndMessage>}
       </PostsContainer>
@@ -152,7 +195,11 @@ const CommunityPage: React.FC = () => {
 
 export default CommunityPage;
 
-// ⬇️ styled-components (기존 그대로 유지)
+const ObserverDiv = styled.div`
+  width: 100%;
+  height: 0px;
+`;
+
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
   min-height: 100vh;
@@ -172,18 +219,44 @@ const Header = styled.header`
 
 const CategoryTabsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
-  padding: 0.5rem;
+  width: 100%;
+  background-color: white;
   border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  position: relative;
 `;
 
-const CategoryButton = styled.button`
-  background: #f0f0f0;
-  border: 1px solid black;
-  border-radius: 50px;
-  padding: 0.5rem 1rem;
+const CategoryButton = styled.button<{ $isActive: boolean }>`
+  flex: 1;
+  background: white;
+  color: ${props => (props.$isActive ? '#FF9EB3' : '#666')};
+  border: none;
+  border-bottom: 2px solid
+    ${props => (props.$isActive ? '#FF9EB3' : 'transparent')};
+  padding: 1rem 0;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-weight: ${props => (props.$isActive ? '600' : '400')};
+  position: relative;
+
+  &:hover {
+    color: #ff9eb3;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ff9eb3;
+    transform: scaleX(${props => (props.$isActive ? 1 : 0)});
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 const PostsContainer = styled.div`
@@ -191,15 +264,24 @@ const PostsContainer = styled.div`
 `;
 
 const PostCard = styled.div`
+  position: relative;
   border: 1px solid black;
   border-radius: 10px;
   padding: 1rem;
   margin-bottom: 1rem;
 `;
 
+const PostAuthor = styled.p`
+  display: inline-block;
+  position: absolute;
+  top: calc(0.5rem + 16px);
+  right: 16px;
+  margin: 0;
+`;
+
 const PostTitle = styled.h2`
   font-size: 1rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
 `;
 
 const PostContent = styled.p`
@@ -230,13 +312,14 @@ const LoadingMessage = styled.p`
 const EndMessage = styled.p`
   text-align: center;
   color: #888;
+  margin-bottom: 80px;
 `;
 
 const FloatingButton = styled.button`
   position: fixed;
   right: 1rem;
   bottom: 80px;
-  background-color: #FF9EB3;
+  background-color: #ff9eb3;
   border: none;
   border-radius: 50%;
   width: 50px;

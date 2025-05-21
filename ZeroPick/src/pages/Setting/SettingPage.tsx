@@ -1,15 +1,12 @@
 import styled from 'styled-components';
 import { Container, WhiteBox } from '@/components/styles/common';
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import pencil from '@/assets/setting/Pencil.svg';
 import postIcon from '@/assets/setting/게시글.svg';
 import communityIcon from '@/assets/setting/thumb_up.svg';
 import likeIcon from '@/assets/setting/favorite_border.svg';
 import scrapIcon from '@/assets/setting/스크랩.svg';
-
 import { customFetch } from '@/hooks/CustomFetch';
 import LogoutModal from '@/components/LogoutModal';
 type User = {
@@ -63,12 +60,10 @@ const SettingPage = () => {
       fetchUser();
    }, []);
    if (!user) return <Skeleton />;
-
    return (
       <Container>
          <WhiteBox style={{ gap: '0', position: 'relative' }}>
             <TitleText>프로필</TitleText>
-
             <EditIcon
                src={pencil}
                onClick={() => {
@@ -101,7 +96,6 @@ const SettingPage = () => {
             <ProfileBox>
                <InfoText>이메일</InfoText>
                <DetailText>{user.email}</DetailText>
-
             </ProfileBox>
             <Br />
 
@@ -113,9 +107,7 @@ const SettingPage = () => {
                <MenuIcon src={communityIcon} />
                <InfoText>커뮤니티 좋아요 목록</InfoText>
             </InfoBox>
-
             <InfoBox>
-
                <MenuIcon src={likeIcon} />
                <InfoText>상품 좋아요 목록</InfoText>
             </InfoBox>
@@ -123,16 +115,13 @@ const SettingPage = () => {
                <MenuIcon src={scrapIcon} />
                <InfoText>레시피 북마크</InfoText>
             </InfoBox>
-
             <LogoutText onClick={() => setIsOpen(true)}>로그아웃</LogoutText>
             {isOpen && <LogoutModal onClose={() => setIsOpen(false)} />}
-
          </WhiteBox>
       </Container>
    );
 };
 export default SettingPage;
-
 const Skeleton = styled.div`
    width: 90%;
    height: 490px; /* 필요에 따라 높이 지정 */
@@ -152,12 +141,10 @@ const Skeleton = styled.div`
    }
 `;
 
-
 const InfoText = styled.p`
    margin: 0;
    font-family: Medium;
 `;
-
 const LogoutText = styled.p`
    margin: 0;
    font-family: Medium;
@@ -167,7 +154,6 @@ const LogoutText = styled.p`
    margin-bottom: 10px;
    cursor: pointer;
 `;
-
 const TitleText = styled.p`
    margin: 0;
    font-family: SemiBold;
@@ -210,7 +196,6 @@ const Br = styled.div`
    width: 100%;
    margin: 30px 0;
 `;
-
 const Input = styled.input`
    padding: 4px;
    margin-right: 8px;
