@@ -20,7 +20,6 @@ type CustomError = Error & {
    errorCode?: string;
 };
 
-
 const CameraPage = () => {
    const navigate = useNavigate();
    const location = useLocation();
@@ -118,7 +117,6 @@ const CameraPage = () => {
             viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
             background={false}
             guides={false}
-
             style={{ width: '100%', height: '400px', marginBottom: '15px' }}
          />
          {!isScanSuccess && (
