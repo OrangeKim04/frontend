@@ -1,10 +1,11 @@
 import { useState, useEffect, createRef, useRef } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Cropper, { ReactCropperElement } from 'react-cropper';
 import BackArrow from '@/components/BackArrow';
 import 'cropperjs/dist/cropper.css';
 import { Button } from '@/components/styles/common';
+
 import Modal from '@/components/Modal/Modal';
 import { customFetch } from '@/hooks/CustomFetch';
 type Data = {
@@ -19,16 +20,18 @@ type CustomError = Error & {
    errorCode?: string;
 };
 
+
 const CameraPage = () => {
-   const location = useLocation();
    const navigate = useNavigate();
+   const location = useLocation();
    const imageUrl = location.state?.imageUrl;
-   const [isModalOpen, setIsModalOpen] = useState(false);
+
    const [image, setImage] = useState<string | undefined>(undefined);
    const [data, setData] = useState<Data | null>(null);
    const [isLoading, setIsLoading] = useState(false);
    const [inputValue, setInputValue] = useState('');
    const [isScanSuccess, setIsScanSuccess] = useState<boolean>(true);
+
    const cropperRef = createRef<ReactCropperElement>();
    const lastErrorDetailRef = useRef<string | null>(null); // OCR 실패 시 저장할 ref
    useEffect(() => {
@@ -36,6 +39,7 @@ const CameraPage = () => {
          setImage(imageUrl); // 넘어온 이미지 URL을 상태에 저장
       }
    }, [imageUrl]);
+
    const uploadOcr = async (dataURL: string) => {
       const res = await fetch(dataURL);
       const blob = await res.blob();
@@ -89,16 +93,16 @@ const CameraPage = () => {
          setIsLoading(false);
       }
    };
-   const onSubmit = async () => {
-      setIsLoading(true);
-      if (inputValue.trim()) {
-         await searchProduct(inputValue.trim());
+
+   const getCropData = () => {
+      const cropper = cropperRef.current?.cropper;
+      if (cropper) {
+         const dataURL = cropper.getCroppedCanvas().toDataURL();
+         console.log(dataURL); // 크롭된 이미지 URL을 바로 확인
+         setCroppedImage(dataURL); // 바로 croppedImage에 저장
+         navigate('/home/result');
       } else {
-         const cropper = cropperRef.current?.cropper;
-         if (cropper) {
-            const dataURL = cropper.getCroppedCanvas().toDataURL();
-            await uploadOcr(dataURL);
-         }
+         alert('사진을 찍어주세요');
       }
    };
 
@@ -106,12 +110,15 @@ const CameraPage = () => {
       <Wrapper>
          <BackArrow url="/home" />
          <Title>원재료명을 찍어주세요</Title>
+
          <Cropper
             src={image} // 사용자가 선택한 사진
+            crop={onCrop} // 크롭 함수 호출
             ref={cropperRef}
             viewMode={1} // 크롭 영역이 이미지를 벗어나지 않게
             background={false}
             guides={false}
+
             style={{ width: '100%', height: '400px', marginBottom: '15px' }}
          />
          {!isScanSuccess && (
@@ -145,7 +152,7 @@ const CameraPage = () => {
 export default CameraPage;
 const Wrapper = styled.div`
    width: 100%;
-   height: 100dvh;
+   height: 100vh;
    z-index: 1;
    box-sizing: border-box;
 `;
@@ -157,23 +164,4 @@ const Title = styled.p`
    margin: 0;
    text-align: center;
    margin: 20px 0;
-`;
-const Input = styled.input`
-   width: 80%;
-   padding: 10px;
-   margin-bottom: 20px;
-   font-size: 1rem;
-   border: 1px solid #ccc;
-   border-radius: 5px;
-   margin-left: 10px;
-   ::placeholder {
-      font-family: Regular;
-   }
-`;
-const Loading = styled.p`
-   font-size: 20px;
-   color: red;
-   text-align: center;
-   margin-top: 10px;
-   font-family: SemiBold;
 `;
