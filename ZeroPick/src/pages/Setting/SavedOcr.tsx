@@ -49,7 +49,8 @@ const SavedOCR = () => {
             backgroundColor: 'white',
             padding: '20px',
             overflowY: 'auto',
-         }}>
+         }}
+      >
          <BackArrow url="/setting" />
          <Title>저장된 분석 결과</Title>
          {data?.pages?.map(page => {

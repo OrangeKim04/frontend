@@ -21,7 +21,8 @@ export const RecipeBox = ({ item }: RecipeBoxProps) => {
    const navigate = useNavigate();
    return (
       <ClickableWhiteBox
-         onClick={() => navigate(`/recipe/${item.title}`, { state: { item } })}>
+         onClick={() => navigate(`/recipe/${item.title}`, { state: { item } })}
+      >
          <RecipeTitle>{item.title}</RecipeTitle>
          <RecipeIngredients>
             {'재료: '}

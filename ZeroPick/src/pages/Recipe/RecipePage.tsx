@@ -49,7 +49,7 @@ const RecipePage = () => {
    }, []);
    return (
       <Container style={{ padding: '20px' }}>
-         <Title>✏️ 건강한 레시피를 생성해 보세요!</Title>
+         <Title>✏️건강한 레시피를 생성해 보세요!</Title>
          <Wrapper>
             <TextArea
                placeholder="ex) 계란 1개, 고구마 3개, 가지 2개, 오이 1개"
@@ -61,7 +61,7 @@ const RecipePage = () => {
 
          {loading ? null : data && data.length > 0 ? (
             <>
-               <Title>🍴 저장한 레시피</Title>
+               <Title>🍴저장한 레시피</Title>
                {data.map((item, id) => (
                   <RecipeBox key={id} item={item} />
                ))}

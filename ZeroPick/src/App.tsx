@@ -9,15 +9,19 @@ import RootLayout from '@/layout/RootLayout';
 import HomePage from '@/pages/Home/HomePage';
 import RecipePage from './pages/Recipe/RecipePage';
 import SearchPage from './pages/Search/SearchPage';
-import CommunityPage from './pages/CommunityPage';
+import CommunityPage from './pages/Community/CommunityPage';
 import SettingPage from './pages/Setting/SettingPage';
 import CameraPage from './pages/Home/CameraPage';
 import ProductDetailPage from './pages/Search/ProductDetailPage';
 import AnalysisPage from './pages/Home/AnalysisPage';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
+import WritePostPage from './pages/Community/WritePostPage';
+import PostDetailPage from './pages/Community/PostDetailPage';
+import EditPostPage from './pages/Community/EditPostPage';
 import SavedRecipe from './pages/Setting/SavedRecipe';
 import SavedOCR from './pages/Setting/SavedOcr';
+
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -42,6 +46,9 @@ const router = createBrowserRouter([
          { path: 'search', element: <SearchPage /> },
          { path: '/:id', element: <ProductDetailPage /> },
          { path: 'community', element: <CommunityPage /> },
+         { path: 'community/write', element: <WritePostPage /> },
+         { path: 'community/post/:postId', element: <PostDetailPage /> },
+         { path: 'community/edit/:postId', element: <EditPostPage /> },
          { path: 'setting', element: <SettingPage /> },
          { path: 'recipe/list', element: <RecipeListPage /> },
          { path: 'recipe/:title', element: <RecipeDetailPage /> },

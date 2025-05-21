@@ -6,7 +6,6 @@ import bellIcon from '@/assets/home/Bell.svg';
 import { Container, WhiteBox } from '@/components/styles/common';
 import { useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
-
 import { useNews } from '@/hooks/useNews';
 
 const HomePage = () => {
@@ -26,6 +25,7 @@ const HomePage = () => {
          navigate('/camera', { state: { imageUrl: url } });
       }
    };
+
    return (
       <Container>
          <Top>
