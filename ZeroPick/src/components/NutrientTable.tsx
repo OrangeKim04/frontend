@@ -107,7 +107,8 @@ const NutrientTable = ({ data }: Props) => {
                            style={{
                               backgroundColor: getColor(row.original.nutrient),
                               fontFamily: 'Regular',
-                           }}>
+                           }}
+                        >
                            {row.getVisibleCells().map(cell => (
                               <td
                                  key={cell.id}
@@ -132,7 +133,8 @@ const NutrientTable = ({ data }: Props) => {
                                           : 'transparent',
                                     borderBottom: '1px solid #DFDFDF',
                                     fontFamily: 'Regular',
-                                 }}>
+                                 }}
+                              >
                                  {flexRender(
                                     cell.column.columnDef.cell,
                                     cell.getContext(),

@@ -61,7 +61,8 @@ const SearchPage = () => {
             backgroundColor: 'white',
             padding: '20px',
             overflowY: 'auto',
-         }}>
+         }}
+      >
          <SearchBar>
             <Img src={searchIcon} />
             <Input

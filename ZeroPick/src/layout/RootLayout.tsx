@@ -66,7 +66,8 @@ const RootLayout = () => {
                <Item
                   key={index}
                   to={category.link}
-                  onClick={() => handleClick(category.title)}>
+                  onClick={() => handleClick(category.title)}
+               >
                   <Img
                      src={
                         selected === category.title

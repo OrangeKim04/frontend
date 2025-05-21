@@ -85,7 +85,8 @@ const SettingPage = () => {
                               fetchEditName(newName);
                            }
                            setIsEditing(false);
-                        }}>
+                        }}
+                     >
                         확인
                      </Button>
                   </>
