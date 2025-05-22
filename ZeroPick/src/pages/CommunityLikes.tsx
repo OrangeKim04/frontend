@@ -1,84 +1,63 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { FaRegComment } from 'react-icons/fa';
 import { customFetch } from '@/hooks/CustomFetch';
-import { PostDetail } from '@/type/post';
 import LeftArrow from '@/assets/Left Arrow.svg';
 
-const CommunityLikes: React.FC = () => {
+type LikedPost = {
+  boardId: string;
+  title: string;
+  name: string; // 작성자
+  createdDate: string;
+  content: string;
+  likeCount: number;
+  commentCount: number;
+};
+
+const CommunityLikes = () => {
   const navigate = useNavigate();
-  const [likedPosts, setLikedPosts] = useState<PostDetail[]>([]);
+  const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchLikedPosts = async () => {
+    const fetchLiked = async () => {
       setLoading(true);
       try {
-        const categories = ['FREE_BOARD', 'RECIPE', 'ZERO_PRODUCT_REVIEW'];
-        const allBoardIds: number[] = [];
+        let page = 0;
+        let last = false;
+        const all: LikedPost[] = [];
 
-        for (const category of categories) {
-          let page = 0;
-          let last = false;
+        while (!last) {
+          const res = await customFetch<{ content: LikedPost[]; last: boolean }>(
+            `/likes/my?page=${page}&size=10`,
+            { method: 'GET' },
+            navigate
+          );
+          if (!res) break;
 
-          while (!last) {
-            const query = new URLSearchParams({
-              category,
-              page: page.toString(),
-              size: '20',
-            });
-
-            const res = await customFetch<{
-              content: { boardId: number }[];
-              last: boolean;
-            }>(`/boards/scroll?${query.toString()}`, { method: 'GET' }, navigate);
-
-            if (!res || !res.content) return;
-
-            const typedRes = res as {
-              content: { boardId: number }[];
-              last: boolean;
-            };
-
-            const ids = typedRes.content.map(post => post.boardId);
-            allBoardIds.push(...ids);
-            last = typedRes.last;
-            page++;
-          }
+          all.push(...res.content);
+          last = res.last;
+          page++;
         }
 
-        const detailResults = await Promise.all(
-          allBoardIds.map(id =>
-            customFetch<PostDetail>(
-              `/boards/${id}/full`,
-              { method: 'GET' },
-              navigate
-            ).catch(() => null)
-          )
-        );
-
-        const filtered = detailResults.filter(
-          post => post && post.liked
-        ) as PostDetail[];
-
-        setLikedPosts(filtered);
-      } catch (error) {
-        console.error('좋아요한 게시글 조회 실패:', error);
+        setLikedPosts(all);
+      } catch (err) {
+        console.error('좋아요 게시글 실패:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLikedPosts();
+    fetchLiked();
   }, [navigate]);
 
   return (
     <Container>
       <TopBar>
-        <BackButton onClick={() => navigate(-1)}>
-          <img src={LeftArrow} alt="뒤로가기" />
-        </BackButton>
+        <BackBtn onClick={() => navigate(-1)}>
+          <img src={LeftArrow} alt="back" />
+        </BackBtn>
         <Title>좋아요한 게시글</Title>
       </TopBar>
 
@@ -95,9 +74,9 @@ const CommunityLikes: React.FC = () => {
             >
               <PostTitle>{post.title}</PostTitle>
               <Meta>
-                <Author>{post.nickname}</Author>
-                <Counts>
-                  <Count>
+                <Author>{post.name}</Author>
+                <Stats>
+                  <Stat>
                     <img
                       src={
                         post.likeCount > 0
@@ -105,15 +84,17 @@ const CommunityLikes: React.FC = () => {
                           : '/src/assets/setting/favorite_border.svg'
                       }
                       alt="like"
-                      style={{ width: 16, height: 16, marginRight: 4 }}
+                      width={16}
+                      height={16}
+                      style={{ marginRight: 4 }}
                     />
                     {post.likeCount}
-                  </Count>
-                  <Count>
+                  </Stat>
+                  <Stat>
                     <FaRegComment style={{ marginRight: 4 }} />
                     {post.commentCount}
-                  </Count>
-                </Counts>
+                  </Stat>
+                </Stats>
               </Meta>
             </Item>
           ))}
@@ -125,10 +106,9 @@ const CommunityLikes: React.FC = () => {
 
 export default CommunityLikes;
 
-// ---------- Styled Components ----------
+// ---------- Styled ----------
 const Container = styled.div`
   padding: 1rem;
-  font-family: Arial, sans-serif;
   height: calc(100dvh - 70px);
   overflow-y: auto;
   padding-bottom: 90px;
@@ -140,7 +120,7 @@ const TopBar = styled.div`
   margin-bottom: 1rem;
 `;
 
-const BackButton = styled.button`
+const BackBtn = styled.button`
   background: none;
   border: none;
   margin-right: 0.5rem;
@@ -195,12 +175,12 @@ const Author = styled.span`
   color: #555;
 `;
 
-const Counts = styled.div`
+const Stats = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
 
-const Count = styled.div`
+const Stat = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.85rem;
