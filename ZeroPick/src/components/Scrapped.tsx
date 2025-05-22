@@ -13,7 +13,7 @@ const Scrap = ({ foodId }: Props) => {
    useEffect(() => {
       const ProductScrapped = async () => {
          try {
-            const result = await customFetch(
+            const result = await customFetch<{ scrapped: boolean }>(
                `/ocr/${foodId}/exists`,
                {
                   method: 'GET',
@@ -22,7 +22,7 @@ const Scrap = ({ foodId }: Props) => {
                navigate,
             );
             console.log('스크랩 여부', result);
-            setIsScrapped(result.scrapped);
+            setIsScrapped(result?.scrapped);
          } catch (error) {
             console.error('Fetch error:', error);
          }

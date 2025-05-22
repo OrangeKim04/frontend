@@ -11,6 +11,7 @@ import scrapIcon from '@/assets/setting/스크랩.svg';
 import { customFetch } from '@/hooks/CustomFetch';
 import LogoutModal from '@/components/Modal/LogoutModal';
 
+
 const SettingPage = () => {
    const navigate = useNavigate();
    const [isOpen, setIsOpen] = useState(false);
@@ -77,11 +78,11 @@ const SettingPage = () => {
             </ProfileBox>
             <Br />
 
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/community/my')}>
                <MenuIcon src={postIcon} />
                <InfoText>내 게시글</InfoText>
             </InfoBox>
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/community/likes')}>
                <MenuIcon src={communityIcon} />
                <InfoText>커뮤니티 좋아요 목록</InfoText>
             </InfoBox>
@@ -99,94 +100,106 @@ const SettingPage = () => {
       </Container>
    );
 };
+
 export default SettingPage;
+
+// ---------- Styled Components ----------
 const Skeleton = styled.div`
-   width: 90%;
-   height: 490px; /* 필요에 따라 높이 지정 */
-   align-self: center;
-   background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
-   border-radius: 20px;
-   background-size: 200% 100%;
-   animation: shimmer 1.5s infinite linear;
-   margin-top: 15px;
-   @keyframes shimmer {
-      0% {
-         background-position: -100%;
-      }
-      100% {
-         background-position: 100%;
-      }
-   }
+  width: 90%;
+  height: 490px;
+  align-self: center;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  border-radius: 20px;
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  margin-top: 15px;
+  @keyframes shimmer {
+    0% {
+      background-position: -100%;
+    }
+    100% {
+      background-position: 100%;
+    }
+  }
 `;
 
 const InfoText = styled.p`
-   margin: 0;
-   font-family: Medium;
+  margin: 0;
+  font-family: Medium;
 `;
+
 const LogoutText = styled.p`
-   margin: 0;
-   font-family: Medium;
-   text-align: center;
-   color: red;
-   margin-top: 20px;
-   margin-bottom: 10px;
-   cursor: pointer;
+  margin: 0;
+  font-family: Medium;
+  text-align: center;
+  color: red;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  cursor: pointer;
 `;
+
 const TitleText = styled.p`
-   margin: 0;
-   font-family: SemiBold;
-   font-size: 1.3rem;
-   margin-left: 10px;
-   margin-bottom: 20px;
-   margin-top: 12px;
+  margin: 0;
+  font-family: SemiBold;
+  font-size: 1.3rem;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  margin-top: 12px;
 `;
+
 const ProfileBox = styled.div`
-   display: flex;
-   gap: 20px;
-   padding: 8px 10px;
-   align-items: center;
+  display: flex;
+  gap: 20px;
+  padding: 8px 10px;
+  align-items: center;
 `;
+
 const InfoBox = styled.div`
-   display: flex;
-   gap: 20px;
-   padding: 15px 10px;
-   align-items: center;
-   cursor: pointer;
+  display: flex;
+  gap: 20px;
+  padding: 15px 10px;
+  align-items: center;
+  cursor: pointer;
 `;
+
 const DetailText = styled.p`
-   margin: 0;
-   font-family: Regular;
-   opacity: 0.8;
+  margin: 0;
+  font-family: Regular;
+  opacity: 0.8;
 `;
+
 const EditIcon = styled.img`
-   width: 24px;
-   position: absolute;
-   right: 25px;
-   top: 27px;
-   cursor: pointer;
+  width: 24px;
+  position: absolute;
+  right: 25px;
+  top: 27px;
+  cursor: pointer;
 `;
+
 const MenuIcon = styled.img`
-   width: 24px;
+  width: 24px;
 `;
+
 const Br = styled.div`
-   height: 0.5px;
-   background-color: #ff9eb3;
-   width: 100%;
-   margin: 30px 0;
+  height: 0.5px;
+  background-color: #ff9eb3;
+  width: 100%;
+  margin: 30px 0;
 `;
+
 const Input = styled.input`
-   padding: 4px;
-   margin-right: 8px;
-   width: 50%;
-   outline: none;
+  padding: 4px;
+  margin-right: 8px;
+  width: 50%;
+  outline: none;
 `;
 
 const Button = styled.button`
-   border: none;
-   border-radius: 10px;
-   color: white;
-   background-color: #ff9eb3;
-   font-family: SemiBold;
-   cursor: pointer;
-   padding: 8px 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  background-color: #ff9eb3;
+  font-family: SemiBold;
+  cursor: pointer;
+  padding: 8px 10px;
 `;
