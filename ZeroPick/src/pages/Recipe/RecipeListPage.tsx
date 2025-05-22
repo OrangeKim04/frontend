@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Container, Title } from '@/components/styles/common';
-import { RecipeBox } from '@/components/RecipeBox';
+import { RecipeBox } from '@/components/Recipe/RecipeBox';
 import { customFetch } from '@/hooks/CustomFetch';
-
+import RingLoading from '@/components/RingLoader';
+import BackArrow from '@/components/BackArrow';
 export type Recipe = {
-  title: string;
-  ingredients: string[];
+   title: string;
+   ingredients: string[];
 };
 
 const RecipeListPage = () => {

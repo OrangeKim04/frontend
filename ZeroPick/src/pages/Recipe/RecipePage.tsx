@@ -3,91 +3,77 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import buttonIcon from '@/assets/recipeButton.svg';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useInView } from 'react-intersection-observer';
-import { RecipeBox } from '@/components/RecipeBox';
+import { RecipeBox } from '@/components/Recipe/RecipeBox';
 import cookIcon from '@/assets/recipe/cooking.svg';
-import LoadingIndicator from '@/components/LoadingIndicator';
 import { RecipeResponse } from './RecipeDetailPage';
 import { customFetch } from '@/hooks/CustomFetch';
 
 const RecipePage = () => {
-  const [keyword, setKeyword] = useState<string>('');
+   const [keyword, setKeyword] = useState<string>('');
+   const [data, setData] = useState<RecipeResponse[]>();
+   const [loading, setLoading] = useState(true);
+   const navigate = useNavigate();
+   const onsubmit = () => {
+      if (keyword === '') {
+         alert('재료를 입력해주세요');
+      } else {
+         navigate('/recipe/list', {
+            state: { keyword },
+         });
+      }
+   };
 
-  const { ref, inView } = useInView({ threshold: 0 });
-  const navigate = useNavigate();
+   // 저장된 레시피 최근 5개 조회
+   const fetchSavedRecipe = async () => {
+      try {
+         const result = await customFetch(
+            `/recipes/recent`,
+            {
+               method: 'GET',
+               headers: {
+                  accept: 'application/json',
+               },
+            },
+            navigate,
+         );
+         console.log('스크랩 레시피 최신 5개 조회', result.data);
+         setData(result.data);
+      } catch (error) {
+         console.error('Fetch error:', error);
+      } finally {
+         setLoading(false);
+      }
+   };
+   useEffect(() => {
+      fetchSavedRecipe();
+   }, []);
+   return (
+      <Container style={{ padding: '20px' }}>
+         <Title>✏️건강한 레시피를 생성해 보세요!</Title>
+         <Wrapper>
+            <TextArea
+               placeholder="ex) 계란 1개, 고구마 3개, 가지 2개, 오이 1개"
+               value={keyword}
+               onChange={e => setKeyword(e.target.value)}
+            />
+            <SubmitButton src={buttonIcon} onClick={onsubmit} />
+         </Wrapper>
 
-  const onsubmit = () => {
-    if (keyword === '') {
-      alert('재료를 입력해주세요');
-    } else {
-      navigate('/recipe/list', {
-        state: { keyword },
-      });
-    }
-  };
-
-  const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['ScrappedRecipeList'],
-    queryFn: async ({ pageParam }): Promise<RecipeResponse[]> => {
-      sessionStorage.setItem('keyword', keyword);
-      const result = await customFetch(
-        `/recipes?page=${pageParam}&size=10`,
-        {
-          method: 'GET',
-          headers: { accept: 'application/json' },
-        },
-        navigate
-      );
-
-      const typed = result as { data: { recipes: RecipeResponse[] } };
-      console.log('스크랩 레시피 전체 조회', typed.data.recipes);
-      return typed.data.recipes;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length < 10 ? undefined : allPages.length;
-    },
-  });
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, inView, hasNextPage]);
-
-  useEffect(() => {
-    console.log('데이터에욥', data);
-  }, [data]);
-
-  return (
-    <Container style={{ padding: '20px' }}>
-      <Title>✏️ 건강한 레시피를 생성해 보세요!</Title>
-      <Wrapper>
-        <TextArea
-          placeholder="ex) 계란 1개, 고구마 3개, 가지 2개, 오이 1개"
-          value={keyword}
-          onChange={e => setKeyword(e.target.value)}
-        />
-        <SubmitButton src={buttonIcon} onClick={onsubmit} />
-      </Wrapper>
-
-      {data?.pages && data.pages[0] && data.pages[0].length > 0 ? (
-        <>
-          <Title>🍴 저장한 레시피</Title>
-          {data.pages[0].map((item, id) => (
-            <RecipeBox key={id} item={item} id={id} />
-          ))}
-          <LoadingIndicator ref={ref} isFetching={isFetching} />
-        </>
-      ) : (
-        <>
-          <Img src={cookIcon} />
-          <Title>저장한 레시피가 없어요!</Title>
-        </>
-      )}
-    </Container>
-  );
+         {loading ? null : data && data.length > 0 ? (
+            <>
+               <Title>🍴저장한 레시피</Title>
+               {data.map((item, id) => (
+                  <RecipeBox key={id} item={item} />
+               ))}
+            </>
+         ) : (
+            <>
+               <Img src={cookIcon} />
+               <Title>저장한 레시피가 없어요!</Title>
+            </>
+         )}
+      </Container>
+   );
 };
 
 export default RecipePage;

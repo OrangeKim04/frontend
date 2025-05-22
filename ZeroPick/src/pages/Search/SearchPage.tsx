@@ -10,9 +10,7 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import { customFetch } from '@/hooks/CustomFetch';
 
 const SearchPage = () => {
-  const [keyword, setKeyword] = useState(
-    sessionStorage.getItem('keyword') || ''
-  );
+  const [keyword, setKeyword] = useState(sessionStorage.getItem('keyword') || '');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { ref, inView } = useInView({ threshold: 0 });
@@ -32,23 +30,18 @@ const SearchPage = () => {
     isError,
   } = useInfiniteQuery({
     queryKey: ['ProductList', keyword],
-    queryFn: async ({
-      pageParam,
-    }): Promise<Array<{ foodNmKr: string; id: number }>> => {
+    queryFn: async ({ pageParam }): Promise<Array<{ foodNmKr: string; id: number }>> => {
       console.log('Current pageParam:', pageParam);
       sessionStorage.setItem('keyword', keyword);
       const result = await customFetch(
-        `/foods/search-names?name=${encodeURIComponent(
-          keyword || '가'
-        )}&page=${pageParam}`,
+        `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
         {
           method: 'GET',
           headers: { accept: 'application/json' },
         },
         navigate
       );
-      const typed = result as { foodNmKr: string; id: number }[];
-      return typed;
+      return result;
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
@@ -57,10 +50,10 @@ const SearchPage = () => {
   });
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView && hasNextPage && !isFetching) {
       fetchNextPage();
     }
-  }, [fetchNextPage, inView, hasNextPage]);
+  }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
     <Container
@@ -78,6 +71,7 @@ const SearchPage = () => {
           onChange={e => setKeyword(e.target.value)}
         />
       </SearchBar>
+
       <ItemList>
         {isError ? (
           <p style={{ textAlign: 'center' }}>검색 결과가 없습니다.</p>
@@ -86,7 +80,11 @@ const SearchPage = () => {
             {data?.pages?.map((page, pageIndex) =>
               Array.isArray(page)
                 ? page.map((item, id) => (
-                    <Product key={`${pageIndex}-${id}`} item={item} />
+                    <Product
+                      key={`${pageIndex}-${id}`}
+                      foodNmKr={item.foodNmKr}
+                      foodId={item.id}
+                    />
                   ))
                 : null
             )}

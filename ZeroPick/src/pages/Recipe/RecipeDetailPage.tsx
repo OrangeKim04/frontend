@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Title, WhiteBox } from '@/components/styles/common';
+import {
+  Container,
+  Title,
+  WhiteBox,
+  ScrapIcon,
+} from '@/components/styles/common';
 import BackArrow from '@/components/BackArrow';
 import { customFetch } from '@/hooks/CustomFetch';
+import BeforeScrapIcon from '@/assets/recipe/스크랩 전.svg';
+import AfterScrapIcon from '@/assets/recipe/스크랩 후.svg';
 import styled from 'styled-components';
+import RecipeDeleteModal from '@/components/Modal/RecipeDeleteModal';
+import ProgressBar from '@/components/RingLoader';
+import FoodImg from '@/components/FoodImg';
 
 type Ingredient = {
   name: string;
@@ -21,14 +31,41 @@ const RecipeDetailPage = () => {
   const navigate = useNavigate();
   const item = location.state?.item;
   const [data, setData] = useState<RecipeResponse | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isScrapped, setIsscrapped] = useState(false);
 
   useEffect(() => {
-    if (item) {
-      if (item.steps) {
-        console.log('스크랩된 레시피 조회');
-        setData(item);
+    const fetchOrCreateRecipe = async () => {
+      if (!item) return;
+
+      if (item.id) {
+        try {
+          const result = await customFetch(
+            `/recipes/${item.id}`,
+            {
+              method: 'GET',
+              headers: {
+                accept: 'application/json',
+              },
+            },
+            navigate
+          );
+          console.log('레시피 단건 조회', result);
+          setData(result.data);
+        } catch (error) {
+          console.error('Fetch error:', error);
+        }
       } else {
-        const createRecipe = async () => {
+        const stored = sessionStorage.getItem(item.title);
+
+        if (stored) {
+          console.log('스토리지에서 불러옴', stored);
+          setData(JSON.parse(stored));
+          const scrapped =
+            sessionStorage.getItem(`${item.title}스크랩`) ?? 'false';
+
+          if (scrapped === '저장') setIsscrapped(true);
+        } else {
           try {
             const ingredientsStr = item.ingredients.join(',\u00A0');
             const result = await customFetch(
@@ -43,65 +80,94 @@ const RecipeDetailPage = () => {
               },
               navigate
             );
-
-            const typed = result as { data: RecipeResponse };
-            console.log('레시피 생성 성공:', typed);
-            setData(typed.data);
-            sessionStorage.setItem(typed.data.title, JSON.stringify(typed.data));
+            console.log('레시피 생성 성공:', result);
+            setData(result.data);
+            sessionStorage.setItem(
+              result.data.title,
+              JSON.stringify(result.data)
+            );
           } catch (error) {
             console.error('레시피 생성 오류:', error);
           }
-        };
-
-        const stored = sessionStorage.getItem(item.title);
-        if (stored) {
-          setData(JSON.parse(stored));
-        } else {
-          createRecipe();
         }
       }
-    }
+    };
+
+    fetchOrCreateRecipe();
   }, [item]);
 
   const ingredientsStr = data?.ingredients
-    .map(item => item.name)
+    .map((item) => item.name)
     .join(',\u00A0');
 
-  const stepItems = data?.steps
-    ? data.steps.split('\n').map(step => {
-        const [number, ...text] = step.split('. ');
-        return { number, text: text.join('. ') };
-      })
-    : [];
+  const stepItems =
+    data?.steps?.split('\n').map((text, idx) => ({
+      number: idx + 1,
+      text: text.trim(),
+    })) || [];
 
-  if (!data) return <p>Loading...</p>;
+  const handleScrap = async () => {
+    try {
+      const result = await customFetch(
+        `/recipes`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            title: data?.title,
+            ingredients: data?.ingredients,
+            steps: data?.steps,
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        },
+        navigate
+      );
+      console.log('스크랩 성공', result);
+      setIsscrapped(true);
+      alert('레시피가 저장되었어요');
+      sessionStorage.setItem(`${item.title}스크랩`, '저장');
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+  if (!data) return <ProgressBar />;
 
   return (
     <Container>
       <Box>
         <BackArrow url={-1} />
+        {!isScrapped && (
+          <ScrapIcon
+            src={data?.id ? AfterScrapIcon : BeforeScrapIcon}
+            onClick={data?.id ? () => setIsModalOpen(true) : handleScrap}
+            alt="Scrap Icon"
+          />
+        )}
       </Box>
 
       <WhiteBox>
-        <StyledTitle>{data?.title}</StyledTitle>
+        <StyledTitle>🍽️{data?.title}</StyledTitle>
+        <FoodImg foodNm={data?.title} />
         <IngredientsContainer>
-          <IngredientLabel>
-            재료: {'\u00A0'}
-            {'\u00A0'}
-          </IngredientLabel>
+          <IngredientLabel>재료: {'\u00A0'} </IngredientLabel>
           <IngredientList>{ingredientsStr}</IngredientList>
         </IngredientsContainer>
         <StepsContainer>
           {stepItems.map((item, index) => (
             <StepItem key={index}>
-              <StepNumber>
-                {item.number}. {'\u00A0'}
-              </StepNumber>
+              <StepNumber>{item.number}.</StepNumber>
               <StepText>{item.text}</StepText>
             </StepItem>
           ))}
         </StepsContainer>
       </WhiteBox>
+
+      {isModalOpen && (
+        <RecipeDeleteModal
+          onClose={() => setIsModalOpen(false)}
+          id={item.id}
+        />
+      )}
     </Container>
   );
 };
@@ -111,6 +177,7 @@ export default RecipeDetailPage;
 // ---------- Styled Components ----------
 const StyledTitle = styled(Title)`
   text-align: center;
+  margin: 0;
 `;
 
 const IngredientsContainer = styled.div`
@@ -132,6 +199,7 @@ const IngredientList = styled.p`
   font-family: Regular;
   font-size: 1.1rem;
   margin: 0;
+  line-height: 23px;
 `;
 
 const StepsContainer = styled.div`
@@ -145,10 +213,11 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div`
   display: flex;
+  gap: 4px;
 `;
 
 const Box = styled.div`
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 `;
 
 const StepNumber = styled.span`

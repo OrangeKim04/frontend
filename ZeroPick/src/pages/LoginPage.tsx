@@ -15,6 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { customFetch } from '@/hooks/CustomFetch';
+import fruitsIcon from '@/assets/fruits.svg';
 interface LoginFormData {
    email: string;
    password: string;
@@ -71,12 +72,22 @@ const LoginPage = () => {
 
    return (
       <Box>
+         <Img src={fruitsIcon} />
          <Title>로그인</Title>
          <Form onSubmit={handleSubmit(onSubmit)}>
             <InputBox>
-               <Input placeholder="이메일" {...register('email')} />
+               <Input
+                  type={'email'}
+                  placeholder="이메일"
+                  {...register('email')}
+               />
                <ErrorTxt>{errors.email?.message}</ErrorTxt>
-               <Input placeholder="비밀번호" {...register('password')} />
+               <Input
+                  type={'password'}
+                  placeholder="비밀번호"
+                  {...register('password')}
+                  autoComplete="new-password"
+               />
                <ErrorTxt>{errors.password?.message}</ErrorTxt>
             </InputBox>
             <Button type={'submit'}>로그인</Button>
@@ -94,4 +105,7 @@ const ErrorTxt = styled.p`
    font-size: 10px;
    margin-top: 0;
    margin-bottom: 5px;
+`;
+const Img = styled.img`
+   width: 380px;
 `;

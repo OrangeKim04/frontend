@@ -9,18 +9,21 @@ import RootLayout from '@/layout/RootLayout';
 import HomePage from '@/pages/Home/HomePage';
 import RecipePage from './pages/Recipe/RecipePage';
 import SearchPage from './pages/Search/SearchPage';
-import CommunityPage from './pages/CommunityPage';
+import CommunityPage from './pages/Community/CommunityPage';
 import SettingPage from './pages/Setting/SettingPage';
 import CameraPage from './pages/Home/CameraPage';
 import ProductDetailPage from './pages/Search/ProductDetailPage';
 import AnalysisPage from './pages/Home/AnalysisPage';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
-import WritePostPage from './pages/WritePostPage';
-import PostDetailPage from './pages/PostDetailPage';
-import EditPostPage from './pages/EditPostPage';
 import MyWritePost from './pages/MyWritePost';
 import CommunityLikes from './pages/CommunityLikes';
+import WritePostPage from './pages/Community/WritePostPage';
+import PostDetailPage from './pages/Community/PostDetailPage';
+import EditPostPage from './pages/Community/EditPostPage';
+import SavedRecipe from './pages/Setting/SavedRecipe';
+import SavedOCR from './pages/Setting/SavedOcr';
+
 const router = createBrowserRouter([
    {
       path: '/login',
@@ -53,6 +56,8 @@ const router = createBrowserRouter([
          { path: 'setting', element: <SettingPage /> },
          { path: 'recipe/list', element: <RecipeListPage /> },
          { path: 'recipe/:title', element: <RecipeDetailPage /> },
+         { path: 'setting/recipes', element: <SavedRecipe /> },
+         { path: 'setting/ocr', element: <SavedOCR /> },
       ],
    },
 ]);

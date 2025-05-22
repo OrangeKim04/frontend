@@ -1,36 +1,16 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/styles/common';
+import { Button, Container, WhiteBox } from '@/components/styles/common';
 import checkIcon from '@/assets/home/Circled Check.svg';
 import bellIcon from '@/assets/home/Bell.svg';
-import { Container, WhiteBox } from '@/components/styles/common';
-import { useEffect, useState, useRef } from 'react';
+import { useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
-import { customFetch } from '@/hooks/CustomFetch';
-
-type NewsItem = {
-  title: string;
-  link: string;
-};
+import { useNews } from '@/hooks/useNews';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const result = await customFetch('/news', { method: 'GET' }, navigate);
-      console.log('뉴스 조회:', result);
-      setData(result as NewsItem[] || []);
-    } catch (error) {
-      console.error('뉴스 조회:', error);
-    }
-  };
+  const { data } = useNews();
 
   const handleClick = () => {
     inputRef.current?.click();
