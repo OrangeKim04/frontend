@@ -15,7 +15,7 @@ export const useNews = () => {
 
    const fetchNews = async () => {
       try {
-         const result = await customFetch<NewsItem[]>('/news', { method: 'GET' }, navigate);
+         const result = await customFetch('/news', { method: 'GET' }, navigate);
          console.log('뉴스 조회 성공', result);
          setData(result || []);
       } catch (err) {

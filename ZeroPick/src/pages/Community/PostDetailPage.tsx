@@ -12,7 +12,6 @@ import styled from 'styled-components';
 import { SubText } from '@/components/styles/common';
 import logoIcon from '@/assets/Logo.svg';
 
-
 const PostDetailPage: React.FC = () => {
    const inputRef = useRef<HTMLInputElement>(null);
    const replyInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>(
@@ -34,7 +33,7 @@ const PostDetailPage: React.FC = () => {
 
    const fetchPostDetail = async () => {
       try {
-         const res = await customFetch<PostDetail>(
+         const res = await customFetch(
             `/boards/${postId}/full`,
             {
                method: 'GET',
