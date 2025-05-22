@@ -31,7 +31,7 @@ const ProductDetailPage = () => {
    //ID 기반 식품 상세 조회
    const fetchData = async () => {
       try {
-         const result = await customFetch(
+         const result = await customFetch<ExtendedNutrientData>(
             `/foods/${state}`,
             {
                method: 'GET',
@@ -48,7 +48,7 @@ const ProductDetailPage = () => {
    // ID기반 대체당 목록 조회
    const fetchSugarByID = async (id: string) => {
       try {
-         const result = await customFetch(
+         const result = await customFetch<Substitute[]>(
             `/foods/${id}/sweeteners`,
             {
                method: 'GET',
@@ -56,6 +56,7 @@ const ProductDetailPage = () => {
             },
             navigate,
          );
+         if (!result) return;
          console.log(id, 'ID기반 대체당 목록 조회', result);
          setSugar(result);
       } catch (error) {

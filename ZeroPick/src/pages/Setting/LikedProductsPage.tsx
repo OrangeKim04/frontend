@@ -1,3 +1,5 @@
+// src/pages/Setting/LikedProduct.tsx
+
 import styled from 'styled-components';
 import Product from '@/components/Product';
 import { Items } from '@/data/mockdata';
@@ -8,7 +10,10 @@ const LikedProduct = () => {
       <Title>상품 좋아요 목록</Title>
       <ItemList>
         {Items.map((item, id) => (
-          <Product key={id} item={{ id: item.id, foodNmKr: item.name }} />
+          <Product
+            key={id}
+            item={{ foodId: item.id, foodNmKr: item.name }} // ✅ ProductItem 타입에 맞게 전달
+          />
         ))}
       </ItemList>
     </>
@@ -18,6 +23,7 @@ const LikedProduct = () => {
 export default LikedProduct;
 
 // ---------- Styled Components ----------
+
 const Title = styled.p`
   margin: 0;
   font-family: SemiBold;

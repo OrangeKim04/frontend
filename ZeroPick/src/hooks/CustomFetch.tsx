@@ -2,40 +2,51 @@ import { NavigateFunction } from 'react-router-dom';
 
 const BASE_URL = '/api/v1';
 
-export const customFetch = async (
-   endpoint: string,
-   options: RequestInit,
-   navigate: NavigateFunction,
-) => {
-   const response = await fetch(`${BASE_URL}${endpoint}`, {
-      ...options,
-      credentials: 'include',
-   });
+export async function customFetch<T>(
+  endpoint: string,
+  options: RequestInit,
+  navigate: NavigateFunction,
+): Promise<T | null> {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+    credentials: 'include',
+  });
 
-   if (response.status === 401) {
-      navigate('/login');
-      sessionStorage.setItem('selectedCategory', '홈');
-      return;
-   }
+  if (response.status === 401) {
+    navigate('/login');
+    sessionStorage.setItem('selectedCategory', '홈');
+    return null;
+  }
 
-   let data;
-   const text = await response.text();
-   try {
-      data = JSON.parse(text); // JSON이면 파싱
-   } catch {
-      data = text; // 아니면 그냥 문자열로 처리
-   }
-   if (!response.ok) {
-      const error = new Error(data?.message || '요청 실패');
-      Object.assign(error, {
-         status: response.status,
-         statusText: response.statusText,
-         detail: data?.detail,
-         errorCode: data?.errorCode,
-         raw: data,
-      });
-      throw error;
-   }
+  if (response.status === 201) {
+    return null;
+  }
 
-   return data;
-};
+  if (response.status === 204) {
+    navigate(-1);
+    return null;
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    let errorMessage = '요청 실패';
+
+    try {
+      const errorData = JSON.parse(text);
+      errorMessage = errorData?.message || errorMessage;
+    } catch {
+      errorMessage = text;
+    }
+
+    const error = new Error(errorMessage);
+    Object.assign(error, {
+      status: response.status,
+      statusText: response.statusText,
+    });
+    throw error;
+  }
+
+  const data: T = await response.json();
+  return data;
+}

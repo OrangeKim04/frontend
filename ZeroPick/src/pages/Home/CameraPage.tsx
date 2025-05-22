@@ -48,7 +48,7 @@ const CameraPage = () => {
     const formData = new FormData();
     formData.append('file', blob, 'image.png');
     try {
-      const result = await customFetch(
+      const result = await customFetch<Data>(
         '/ocr/scan',
         {
           method: 'POST',
@@ -73,7 +73,7 @@ const CameraPage = () => {
 
   const searchProduct = async (itemReportNo: string) => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<Data>(
         `/foods/search-item-name?itemReportNo=${itemReportNo}`,
         {
           method: 'GET',
@@ -82,19 +82,24 @@ const CameraPage = () => {
         navigate
       );
       console.log('품목보고번호로 검색 성공:', result);
+    if (result) {
       setData({
         ...result,
+        foodNmKr: result.foodNmKr ?? '',
         ocrText: lastErrorDetailRef.current || '',
         itemReportNo: itemReportNo,
       });
       setIsModalOpen(true);
-    } catch (error) {
-      console.error('검색 실패:', error);
-      alert('품목보고번호가 없어요.');
-    } finally {
-      setIsLoading(false);
+    } else {
+      alert('상품 정보를 찾을 수 없습니다.');
     }
-  };
+  } catch (error) {
+    console.error('검색 실패:', error);
+    alert('품목보고번호가 없어요.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const onSubmit = async () => {
     setIsLoading(true);

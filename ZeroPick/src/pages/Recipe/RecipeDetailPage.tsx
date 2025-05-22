@@ -40,7 +40,7 @@ const RecipeDetailPage = () => {
 
       if (item.id) {
         try {
-          const result = await customFetch(
+          const result = await customFetch<{ data: RecipeResponse}>(
             `/recipes/${item.id}`,
             {
               method: 'GET',
@@ -50,6 +50,7 @@ const RecipeDetailPage = () => {
             },
             navigate
           );
+          if (!result) return;
           console.log('레시피 단건 조회', result);
           setData(result.data);
         } catch (error) {
@@ -68,7 +69,7 @@ const RecipeDetailPage = () => {
         } else {
           try {
             const ingredientsStr = item.ingredients.join(',\u00A0');
-            const result = await customFetch(
+            const result = await customFetch<{ data: RecipeResponse }>(
               '/recipes/createRecipe',
               {
                 method: 'POST',
@@ -80,6 +81,7 @@ const RecipeDetailPage = () => {
               },
               navigate
             );
+            if (!result) return;
             console.log('레시피 생성 성공:', result);
             setData(result.data);
             sessionStorage.setItem(

@@ -7,6 +7,12 @@ import { categoryMap } from '@/type/community';
 import { customFetch } from '@/hooks/CustomFetch';
 import { ErrorModal } from '@/components/ErrorModal';
 
+type PostDetailResponse = {
+   title: string;
+   content: string;
+   postImage: string | null;
+}
+
 const EditPostPage: React.FC = () => {
    const { postId } = useParams();
    const navigate = useNavigate();
@@ -20,7 +26,7 @@ const EditPostPage: React.FC = () => {
 
    const fetchPostDetail = async () => {
       try {
-         const res = await customFetch(
+         const res = await customFetch<PostDetailResponse>(
             `/boards/${postId}/full`,
             {
                method: 'GET',

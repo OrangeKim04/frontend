@@ -14,6 +14,10 @@ import searchActive from '@/assets/navbar/SearchB.svg';
 import { customFetch } from '@/hooks/CustomFetch';
 import { useUserStore } from '@/stores/user';
 
+type User = {
+  name: string;
+  email: string;
+};
 const RootLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,7 +67,7 @@ const RootLayout = () => {
 
   const fetchUser = async () => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<{ data: User }>(
         '/user',
         {
           method: 'GET',
@@ -71,9 +75,10 @@ const RootLayout = () => {
         },
         navigate
       );
-      console.log('사용자 정보 조회', result.data);
+      if (result) {console.log('사용자 정보 조회', result.data);
       setName(result.data.name);
       setEmail(result.data.email);
+      }
     } catch (error) {
       console.error('사용자 정보 조회 실패', error);
     }

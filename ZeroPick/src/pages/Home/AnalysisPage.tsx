@@ -14,6 +14,12 @@ import FoodImg from '@/components/FoodImg';
 import Scrap from '@/components/Scrapped';
 import SugarComponents from '@/components/SugarComponents';
 
+type MatchedSweetenerResponse = {
+  matchedSubstitutes: Substitute[];
+};
+
+
+
 const AnalysisPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +32,7 @@ const AnalysisPage = () => {
   // OCR로 감미료 정보 확인
   const fetchOcrData = async () => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<MatchedSweetenerResponse>(
         '/ocr/confirm',
         {
           method: 'POST',
@@ -41,7 +47,7 @@ const AnalysisPage = () => {
         navigate
       );
       console.log('감미료 정보 확인', result);
-      setSugar(result.matchedSubstitutes || []);
+      setSugar(result?.matchedSubstitutes || []);
     } catch (error) {
       console.error('Fetch error (OCR):', error);
     }
@@ -50,7 +56,7 @@ const AnalysisPage = () => {
   // 품목제조보고번호로 상세 정보 검색
   const fetchNutritientsByNum = async (itemReportNo: string) => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<ExtendedNutrientData>(
         `/foods/search-item-detail?itemReportNo=${itemReportNo}`,
         {
           method: 'GET',
@@ -70,7 +76,7 @@ const AnalysisPage = () => {
   // ID기반 식품 상세 조회
   const fetchNutritientsByID = async (id: string) => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<ExtendedNutrientData>(
         `/foods/${id}`,
         {
           method: 'GET',
@@ -90,7 +96,7 @@ const AnalysisPage = () => {
   // ID기반 대체당 목록 조회
   const fetchSugarByID = async (id: string) => {
     try {
-      const result = await customFetch(
+      const result = await customFetch<Substitute[]>(
         `/foods/${id}/sweeteners`,
         {
           method: 'GET',

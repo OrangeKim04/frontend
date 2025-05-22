@@ -11,10 +11,6 @@ import scrapIcon from '@/assets/setting/스크랩.svg';
 import { customFetch } from '@/hooks/CustomFetch';
 import LogoutModal from '@/components/Modal/LogoutModal';
 
-type User = {
-  email: string;
-  name: string;
-};
 
 const SettingPage = () => {
    const navigate = useNavigate();

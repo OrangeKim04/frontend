@@ -9,6 +9,11 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { customFetch } from '@/hooks/CustomFetch';
 
+type ProductItem = {
+  foodNmKr: string;
+  id: number;
+}
+
 const SearchPage = () => {
   const [keyword, setKeyword] = useState(sessionStorage.getItem('keyword') || '');
   const navigate = useNavigate();
@@ -30,10 +35,10 @@ const SearchPage = () => {
     isError,
   } = useInfiniteQuery({
     queryKey: ['ProductList', keyword],
-    queryFn: async ({ pageParam }): Promise<Array<{ foodNmKr: string; id: number }>> => {
+    queryFn: async ({ pageParam }): Promise<ProductItem[]> => {
       console.log('Current pageParam:', pageParam);
       sessionStorage.setItem('keyword', keyword);
-      const result = await customFetch(
+      const result = await customFetch<ProductItem[]>(
         `/foods/search-names?name=${encodeURIComponent(keyword || '가')}&page=${pageParam}`,
         {
           method: 'GET',
@@ -41,6 +46,7 @@ const SearchPage = () => {
         },
         navigate
       );
+      if (!result) return [];
       return result;
     },
     initialPageParam: 0,
@@ -82,8 +88,7 @@ const SearchPage = () => {
                 ? page.map((item, id) => (
                     <Product
                       key={`${pageIndex}-${id}`}
-                      foodNmKr={item.foodNmKr}
-                      foodId={item.id}
+                      item={{ foodNmKr: item.foodNmKr, foodId: item.id}}
                     />
                   ))
                 : null
