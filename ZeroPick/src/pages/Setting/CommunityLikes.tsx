@@ -1,23 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { FaRegComment } from 'react-icons/fa';
 import { customFetch } from '@/hooks/CustomFetch';
 import LeftArrow from '@/assets/Left Arrow.svg';
-
-type LikedPost = {
-   boardId: string;
-   title: string;
-   name: string; // 작성자
-   createdDate: string;
-   content: string;
-   likeCount: number;
-   commentCount: number;
-};
+import CommunityItem from '@/components/CommunityItem';
+import { Post } from '@/type/post';
 
 const CommunityLikes = () => {
    const navigate = useNavigate();
-   const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
+   const [likedPosts, setLikedPosts] = useState<Post[]>([]);
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
@@ -26,7 +17,7 @@ const CommunityLikes = () => {
          try {
             let page = 0;
             let last = false;
-            const all: LikedPost[] = [];
+            const all: Post[] = [];
 
             while (!last) {
                const res = await customFetch(
@@ -67,37 +58,8 @@ const CommunityLikes = () => {
             <Message>좋아요한 게시글이 없습니다.</Message>
          ) : (
             <List>
-               {likedPosts.map(post => (
-                  <Item
-                     key={post.boardId}
-                     onClick={() =>
-                        navigate(`/community/post/${post.boardId}`)
-                     }>
-                     <PostTitle>{post.title}</PostTitle>
-                     <Meta>
-                        <Author>{post.name}</Author>
-                        <Stats>
-                           <Stat>
-                              <img
-                                 src={
-                                    post.likeCount > 0
-                                       ? '/src/assets/setting/favorite_fill.svg'
-                                       : '/src/assets/setting/favorite_border.svg'
-                                 }
-                                 alt="like"
-                                 width={16}
-                                 height={16}
-                                 style={{ marginRight: 4 }}
-                              />
-                              {post.likeCount}
-                           </Stat>
-                           <Stat>
-                              <FaRegComment style={{ marginRight: 4 }} />
-                              {post.commentCount}
-                           </Stat>
-                        </Stats>
-                     </Meta>
-                  </Item>
+               {likedPosts.map((post, id) => (
+                  <CommunityItem key={id} post={post} />
                ))}
             </List>
          )}
@@ -146,42 +108,4 @@ const List = styled.div`
    display: flex;
    flex-direction: column;
    gap: 1rem;
-`;
-
-const Item = styled.div`
-   border: 1px solid #ddd;
-   border-radius: 8px;
-   padding: 1rem;
-   cursor: pointer;
-   transition: background 0.2s;
-   &:hover {
-      background: #f9f9f9;
-   }
-`;
-
-const PostTitle = styled.h2`
-   margin: 0 0 0.5rem;
-   font-size: 1rem;
-`;
-
-const Meta = styled.div`
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-`;
-
-const Author = styled.span`
-   font-size: 0.85rem;
-   color: #555;
-`;
-
-const Stats = styled.div`
-   display: flex;
-   gap: 0.5rem;
-`;
-
-const Stat = styled.div`
-   display: flex;
-   align-items: center;
-   font-size: 0.85rem;
 `;

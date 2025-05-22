@@ -41,7 +41,7 @@ const HomePage = () => {
             </Title>
             <CameraImg src={CameraIcon} />
             <Button onClick={handleClick} style={{ fontSize: '1.1rem' }}>
-               원재료 성분 확인하기
+               원재료를 촬영해 보세요
             </Button>
             <input
                ref={inputRef}

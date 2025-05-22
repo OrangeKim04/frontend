@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaRegComment } from 'react-icons/fa';
 import { customFetch } from '@/hooks/CustomFetch';
 import { Post } from '@/type/post';
 import LeftArrow from '@/assets/Left Arrow.svg'; // ← 아이콘 경로 예시
+import CommunityItem from '@/components/CommunityItem';
 
 const MyWritePost: React.FC = () => {
    const navigate = useNavigate();
@@ -12,7 +12,7 @@ const MyWritePost: React.FC = () => {
    const [page, setPage] = useState(0);
    const [hasMore, setHasMore] = useState(true);
    const [loading, setLoading] = useState(false);
-   const observerRef = useRef<IntersectionObserver | null>(null);
+   /* const observerRef = useRef<IntersectionObserver | null>(null); */
 
    const fetchMyPosts = useCallback(async () => {
       if (loading || !hasMore) return;
@@ -51,7 +51,7 @@ const MyWritePost: React.FC = () => {
       fetchMyPosts();
    }, []);
 
-   const lastPostRef = useCallback(
+   /*   const lastPostRef = useCallback(
       (node: HTMLDivElement) => {
          if (loading) return;
          if (observerRef.current) observerRef.current.disconnect();
@@ -63,7 +63,7 @@ const MyWritePost: React.FC = () => {
          if (node) observerRef.current.observe(node);
       },
       [loading, hasMore, fetchMyPosts],
-   );
+   ); */
 
    return (
       <Container>
@@ -78,38 +78,8 @@ const MyWritePost: React.FC = () => {
             <Message>작성한 게시글이 없습니다.</Message>
          ) : (
             <List>
-               {posts.map((post, index) => (
-                  <Item
-                     key={`${post.boardId}-${index}`}
-                     onClick={() => navigate(`/community/post/${post.boardId}`)}
-                     ref={index === posts.length - 1 ? lastPostRef : undefined}>
-                     <PostTitle>{post.title}</PostTitle>
-                     <Meta>
-                        <Author>{post.name}</Author>
-                        <Counts>
-                           <Count>
-                              <img
-                                 src={
-                                    post.likeCount > 0
-                                       ? '/src/assets/setting/favorite_fill.svg'
-                                       : '/src/assets/setting/favorite_border.svg'
-                                 }
-                                 alt="like"
-                                 style={{
-                                    width: 16,
-                                    height: 16,
-                                    marginRight: 4,
-                                 }}
-                              />
-                              {post.likeCount}
-                           </Count>
-                           <Count>
-                              <FaRegComment style={{ marginRight: 4 }} />
-                              {post.commentCount}
-                           </Count>
-                        </Counts>
-                     </Meta>
-                  </Item>
+               {posts.map((post, id) => (
+                  <CommunityItem key={id} post={post} />
                ))}
             </List>
          )}
@@ -119,8 +89,6 @@ const MyWritePost: React.FC = () => {
 };
 
 export default MyWritePost;
-
-/* ---------- Styled Components ---------- */
 
 const Container = styled.div`
    padding: 1rem;
@@ -161,42 +129,4 @@ const List = styled.div`
    display: flex;
    flex-direction: column;
    gap: 1rem;
-`;
-
-const Item = styled.div`
-   border: 1px solid #ddd;
-   border-radius: 8px;
-   padding: 1rem;
-   cursor: pointer;
-   transition: background 0.2s;
-   &:hover {
-      background: #f9f9f9;
-   }
-`;
-
-const PostTitle = styled.h2`
-   margin: 0 0 0.5rem;
-   font-size: 1rem;
-`;
-
-const Meta = styled.div`
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-`;
-
-const Author = styled.span`
-   font-size: 0.85rem;
-   color: #555;
-`;
-
-const Counts = styled.div`
-   display: flex;
-   gap: 0.5rem;
-`;
-
-const Count = styled.div`
-   display: flex;
-   align-items: center;
-   font-size: 0.85rem;
 `;

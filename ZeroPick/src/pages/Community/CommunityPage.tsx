@@ -1,13 +1,10 @@
 import { categoryMap } from '@/type/community';
 import { Post } from '@/type/post';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FaRegComment } from 'react-icons/fa';
-import fillHeartIcon from '@/assets/setting/favorite_fill.svg';
-import blankHeartIcon from '@/assets/setting/favorite_border.svg';
 import { useNavigate } from 'react-router-dom';
 import pencilIcon from '@/assets/setting/PostButtonIcon.svg';
 import styled from 'styled-components';
-import { SubText } from '@/components/styles/common';
+import CommunityItem from '@/components/CommunityItem';
 
 const CommunityPage: React.FC = () => {
    const [categories] = useState<string[]>([
@@ -74,21 +71,8 @@ const CommunityPage: React.FC = () => {
       setActiveCategory(category);
    };
 
-   // 이건 상세 페이지에서!
-   // const handleLike = (postId: number) => {
-   //   // TODO: 좋아요 API 연동
-   // };
-
-   // const handleComment = (postId: number) => {
-   //   // TODO: 댓글 API 연동
-   // };
-
    const handleFloatingButtonClick = () => {
       navigate('/community/write');
-   };
-
-   const handlePostClick = (postId: number) => {
-      navigate(`/community/post/${postId}`);
    };
 
    return (
@@ -107,58 +91,9 @@ const CommunityPage: React.FC = () => {
          </CategoryTabsContainer>
 
          <PostsContainer>
-            {posts.map(post => {
-               return (
-                  <PostCard
-                     key={post.boardId}
-                     onClick={() => handlePostClick(post.boardId)}>
-                     <PostAuthor>{post.name}</PostAuthor>
-                     <PostTitle>{post.title}</PostTitle>
-                     <PostContent>
-                        {post.content.length > 25
-                           ? `${post.content.slice(0, 25)}...`
-                           : post.content}
-                     </PostContent>
-
-                     <ActionsContainer>
-                        <ActionButton
-                           as="div"
-                           // onClick={e => {
-                           //   e.stopPropagation();
-                           //   handleLike(post.boardId);
-                           // }}
-                        >
-                           <img
-                              src={
-                                 post.likeCount > 0
-                                    ? fillHeartIcon
-                                    : blankHeartIcon
-                              }
-                              alt="like"
-                              style={{
-                                 width: '14px',
-                                 marginRight: '4px',
-                              }}
-                           />
-                           {post.likeCount}
-                        </ActionButton>
-                        <ActionButton
-                           as="div"
-                           // onClick={e => {
-                           //   e.stopPropagation();
-                           //   handleComment(post.boardId);
-                           // }}
-                        >
-                           <FaRegComment
-                              style={{ color: 'black', marginRight: '4px' }}
-                           />
-                           {post.commentCount}
-                        </ActionButton>
-                        <DateText>{post.createdDate}</DateText>
-                     </ActionsContainer>
-                  </PostCard>
-               );
-            })}
+            {posts.map((post, id) => (
+               <CommunityItem key={id} post={post} />
+            ))}
             <ObserverDiv ref={hasMore ? lastPostRef : null} />
             {loading && <LoadingMessage>로딩 중...</LoadingMessage>}
             {!hasMore && <EndMessage>마지막 게시글입니다.</EndMessage>}
@@ -203,15 +138,7 @@ const CategoryTabsContainer = styled.div`
    z-index: 10;
    position: relative;
 `;
-const DateText = styled(SubText)`
-   color: gray;
-   display: inline-block;
-   position: absolute;
-   bottom: 16px;
-   right: 16px;
-   margin: 0;
-   font-size: 0.8rem;
-`;
+
 const CategoryButton = styled.button<{ $isActive: boolean }>`
    flex: 1;
    background: white;
@@ -246,51 +173,6 @@ const CategoryButton = styled.button<{ $isActive: boolean }>`
 
 const PostsContainer = styled.div`
    padding: 1rem;
-`;
-
-const PostCard = styled.div`
-   position: relative;
-   border: 1px solid #e1e1e1;
-   border-radius: 10px;
-   padding: 1rem;
-   margin-bottom: 1rem;
-`;
-
-const PostAuthor = styled.p`
-   display: inline-block;
-   position: absolute;
-   top: 16px;
-   right: 16px;
-   margin: 0;
-   font-family: Regular;
-   font-size: 0.9rem;
-`;
-
-const PostTitle = styled.h2`
-   margin: 0;
-   font-size: 1rem;
-   font-family: Medium;
-`;
-
-const PostContent = styled.p`
-   font-size: 0.9rem;
-   color: #555;
-   font-family: Regular;
-`;
-
-const ActionsContainer = styled.div`
-   margin-top: 0.5rem;
-   display: flex;
-   gap: 1rem;
-`;
-
-const ActionButton = styled.button`
-   background: none;
-   border: none;
-   color: #333;
-   cursor: pointer;
-   display: flex;
-   align-items: center;
 `;
 
 const LoadingMessage = styled.p`
