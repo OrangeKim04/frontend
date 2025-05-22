@@ -11,6 +11,7 @@ export default defineConfig({
          '@': resolve(__dirname, 'src'),
       },
    },
+
    /*  server: {
       port: 5174,
       proxy: {
@@ -23,8 +24,8 @@ export default defineConfig({
       // 필요 시 HTTPS 설정 활성화
 
       https: {
-         key: fs.readFileSync('./cert/localhost+1-key.pem'),
-         cert: fs.readFileSync('./cert/localhost+1.pem'),
+         key: fs.readFileSync('./cert/localhost-key.pem'),
+         cert: fs.readFileSync('./cert/localhost.pem'),
       },
    }, */
 });

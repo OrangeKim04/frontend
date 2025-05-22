@@ -77,11 +77,11 @@ const SettingPage = () => {
             </ProfileBox>
             <Br />
 
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/setting/mypost')}>
                <MenuIcon src={postIcon} />
                <InfoText>내 게시글</InfoText>
             </InfoBox>
-            <InfoBox>
+            <InfoBox onClick={() => navigate('/setting/likes')}>
                <MenuIcon src={communityIcon} />
                <InfoText>커뮤니티 좋아요 목록</InfoText>
             </InfoBox>

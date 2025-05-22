@@ -17,6 +17,8 @@ import AnalysisPage from './pages/Home/AnalysisPage';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
 import WritePostPage from './pages/Community/WritePostPage';
+import MyWritePost from './pages/Setting/MyWritePost';
+import CommunityLikes from './pages/Setting/CommunityLikes';
 import PostDetailPage from './pages/Community/PostDetailPage';
 import EditPostPage from './pages/Community/EditPostPage';
 import SavedRecipe from './pages/Setting/SavedRecipe';
@@ -54,6 +56,8 @@ const router = createBrowserRouter([
          { path: 'recipe/:title', element: <RecipeDetailPage /> },
          { path: 'setting/recipes', element: <SavedRecipe /> },
          { path: 'setting/ocr', element: <SavedOCR /> },
+         { path: 'setting/mypost', element: <MyWritePost /> },
+         { path: 'setting/likes', element: <CommunityLikes /> },
       ],
    },
 ]);
