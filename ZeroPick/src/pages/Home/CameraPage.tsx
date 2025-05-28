@@ -105,7 +105,7 @@ const CameraPage = () => {
    return (
       <Wrapper>
          <BackArrow url="/home" />
-         <Title>원재료명을 찍어주세요</Title>
+         <Title>품목번호와 원재료명을 찍어주세요</Title>
          <Cropper
             src={image} // 사용자가 선택한 사진
             ref={cropperRef}
@@ -153,7 +153,7 @@ const Wrapper = styled.div`
 const Title = styled.p`
    margin: 0;
    font-family: SemiBold;
-   font-size: 1.4rem;
+   font-size: 1.2rem;
    margin: 0;
    text-align: center;
    margin: 20px 0;
