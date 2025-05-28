@@ -214,10 +214,11 @@ const CategoryChip = styled.button<{ selected: boolean }>`
 
 const PageContainer = styled.div`
    font-family: Arial, sans-serif;
+   height: 100dvh; /* ✅ iOS, 모바일 뷰포트 정확한 높이 */
+   overflow-y: auto; /* ✅ 스크롤 가능하게 */
    padding: 1rem;
    background-color: #f9f9f9;
-   min-height: 100vh;
-   padding-bottom: 100px;
+   padding-bottom: 100px; /* ✅ 하단 버튼 공간 확보 */
 `;
 
 const Header = styled.header`
