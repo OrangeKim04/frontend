@@ -26,6 +26,10 @@ import SavedOCR from './pages/Setting/SavedOcr';
 
 const router = createBrowserRouter([
    {
+      path: '/',
+      element: <SplashPage />,
+   },
+   {
       path: '/login',
       element: <LoginPage />,
    },
@@ -42,7 +46,6 @@ const router = createBrowserRouter([
       path: '/', // 루트 경로
       element: <RootLayout />,
       children: [
-         { index: true, element: <SplashPage /> }, // 기본 경로
          { path: 'home', element: <HomePage /> }, // /home 경로 추가
          { path: 'recipe', element: <RecipePage /> },
          { path: 'search', element: <SearchPage /> },

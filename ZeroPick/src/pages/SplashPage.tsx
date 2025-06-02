@@ -31,6 +31,8 @@ const SplashPage = () => {
 export default SplashPage;
 
 const Container = styled.div`
+   position: relative;
+   overflow: hidden;
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -39,21 +41,21 @@ const Container = styled.div`
    background-color: #ff9eb3;
    color: white;
    text-align: center;
-   z-index: 100;
+   z-index: 0;
    background-image: url(${backgroundImg});
    background-repeat: no-repeat;
-   background-size: cover; /* 이미지가 전체를 덮도록 조정 */
-   background-position: center; /* 이미지가 중앙에 위치하도록 설정 */
-   /* 아래를 추가하면 내부 요소는 블러 효과를 받지 않음 */
-   &:before {
+   background-size: cover;
+   background-position: center;
+
+   &::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      backdrop-filter: blur(100px); /* 배경 블러 */
-      -webkit-backdrop-filter: blur(100px); /* Webkit을 위한 접두사 */
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(20px);
       z-index: -1;
    }
 `;
