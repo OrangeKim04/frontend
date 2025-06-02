@@ -66,6 +66,11 @@ const PostTitle = styled.h2`
    margin: 0;
    font-size: 1rem;
    font-family: Medium;
+   padding-right: 80px;
+   word-break: break-word;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 `;
 
 const PostContent = styled.p`
