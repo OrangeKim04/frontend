@@ -12,56 +12,28 @@ on:
 
 jobs:
 
-  build:
-
+  sync:
+    name: Sync forked repo
     runs-on: ubuntu-latest
 
-    container: pandoc/latex
-
     steps:
-
-      - uses: actions/checkout@v2
-
-
-
-      - name: Install mustache (to update the date)
-
-        run: apk add ruby && gem install mustache
-
-
-
-      - name: creates output
-
-        run: sh ./build.sh
-
-
-
-      - name: Pushes to another repository
-
-        id: push_directory
-
-        uses: cpina/github-action-push-to-another-repository@main
-
-        env:
-
-          API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
-
+      - name: Checkout main
+        uses: actions/checkout@v4
         with:
+          token: ${{ secrets.TOKEN }}
+          fetch-depth: 0
+          ref: main
+          
+      - name: Add remote-url
+        run: |
+          git remote add forked-repo https://OrangeKim04:${{ secrets.TOKEN }}@github.com/OrangeKim04/frontend
+          git config user.name OrangeKim04
+          git config user.email ${{ secrets.EMAIL }}
 
-          source-directory: 'output'
+      - name: Push changes to forked-repo
+        run: |
+          git push -f forked-repo main
 
-          destination-github-username: OrangeKim04
-
-          destination-repository-name: frontend
-
-          user-email: ${{ secrets.EMAIL }}
-
-          commit-message: ${{ github.event.commits[0].message }}
-
-          target-branch: main
-
-
-
-      - name: Test get variable exported by push-to-another-repository
-
-        run: echo $DESTINATION_CLONED_DIRECTORY
+      - name: Clean up
+        run: |
+          git remote remove forked-repo
