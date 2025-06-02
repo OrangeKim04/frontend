@@ -14,38 +14,31 @@ import logoIcon from '@/assets/Logo.svg';
 
 const PostDetailPage: React.FC = () => {
    const inputRef = useRef<HTMLInputElement>(null);
-   const replyInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>(
-      {},
-   );
+   const replyInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
    const { postId } = useParams();
    const navigate = useNavigate();
    const { name } = useUserStore();
 
    const [showMenu, setShowMenu] = useState(false);
    const [liked, setLiked] = useState(false);
-   const [likeCount, setLikeCount] = useState(0); // 좋아요 수
-   const [comments, setComments] = useState<Comment[]>([]); // 댓글 목록
+   const [likeCount, setLikeCount] = useState(0);
+   const [comments, setComments] = useState<Comment[]>([]);
    const [commentCount, setCommentCount] = useState<number>(0);
    const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
-   const [showReplyInputs, setShowReplyInputs] = useState<{
-      [key: string]: boolean;
-   }>({});
+   const [showReplyInputs, setShowReplyInputs] = useState<{ [key: string]: boolean }>({});
+   const [editingComments, setEditingComments] = useState<{ [key: string]: boolean }>({});
+   const [editedContent, setEditedContent] = useState<{ [key: string]: string }>({});
+   // ← 추가: 댓글/대댓글 메뉴 토글 상태
+   const [showCommentMenu, setShowCommentMenu] = useState<{ [key: string]: boolean }>({});
 
    const fetchPostDetail = async () => {
       try {
          const res = await customFetch(
             `/boards/${postId}/full`,
-            {
-               method: 'GET',
-            },
+            { method: 'GET' },
             navigate,
          );
-
-         if (!res) {
-            alert('게시글을 불러오는데 실패하였습니다.');
-            throw new Error('게시글을 불러오는데 실패하였습니다.');
-         }
-         console.log(res);
+         if (!res) throw new Error('불러오기 실패');
          setPostDetail(res);
          setComments(res.comments);
          setLiked(res.liked);
@@ -65,62 +58,43 @@ const PostDetailPage: React.FC = () => {
       const confirmed = window.confirm('정말로 이 게시글을 삭제하시겠습니까?');
       if (!confirmed) return;
       try {
-         await customFetch(
-            `/boards/${postId}`,
-            {
-               method: 'DELETE',
-            },
-            navigate,
-         );
+         await customFetch(`/boards/${postId}`, { method: 'DELETE' }, navigate);
          alert('게시글이 삭제되었습니다.');
-         navigate(-1); //이전페이지로
+         navigate(-1);
       } catch (err) {
          console.log(err);
-         alert('삭제에 실패했습니다')
+         alert('삭제에 실패했습니다');
       }
    };
 
+   // ── 댓글 작성 ──
    const handleSubmitComment = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!inputRef.current || !inputRef.current.value) return;
+      if (!inputRef.current?.value) return;
 
       try {
          await customFetch(
             `/comments/${postId}`,
             {
                method: 'POST',
-               headers: {
-                  'Content-Type': 'application/json',
-                  accept: 'application/json',
-               },
-               body: JSON.stringify({
-                  content: inputRef.current.value,
-               }),
+               headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+               body: JSON.stringify({ content: inputRef.current.value }),
             },
             navigate,
          );
          inputRef.current.value = '';
          await fetchPostDetail();
-         setCommentCount(prev => prev + 1);
       } catch (error) {
          console.log(error);
       }
    };
 
    const fetchPostLike = () => {
-      customFetch(
-         `/likes/${postId}`,
-         {
-            method: 'POST',
-         },
-         navigate,
-      );
+      customFetch(`/likes/${postId}`, { method: 'POST' }, navigate);
    };
 
    const fetchCancelPostLike = () => {
-      fetch(`/api/v1/likes/${postId}`, {
-         method: 'DELETE',
-      });
+      fetch(`/api/v1/likes/${postId}`, { method: 'DELETE' });
    };
 
    const handleLikeClick = () => {
@@ -134,31 +108,75 @@ const PostDetailPage: React.FC = () => {
       setLiked(prev => !prev);
    };
 
+   // ── 댓글 수정 모드 토글 ──
+   const toggleEditMode = (commentId: string, currentContent: string) => {
+      setEditingComments(prev => ({ ...prev, [commentId]: !prev[commentId] }));
+      if (!editingComments[commentId]) {
+         setEditedContent(prev => ({ ...prev, [commentId]: currentContent }));
+      } else {
+         setEditedContent(prev => {
+            const copy = { ...prev };
+            delete copy[commentId];
+            return copy;
+         });
+      }
+   };
+
+   // ── 댓글 저장(수정 완료) ──
+   const handleSaveEdit = async (commentId: string) => {
+      const newContent = editedContent[commentId]?.trim();
+      if (!newContent) return alert('내용을 입력해주세요.');
+      try {
+         await customFetch(
+            `/comments/${commentId}`,
+            {
+               method: 'PUT',
+               headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+               body: JSON.stringify({ content: newContent }),
+            },
+            navigate,
+         );
+         setEditingComments(prev => ({ ...prev, [commentId]: false }));
+         await fetchPostDetail();
+      } catch (err) {
+         console.log(err);
+         alert('댓글 수정에 실패했습니다.');
+      }
+   };
+
+    // ── 댓글/대댓글 삭제 ──
+   const handleDeleteComment = async (commentId: string) => {
+      const confirmed = window.confirm('정말로 이 댓글을 삭제하시겠습니까?');
+      if (!confirmed) return;
+      try {
+         await customFetch(`/comments/${commentId}`, { method: 'DELETE' }, navigate);
+         // 삭제 후 서버에서 최신 댓글 목록과 카운트를 가져옵니다.
+         await fetchPostDetail();
+      } catch (err) {
+         console.log(err);
+         alert('댓글 삭제에 실패했습니다.');
+      }
+   };
+  
+
+   // ── 대댓글 작성 ──
    const handleReplySubmit = async (commentId: string, e: React.FormEvent) => {
       e.preventDefault();
       const replyInput = replyInputRefs.current[commentId];
-      if (!replyInput || !replyInput.value) return;
+      if (!replyInput?.value) return;
 
       try {
          await customFetch(
             `/comments/${postId}`,
             {
                method: 'POST',
-               headers: {
-                  'Content-Type': 'application/json',
-                  accept: 'application/json',
-               },
-               body: JSON.stringify({
-                  content: replyInput.value,
-                  parentId: commentId,
-               }),
+               headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+               body: JSON.stringify({ content: replyInput.value, parentId: commentId }),
             },
             navigate,
          );
-
          replyInput.value = '';
          await fetchPostDetail();
-         setCommentCount(prev => prev + 1);
          setShowReplyInputs(prev => ({ ...prev, [commentId]: false }));
       } catch (error) {
          console.log(error);
@@ -166,10 +184,12 @@ const PostDetailPage: React.FC = () => {
    };
 
    const toggleReplyInput = (commentId: string) => {
-      setShowReplyInputs(prev => ({
-         ...prev,
-         [commentId]: !prev[commentId],
-      }));
+      setShowReplyInputs(prev => ({ ...prev, [commentId]: !prev[commentId] }));
+   };
+
+   // ← 추가: 댓글/대댓글 메뉴 토글 함수
+   const toggleCommentMenu = (commentId: string) => {
+      setShowCommentMenu(prev => ({ ...prev, [commentId]: !prev[commentId] }));
    };
 
    if (!postDetail) {
@@ -181,44 +201,22 @@ const PostDetailPage: React.FC = () => {
          {/* 헤더 */}
          <TopBar>
             <BackButton onClick={() => navigate(-1)}>
-               <img
-                  src={LeftArrow}
-                  alt="back"
-                  style={{ width: '24px', height: '24px' }}
-               />
+               <img src={LeftArrow} alt="back" style={{ width: '24px', height: '24px' }} />
             </BackButton>
             <TitleText>제로픽</TitleText>
             <MenuWrapper>
-               <HiOutlineDotsVertical
-                  onClick={() => setShowMenu(prev => !prev)}
-                  style={{ cursor: 'pointer' }}
-               />
+               <HiOutlineDotsVertical onClick={() => setShowMenu(prev => !prev)} style={{ cursor: 'pointer' }} />
                {showMenu && (
                   <DropdownMenu>
                      {name === postDetail.nickname ? (
                         <>
-                           <DropdownItem
-                              onClick={() =>
-                                 navigate(`/community/edit/${postId}`)
-                              }>
-                              수정
-                           </DropdownItem>
-                           <DropdownItem onClick={deletePost}>
-                              삭제
-                           </DropdownItem>
+                           <DropdownItem onClick={() => navigate(`/community/edit/${postId}`)}>수정</DropdownItem>
+                           <DropdownItem onClick={deletePost}>삭제</DropdownItem>
                         </>
                      ) : (
                         <>
-                           <DropdownItem
-                              onClick={() => {
-                                 handleLikeClick();
-                                 setShowMenu(false);
-                              }}>
-                              좋아요
-                           </DropdownItem>
-                           <DropdownItem onClick={() => alert('신고 클릭')}>
-                              신고
-                           </DropdownItem>
+                           <DropdownItem onClick={() => { handleLikeClick(); setShowMenu(false); }}>좋아요</DropdownItem>
+                           <DropdownItem onClick={() => alert('신고 클릭')}>신고</DropdownItem>
                         </>
                      )}
                   </DropdownMenu>
@@ -240,9 +238,7 @@ const PostDetailPage: React.FC = () => {
                <Content>{postDetail.content}</Content>
                <img src={postDetail.postImage} />
                <IconRow>
-                  <IconWithText
-                     onClick={handleLikeClick}
-                     style={{ cursor: 'pointer' }}>
+                  <IconWithText onClick={handleLikeClick} style={{ cursor: 'pointer' }}>
                      <img
                         src={liked ? FavoriteFillIcon : FavoriteBorderIcon}
                         alt="like"
@@ -251,13 +247,7 @@ const PostDetailPage: React.FC = () => {
                      {likeCount}
                   </IconWithText>
                   <IconWithText>
-                     <FaRegComment
-                        style={{
-                           color: 'black',
-                           width: '16px',
-                           height: '16px',
-                        }}
-                     />
+                     <FaRegComment style={{ color: 'black', width: '16px', height: '16px' }} />
                      {commentCount}
                   </IconWithText>
                </IconRow>
@@ -268,47 +258,136 @@ const PostDetailPage: React.FC = () => {
                {comments.map(c => (
                   <CommentThread key={c.id}>
                      <CommentItem>
-                        <CommentNickname>{c.username}</CommentNickname>
-                        <CommentText>{c.content}</CommentText>
+                        <CommentBody>
+                           <CommentNickname>{c.username}</CommentNickname>
+                           {/* 수정 모드가 아닐 때 */}
+                           {!editingComments[c.id] ? (
+                              <CommentText>{c.content}</CommentText>
+                           ) : (
+                              /* 수정 모드일 때 */
+                              <EditWrapper>
+                                 <EditInput
+                                    value={editedContent[c.id] || ''}
+                                    onChange={e =>
+                                       setEditedContent(prev => ({
+                                          ...prev,
+                                          [c.id]: e.target.value,
+                                       }))
+                                    }
+                                 />
+                                 <EditButton onClick={() => handleSaveEdit(c.id)}>저장</EditButton>
+                                 <CancelButton onClick={() => {
+                                    toggleEditMode(c.id, c.content);
+                                    // 메뉴도 닫아주기
+                                    setShowCommentMenu(prev => ({ ...prev, [c.id]: false }));
+                                 }}>취소</CancelButton>
+                              </EditWrapper>
+                           )}
+                        </CommentBody>
+
+                        {/* 현재 사용자 작성 댓글에만 세 점(︙) 버튼 */}
+                        {c.username === name && (
+                           <CommentMenuWrapper>
+                              <ThreeDotButton onClick={() => toggleCommentMenu(c.id)}>
+                                 <HiOutlineDotsVertical size={18} />
+                              </ThreeDotButton>
+                              {/* 메뉴를 showCommentMenu[c.id]일 때만 보여주도록 변경 */}
+                              {showCommentMenu[c.id] && (
+                                 <CommentDropdownMenu>
+                                    {!editingComments[c.id] ? (
+                                       <CommentDropdownItem onClick={() => toggleEditMode(c.id, c.content)}>
+                                          수정
+                                       </CommentDropdownItem>
+                                    ) : (
+                                       <CommentDropdownItem onClick={() => toggleEditMode(c.id, c.content)}>
+                                          수정 취소
+                                       </CommentDropdownItem>
+                                    )}
+                                    <CommentDropdownItem onClick={() => handleDeleteComment(c.id)}>
+                                       삭제
+                                    </CommentDropdownItem>
+                                 </CommentDropdownMenu>
+                              )}
+                           </CommentMenuWrapper>
+                        )}
                      </CommentItem>
 
+                     {/* 대댓글 */}
                      {c.replies.length > 0 && (
                         <ReplySection>
                            {c.replies.map(reply => (
                               <ReplyItem key={reply.id}>
-                                 <CommentNickname>
-                                    {reply.username}
-                                 </CommentNickname>
-                                 <CommentText>{reply.content}</CommentText>
+                                 <ReplyBody>
+                                    <CommentNickname>{reply.username}</CommentNickname>
+                                    {!editingComments[reply.id] ? (
+                                       <CommentText>{reply.content}</CommentText>
+                                    ) : (
+                                       <EditWrapper>
+                                          <EditInput
+                                             value={editedContent[reply.id] || ''}
+                                             onChange={e =>
+                                                setEditedContent(prev => ({
+                                                   ...prev,
+                                                   [reply.id]: e.target.value,
+                                                }))
+                                             }
+                                          />
+                                          <EditButton onClick={() => handleSaveEdit(reply.id)}>저장</EditButton>
+                                          <CancelButton onClick={() => {
+                                             toggleEditMode(reply.id, reply.content);
+                                             setShowCommentMenu(prev => ({ ...prev, [reply.id]: false }));
+                                          }}>취소</CancelButton>
+                                       </EditWrapper>
+                                    )}
+                                 </ReplyBody>
+
+                                 {/* 대댓글 작성자 본인에게만 세 점(︙) 버튼 */}
+                                 {reply.username === name && (
+                                    <CommentMenuWrapper>
+                                       <ThreeDotButton onClick={() => toggleCommentMenu(reply.id)}>
+                                          <HiOutlineDotsVertical size={18} />
+                                       </ThreeDotButton>
+                                       {showCommentMenu[reply.id] && (
+                                          <CommentDropdownMenu>
+                                             {!editingComments[reply.id] ? (
+                                                <CommentDropdownItem onClick={() => toggleEditMode(reply.id, reply.content)}>
+                                                   수정
+                                                </CommentDropdownItem>
+                                             ) : (
+                                                <CommentDropdownItem onClick={() => toggleEditMode(reply.id, reply.content)}>
+                                                   수정 취소
+                                                </CommentDropdownItem>
+                                             )}
+                                             <CommentDropdownItem onClick={() => handleDeleteComment(reply.id)}>
+                                                삭제
+                                             </CommentDropdownItem>
+                                          </CommentDropdownMenu>
+                                       )}
+                                    </CommentMenuWrapper>
+                                 )}
                               </ReplyItem>
                            ))}
                         </ReplySection>
                      )}
 
-                     <ReplyButton onClick={() => toggleReplyInput(c.id)}>
-                        답글 달기
-                     </ReplyButton>
+                     <ReplyButton onClick={() => toggleReplyInput(c.id)}>답글 달기</ReplyButton>
 
                      <ReplyInputWrapper
                         onSubmit={e => handleReplySubmit(c.id, e)}
                         style={{
-                           visibility: showReplyInputs[c.id]
-                              ? 'visible'
-                              : 'hidden',
+                           visibility: showReplyInputs[c.id] ? 'visible' : 'hidden',
                            height: showReplyInputs[c.id] ? '40px' : '0',
                            margin: showReplyInputs[c.id] ? '0.5rem 0' : '0',
                            opacity: showReplyInputs[c.id] ? 1 : 0,
                            transition: 'all 0.2s ease-in-out',
                         }}>
                         <ReplyInput
-                           ref={(el: HTMLInputElement | null) => {
+                           ref={el => {
                               replyInputRefs.current[c.id] = el;
                            }}
                            placeholder="답글을 입력해주세요"
                         />
-                        <ReplySubmitButton type="submit">
-                           확인
-                        </ReplySubmitButton>
+                        <ReplySubmitButton type="submit">확인</ReplySubmitButton>
                      </ReplyInputWrapper>
                   </CommentThread>
                ))}
@@ -327,18 +406,25 @@ const PostDetailPage: React.FC = () => {
 };
 
 export default PostDetailPage;
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 스타일 컴포넌트 정의 */
+
 const Box = styled.div`
    display: flex;
    align-items: center;
    gap: 10px;
 `;
+
 const Icon = styled.img`
    width: 38px;
 `;
+
 const DateText = styled(SubText)`
    color: gray;
    font-size: 0.8rem;
 `;
+
 const Container = styled.div`
    display: flex;
    flex-direction: column;
@@ -348,9 +434,7 @@ const Container = styled.div`
 const ContentWrapper = styled.div`
    flex: 1;
    padding: 1rem;
-   padding-bottom: calc(
-      1rem + 140px
-   ); // 하단 네비게이션 바 + 댓글 입력창 높이만큼 여백 추가
+   padding-bottom: calc(1rem + 140px); // 네비게이션바 + 댓글창 여백
    font-family: Arial, sans-serif;
    display: flex;
    flex-direction: column;
@@ -438,13 +522,6 @@ const Content = styled.p`
    margin-top: 0;
 `;
 
-// const ImageBox = styled.div`
-//   width: 100%;
-//   height: 120px;
-//   background-color: #e0e0e0;
-//   border-radius: 6px;
-// `;
-
 const IconRow = styled.div`
    display: flex;
    gap: 1rem;
@@ -473,6 +550,12 @@ const CommentThread = styled.div`
 
 const CommentItem = styled.div`
    margin-bottom: 0.75rem;
+   display: flex;
+   align-items: flex-start;
+`;
+
+const CommentBody = styled.div`
+   flex: 1;
 `;
 
 const CommentNickname = styled.div`
@@ -489,7 +572,7 @@ const CommentInputArea = styled.form`
    border-top: 1px solid #ddd;
    padding-top: 1rem;
    position: fixed;
-   bottom: 60px; // 네비게이션 바 높이만큼 위로 올림
+   bottom: 60px;
    left: 0;
    right: 0;
    background-color: white;
@@ -532,10 +615,16 @@ const ReplySection = styled.div`
 `;
 
 const ReplyItem = styled.div`
+   display: flex;
+   align-items: flex-start;
    margin-bottom: 0.5rem;
    padding: 0.5rem;
    background-color: #f9f9f9;
    border-radius: 4px;
+`;
+
+const ReplyBody = styled.div`
+   flex: 1;
 `;
 
 const ReplyInputWrapper = styled.form`
@@ -581,5 +670,89 @@ const ReplyButton = styled.button`
 
    &:hover {
       color: #666;
+   }
+`;
+
+const EditWrapper = styled.div`
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   margin-top: 0.5rem;
+`;
+
+const EditInput = styled.input`
+   flex: 1;
+   padding: 0.4rem;
+   border: 1px solid #cccccc;
+   border-radius: 4px;
+   font-size: 0.9rem;
+`;
+
+const EditButton = styled.button`
+   background-color: #4a90e2;
+   color: white;
+   padding: 0.4rem 0.8rem;
+   border: none;
+   border-radius: 4px;
+   font-size: 0.85rem;
+   cursor: pointer;
+
+   &:hover {
+      background-color: #357ab8;
+   }
+`;
+
+const CancelButton = styled.button`
+   background-color: #aaaaaa;
+   color: white;
+   padding: 0.4rem 0.8rem;
+   border: none;
+   border-radius: 4px;
+   font-size: 0.85rem;
+   cursor: pointer;
+
+   &:hover {
+      background-color: #888888;
+   }
+`;
+
+const CommentMenuWrapper = styled.div`
+   position: relative;
+   margin-left: 0.5rem;
+`;
+
+const ThreeDotButton = styled.button`
+   background: none;
+   border: none;
+   cursor: pointer;
+   padding: 0;
+   display: flex;
+   align-items: center;
+
+   &:hover {
+      opacity: 0.7;
+   }
+`;
+
+const CommentDropdownMenu = styled.div`
+   position: absolute;
+   top: 100%;
+   right: 0;
+   background-color: white;
+   border: 1px solid #dddddd;
+   border-radius: 4px;
+   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+   z-index: 10;
+   min-width: 80px;
+`;
+
+const CommentDropdownItem = styled.div`
+   padding: 0.5rem 0.8rem;
+   font-size: 0.9rem;
+   color: #333333;
+   cursor: pointer;
+
+   &:hover {
+      background-color: #f2f2f2;
    }
 `;
