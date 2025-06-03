@@ -1,6 +1,5 @@
 import {
    ModalBox,
-   Overlay,
    Message,
    ButtonRow,
    ModalButton,
@@ -8,6 +7,8 @@ import {
 } from '../styles/ModalStyle';
 import { useNavigate } from 'react-router-dom';
 import { customFetch } from '@/hooks/CustomFetch';
+import { AnimatedModalWrapper } from './AnimatedModalWrapper';
+import { useState } from 'react';
 type ModalProps = {
    onClose: () => void;
    id: string;
@@ -15,6 +16,7 @@ type ModalProps = {
 
 const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
    const navigate = useNavigate();
+   const [isVisible, setIsVisible] = useState(true);
    const handleUnScrap = async () => {
       try {
          const result = await customFetch(
@@ -37,15 +39,17 @@ const RecipeDeleteModal = ({ onClose, id }: ModalProps) => {
       handleUnScrap();
    };
    return (
-      <Overlay>
+      <AnimatedModalWrapper isVisible={isVisible} onClose={onClose}>
          <ModalBox>
             <Message>레시피를 정말 삭제하시겠습니까?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
-               <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
+               <ModalButtonCancel onClick={() => setIsVisible(false)}>
+                  취소
+               </ModalButtonCancel>
             </ButtonRow>
          </ModalBox>
-      </Overlay>
+      </AnimatedModalWrapper>
    );
 };
 

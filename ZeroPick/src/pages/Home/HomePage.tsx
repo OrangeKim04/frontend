@@ -7,11 +7,12 @@ import { Container, WhiteBox } from '@/components/styles/common';
 import { useRef } from 'react';
 import CameraIcon from '@/assets/home/img.svg';
 import { useNews } from '@/hooks/useNews';
+import { useEffect } from 'react';
 
 const HomePage = () => {
    const navigate = useNavigate();
    const inputRef = useRef<HTMLInputElement>(null);
-   /* const [data, setData] = useState<NewsItem[]>([]); // 뉴스 데이터를 저장할 상태 */
+   const ref = useRef<HTMLDivElement>(null);
    const { data } = useNews();
 
    const handleClick = () => {
@@ -25,7 +26,17 @@ const HomePage = () => {
          navigate('/camera', { state: { imageUrl: url } });
       }
    };
-
+   useEffect(() => {
+      let angle = 0;
+      const tick = () => {
+         angle = (angle + 1) % 360;
+         if (ref.current) {
+            ref.current.style.setProperty('--angle', `${angle}deg`);
+         }
+         requestAnimationFrame(tick);
+      };
+      tick();
+   }, []);
    return (
       <Container>
          <Top>
@@ -40,9 +51,11 @@ const HomePage = () => {
                제로제품 건강하게 선택하세요!
             </Title>
             <CameraImg src={CameraIcon} />
-            <Button onClick={handleClick} style={{ fontSize: '1.1rem' }}>
-               원재료명을 촬영해 보세요
-            </Button>
+            <ButtonWrapper ref={ref}>
+               <Button onClick={handleClick} style={{ fontSize: '1.1rem' }}>
+                  원재료명을 촬영해 보세요
+               </Button>
+            </ButtonWrapper>
             <input
                ref={inputRef}
                type="file"
@@ -63,6 +76,24 @@ const HomePage = () => {
    );
 };
 export default HomePage;
+
+const ButtonWrapper = styled.div`
+   width: 100%;
+   min-height: 50px;
+   padding: 2px;
+   background: conic-gradient(
+      from var(--angle, 0deg),
+      red,
+      yellow,
+      lime,
+      aqua,
+      blue,
+      magenta,
+      red
+   );
+   border-radius: 20px;
+   display: inline-block;
+`;
 
 const Top = styled.div`
    width: 100%;
