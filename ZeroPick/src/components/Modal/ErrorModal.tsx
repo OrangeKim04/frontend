@@ -1,32 +1,29 @@
 import styled from 'styled-components';
-
+import { AnimatedModalWrapper } from './AnimatedModalWrapper';
+import { useState } from 'react';
 export const ErrorModal = ({
    message,
    onClose,
 }: {
    message: string;
    onClose: () => void;
-}) => (
-   <ModalOverlay>
-      <ModalBox>
-         <ModalMessage>{message}</ModalMessage>
-         <ModalButton onClick={onClose}>확인</ModalButton>
-      </ModalBox>
-   </ModalOverlay>
-);
+}) => {
+   const [isVisible, setIsVisible] = useState(true);
 
-const ModalOverlay = styled.div`
-   position: fixed;
-   top: 0;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   background: rgba(0, 0, 0, 0.3);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   z-index: 9999;
-`;
+   const handleClose = () => {
+      setIsVisible(false);
+      setTimeout(onClose, 200); // 애니메이션 시간 후 종료
+   };
+   return (
+      <AnimatedModalWrapper isVisible={isVisible} onClose={onClose}>
+         <ModalBox>
+            <ModalMessage>{message}</ModalMessage>
+            <ModalButton onClick={handleClose}>확인</ModalButton>
+         </ModalBox>
+      </AnimatedModalWrapper>
+   );
+};
+
 const ModalBox = styled.div`
    background: #fff;
    padding: 2rem 1.5rem 1.2rem 1.5rem;

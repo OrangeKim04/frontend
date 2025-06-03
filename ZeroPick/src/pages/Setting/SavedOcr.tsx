@@ -31,7 +31,8 @@ const SavedOCR = () => {
       },
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
-         if (!lastPage || !Array.isArray(lastPage.content)) return undefined;
+         if (!lastPage || !lastPage.content || !Array.isArray(lastPage.content))
+            return undefined;
          return lastPage.content.length < 10 ? undefined : allPages.length;
       },
    });
@@ -49,8 +50,7 @@ const SavedOCR = () => {
             backgroundColor: 'white',
             padding: '20px',
             overflowY: 'auto',
-         }}
-      >
+         }}>
          <BackArrow url="/setting" />
          <Title>저장된 분석 결과</Title>
          {data?.pages?.map(page => {

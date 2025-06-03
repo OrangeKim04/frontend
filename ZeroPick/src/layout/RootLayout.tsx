@@ -1,6 +1,8 @@
-import { Outlet, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { createRef } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import home from '@/assets/navbar/homeG.svg';
 import recipe from '@/assets/navbar/forkG.svg';
 import community from '@/assets/navbar/HeartG.svg';
@@ -12,75 +14,106 @@ import communityActive from '@/assets/navbar/HeartB.svg';
 import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
 import { customFetch } from '@/hooks/CustomFetch';
-import { useEffect } from 'react';
 import { useUserStore } from '@/stores/user';
-import { useNavigate } from 'react-router-dom';
-const RootLayout = () => {
-   const categories = [
-      {
-         title: '홈',
-         link: '/home',
-         icon: home, // 기본 아이콘
-         activeIcon: homeActive, // 활성 상태 아이콘
-      },
-      {
-         title: '검색',
-         link: '/search',
-         icon: search,
-         activeIcon: searchActive,
-      },
-      {
-         title: '레시피',
-         link: '/recipe',
-         icon: recipe,
-         activeIcon: recipeActive,
-      },
+import './styles.css';
 
-      {
-         title: '커뮤니티',
-         link: '/community',
-         icon: community,
-         activeIcon: communityActive,
-      },
-      {
-         title: '설정',
-         link: '/setting',
-         icon: setting,
-         activeIcon: settingActive,
-      },
-   ];
-   const { name, email, setName, setEmail } = useUserStore();
+const TIMEOUT = 150;
+
+const categories = [
+   {
+      title: '홈',
+      link: '/home',
+      icon: home,
+      activeIcon: homeActive,
+      nodeRef: createRef<HTMLDivElement>(),
+   },
+   {
+      title: '검색',
+      link: '/search',
+      icon: search,
+      activeIcon: searchActive,
+      nodeRef: createRef<HTMLDivElement>(),
+   },
+   {
+      title: '레시피',
+      link: '/recipe',
+      icon: recipe,
+      activeIcon: recipeActive,
+      nodeRef: createRef<HTMLDivElement>(),
+   },
+   {
+      title: '커뮤니티',
+      link: '/community',
+      icon: community,
+      activeIcon: communityActive,
+      nodeRef: createRef<HTMLDivElement>(),
+   },
+   {
+      title: '설정',
+      link: '/setting',
+      icon: setting,
+      activeIcon: settingActive,
+      nodeRef: createRef<HTMLDivElement>(),
+   },
+];
+
+const RootLayout = () => {
+   const location = useLocation();
    const navigate = useNavigate();
+   const { name, email, setName, setEmail } = useUserStore();
    const [selected, setSelected] = useState<string>(
       sessionStorage.getItem('selectedCategory') || '홈',
    );
+
    const handleClick = (title: string) => {
       setSelected(title);
       sessionStorage.setItem('selectedCategory', title);
    };
+
    const fetchUser = async () => {
       try {
          const result = await customFetch(
             '/user',
-            {
-               method: 'GET',
-               headers: { accept: 'application/json' },
-            },
+            { method: 'GET', headers: { accept: 'application/json' } },
             navigate,
          );
-         console.log('사용자 정보 조회', result.data);
          setName(result.data.name);
          setEmail(result.data.email);
-      } catch (error) {
-         console.error('사용자 정보 조회 실패', error);
+      } catch {
+         /* error handled */
       }
    };
+
    useEffect(() => {
       if (!name || !email) fetchUser();
    }, []);
+
+   // find nodeRef by current path for CSSTransition
+   const currentCategory =
+      categories.find(c => c.link === location.pathname) || categories[0]; // fallback
+
    return (
       <RootContainer>
-         <Outlet />
+         <TransitionGroup
+            style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+            <CSSTransition
+               key={location.pathname}
+               nodeRef={currentCategory.nodeRef}
+               timeout={TIMEOUT}
+               classNames="page"
+               mountOnEnter
+               unmountOnExit>
+               <div
+                  ref={currentCategory.nodeRef}
+                  style={{
+                     position: 'absolute',
+                     width: '100%',
+                     height: '100%',
+                  }}>
+                  <Outlet />
+               </div>
+            </CSSTransition>
+         </TransitionGroup>
          <Nav>
             {categories.map((category, index) => (
                <Item
@@ -112,7 +145,8 @@ const RootContainer = styled.div`
    flex-direction: column;
    height: 100dvh;
    width: 100%;
-   overflow-y: hidden; /* 세로 스크롤 비활성화 */
+   overflow-y: hidden;
+   position: relative;
 `;
 
 const Nav = styled.div`
@@ -130,9 +164,11 @@ const Nav = styled.div`
    background-color: white;
    border-radius: 15px;
 `;
+
 const Img = styled.img`
    width: 23px;
 `;
+
 const Item = styled(Link)`
    display: flex;
    flex-direction: column;
@@ -143,9 +179,10 @@ const Item = styled(Link)`
    cursor: pointer;
    text-decoration: none;
 `;
+
 const NavText = styled.p<{ isActive: boolean }>`
    margin: 0;
    font-size: 12px;
    font-family: SemiBold;
-   color: ${({ isActive }) => (isActive ? 'black' : '#808080 ')};
+   color: ${({ isActive }) => (isActive ? 'black' : '#808080')};
 `;

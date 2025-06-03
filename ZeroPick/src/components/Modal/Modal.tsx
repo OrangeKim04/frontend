@@ -1,12 +1,13 @@
 import {
    ModalBox,
-   Overlay,
    Message,
    ButtonRow,
    ModalButton,
    ModalButtonCancel,
 } from '../styles/ModalStyle';
 import FoodImg from '../FoodImg';
+import { AnimatedModalWrapper } from './AnimatedModalWrapper';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 type ModalProps = {
    onClose: () => void;
@@ -26,6 +27,7 @@ const Modal = ({
    ocrText,
 }: ModalProps) => {
    const navigate = useNavigate();
+   const [isVisible, setIsVisible] = useState(true);
    const onSubmit = () => {
       if (id) {
          navigate('/home/result', {
@@ -38,7 +40,7 @@ const Modal = ({
       }
    };
    return (
-      <Overlay>
+      <AnimatedModalWrapper isVisible={isVisible} onClose={onClose}>
          <ModalBox>
             <FoodImg foodNm={foodNmKr!} />
             {makerNm && makerNm.trim() !== 'null' && (
@@ -49,10 +51,12 @@ const Modal = ({
             </Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
-               <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
+               <ModalButtonCancel onClick={() => setIsVisible(false)}>
+                  취소
+               </ModalButtonCancel>
             </ButtonRow>
          </ModalBox>
-      </Overlay>
+      </AnimatedModalWrapper>
    );
 };
 

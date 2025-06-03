@@ -44,9 +44,10 @@ const SearchPage = () => {
             return result;
          },
          initialPageParam: 0,
-         getNextPageParam: (lastPage, allPages) => {
-            return lastPage.length < 10 ? undefined : allPages.length;
-         },
+         getNextPageParam: (lastPage, allPages) =>
+            Array.isArray(lastPage) && lastPage.length >= 10
+               ? allPages.length
+               : undefined,
       });
 
    useEffect(() => {
@@ -61,8 +62,7 @@ const SearchPage = () => {
             backgroundColor: 'white',
             padding: '20px',
             overflowY: 'auto',
-         }}
-      >
+         }}>
          <SearchBar>
             <Img src={searchIcon} />
             <Input

@@ -3,10 +3,28 @@ import styled from 'styled-components';
 import { WhiteBox } from './styles/common';
 import arrowIcon from '@/assets/dropDownArrow.svg';
 import { Substitute } from '@/type/nutritientData';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const dropVariants = {
+   hidden: { height: 0, opacity: 0, overflow: 'hidden' },
+   visible: {
+      height: 'auto',
+      opacity: 1,
+      overflow: 'visible',
+      transition: { duration: 0.2 },
+   },
+};
+
+const splitByPeriod = (text: string) =>
+   text
+      .split(/(?<=\.)\s*/) // 마침표 뒤 공백 기준 분할
+      .filter(Boolean);
 
 export const SugarBox = ({ item, id }: { item: Substitute; id: number }) => {
    const [isOpen, setIsOpen] = useState(false);
 
+   const descriptionLines = splitByPeriod(item.description);
+   const sideEffectLines = splitByPeriod(item.sideEffect);
    return (
       <ClickableWhiteBox key={id} onClick={() => setIsOpen(prev => !prev)}>
          <Row>
@@ -17,26 +35,37 @@ export const SugarBox = ({ item, id }: { item: Substitute; id: number }) => {
             </MainInfo>
             <ArrowIcon src={arrowIcon} isOpen={isOpen} />
          </Row>
-         {isOpen && (
-            <>
-               <GiRow>
-                  <GiLabel>당지수(GI)</GiLabel>
-                  <GiValue>{item.giIndex}</GiValue>
-               </GiRow>
-               <InfoItem>
-                  <Column>
-                     <TextRow>
-                        <Dash>-</Dash>
-                        <Description>{item.description}</Description>
-                     </TextRow>
-                     <TextRow>
-                        <Dash>-</Dash>
-                        <Description>{item.sideEffect}</Description>
-                     </TextRow>
-                  </Column>
-               </InfoItem>
-            </>
-         )}
+         <AnimatePresence initial={false}>
+            {isOpen && (
+               <motion.div
+                  key="content"
+                  variants={dropVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden">
+                  <GiRow>
+                     <GiLabel>당지수(GI)</GiLabel>
+                     <GiValue>{item.giIndex}</GiValue>
+                  </GiRow>
+                  <InfoItem>
+                     <Column>
+                        {descriptionLines.map((line, i) => (
+                           <TextRow key={`desc-${i}`}>
+                              <Dash>-</Dash>
+                              <Description>{line}</Description>
+                           </TextRow>
+                        ))}
+                        {sideEffectLines.map((line, i) => (
+                           <TextRow key={`side-${i}`}>
+                              <Dash style={{ color: 'red' }}>-</Dash>
+                              <Description>{line}</Description>
+                           </TextRow>
+                        ))}
+                     </Column>
+                  </InfoItem>
+               </motion.div>
+            )}
+         </AnimatePresence>
       </ClickableWhiteBox>
    );
 };
@@ -65,6 +94,7 @@ const GiRow = styled.div`
    align-items: center;
    gap: 10px;
    margin-top: 10px;
+   margin-bottom: 10px;
 `;
 
 const GiLabel = styled.p`

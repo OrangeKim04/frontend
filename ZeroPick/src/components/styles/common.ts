@@ -23,6 +23,7 @@ export const Title = styled.p`
    font-family: Bold;
    font-size: 1.9rem;
 `;
+
 export const Button = styled.button`
    width: 100%;
    background-color: #ff9eb3;
@@ -34,6 +35,7 @@ export const Button = styled.button`
    font-family: SemiBold;
    cursor: pointer;
    flex-shrink: 0;
+   padding: 0;
 `;
 export const Form = styled.form`
    display: flex;

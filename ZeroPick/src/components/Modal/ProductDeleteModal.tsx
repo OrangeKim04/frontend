@@ -1,6 +1,5 @@
 import {
    ModalBox,
-   Overlay,
    Message,
    ButtonRow,
    ModalButton,
@@ -8,6 +7,9 @@ import {
 } from '../styles/ModalStyle';
 import { useNavigate } from 'react-router-dom';
 import { customFetch } from '@/hooks/CustomFetch';
+import { useState } from 'react';
+import { AnimatedModalWrapper } from './AnimatedModalWrapper';
+
 type ModalProps = {
    onClose: () => void;
    id: number;
@@ -15,6 +17,7 @@ type ModalProps = {
 
 const ProductDeleteModal = ({ onClose, id }: ModalProps) => {
    const navigate = useNavigate();
+   const [isVisible, setIsVisible] = useState(true);
    const handleUnScrap = async () => {
       try {
          const result = await customFetch(
@@ -26,25 +29,25 @@ const ProductDeleteModal = ({ onClose, id }: ModalProps) => {
             navigate,
          );
          console.log('스크랩 취소 성공', result);
-         onClose();
-         window.location.reload();
+         setIsVisible(false);
+         setTimeout(() => window.location.reload(), 300);
       } catch (error) {
          console.error('Fetch error:', error);
       }
    };
-   const onSubmit = () => {
-      handleUnScrap();
-   };
+
    return (
-      <Overlay>
+      <AnimatedModalWrapper isVisible={isVisible} onClose={onClose}>
          <ModalBox>
             <Message>상품을 정말 삭제하시겠습니까?</Message>
             <ButtonRow>
-               <ModalButton onClick={onSubmit}>확인</ModalButton>
-               <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
+               <ModalButton onClick={handleUnScrap}>확인</ModalButton>
+               <ModalButtonCancel onClick={() => setIsVisible(false)}>
+                  취소
+               </ModalButtonCancel>
             </ButtonRow>
          </ModalBox>
-      </Overlay>
+      </AnimatedModalWrapper>
    );
 };
 

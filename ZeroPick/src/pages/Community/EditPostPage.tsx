@@ -5,7 +5,7 @@ import { Button as BaseButton } from '@/components/styles/common';
 import LeftArrow from '@/assets/Left Arrow.svg';
 import { categoryMap } from '@/type/community';
 import { customFetch } from '@/hooks/CustomFetch';
-import { ErrorModal } from '@/components/ErrorModal';
+import { ErrorModal } from '@/components/Modal/ErrorModal';
 
 const EditPostPage: React.FC = () => {
    const { postId } = useParams();

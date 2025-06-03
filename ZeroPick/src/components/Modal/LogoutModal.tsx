@@ -1,19 +1,21 @@
 import {
    ModalBox,
-   Overlay,
    Message,
    ButtonRow,
    ModalButton,
    ModalButtonCancel,
 } from '../styles/ModalStyle';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { customFetch } from '@/hooks/CustomFetch';
+import { AnimatedModalWrapper } from './AnimatedModalWrapper';
 type ModalProps = {
    onClose: () => void;
 };
 
 const LogoutModal = ({ onClose }: ModalProps) => {
    const navigate = useNavigate();
+   const [isVisible, setIsVisible] = useState(true);
    const logout = async () => {
       try {
          const result = await customFetch(
@@ -36,15 +38,17 @@ const LogoutModal = ({ onClose }: ModalProps) => {
       logout();
    };
    return (
-      <Overlay>
+      <AnimatedModalWrapper isVisible={isVisible} onClose={onClose}>
          <ModalBox>
             <Message>로그아웃 하시겠습니까?</Message>
             <ButtonRow>
                <ModalButton onClick={onSubmit}>확인</ModalButton>
-               <ModalButtonCancel onClick={onClose}>취소</ModalButtonCancel>
+               <ModalButtonCancel onClick={() => setIsVisible(false)}>
+                  취소
+               </ModalButtonCancel>
             </ButtonRow>
          </ModalBox>
-      </Overlay>
+      </AnimatedModalWrapper>
    );
 };
 
