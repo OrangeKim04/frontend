@@ -1,4 +1,3 @@
-import { createRef } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -14,7 +13,6 @@ import settingActive from '@/assets/navbar/SettingB.svg';
 import searchActive from '@/assets/navbar/SearchB.svg';
 import { customFetch } from '@/hooks/CustomFetch';
 import { useUserStore } from '@/stores/user';
-import './styles.css';
 
 const categories = [
    {
@@ -22,35 +20,30 @@ const categories = [
       link: '/home',
       icon: home,
       activeIcon: homeActive,
-      nodeRef: createRef<HTMLElement>(),
    },
    {
       title: '검색',
       link: '/search',
       icon: search,
       activeIcon: searchActive,
-      nodeRef: createRef<HTMLElement>(),
    },
    {
       title: '레시피',
       link: '/recipe',
       icon: recipe,
       activeIcon: recipeActive,
-      nodeRef: createRef<HTMLElement>(),
    },
    {
       title: '커뮤니티',
       link: '/community',
       icon: community,
       activeIcon: communityActive,
-      nodeRef: createRef<HTMLElement>(),
    },
    {
       title: '설정',
       link: '/setting',
       icon: setting,
       activeIcon: settingActive,
-      nodeRef: createRef<HTMLElement>(),
    },
 ];
 
