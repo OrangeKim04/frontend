@@ -6,6 +6,7 @@ export interface Post {
    commentCount: number;
    name?: string;
    createdDate: string;
+   liked: boolean;
 }
 
 export interface PostDetail extends Post {

@@ -144,20 +144,32 @@ const PostDetailPage: React.FC = () => {
       }
    };
 
-    // ── 댓글/대댓글 삭제 ──
+   // ── 댓글/대댓글 삭제 ──
    const handleDeleteComment = async (commentId: string) => {
       const confirmed = window.confirm('정말로 이 댓글을 삭제하시겠습니까?');
       if (!confirmed) return;
       try {
          await customFetch(`/comments/${commentId}`, { method: 'DELETE' }, navigate);
-         // 삭제 후 서버에서 최신 댓글 목록과 카운트를 가져옵니다.
-         await fetchPostDetail();
+
+         const parentIndex = comments.findIndex(c => c.id === commentId);
+         if (parentIndex !== -1) {
+            const numReplies = comments[parentIndex].replies.length;
+            setComments(prev => prev.filter(c => c.id !== commentId));
+            setCommentCount(prev => prev - (1 + numReplies));
+         } else {
+            setComments(prev =>
+               prev.map(c => ({
+                  ...c,
+                  replies: c.replies.filter(r => r.id !== commentId),
+               })),
+            );
+            setCommentCount(prev => prev - 1);
+         }
       } catch (err) {
          console.log(err);
          alert('댓글 삭제에 실패했습니다.');
       }
    };
-  
 
    // ── 대댓글 작성 ──
    const handleReplySubmit = async (commentId: string, e: React.FormEvent) => {
