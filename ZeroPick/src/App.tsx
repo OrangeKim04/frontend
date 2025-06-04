@@ -24,6 +24,7 @@ import MyWritePost from './pages/Setting/MyWritePost';
 import CommunityLikes from './pages/Setting/CommunityLikes';
 import RecipeListPage from './pages/Recipe/RecipeListPage';
 import RecipeDetailPage from './pages/Recipe/RecipeDetailPage';
+import { Analytics } from '@vercel/analytics/react';
 import './styles.css'; // 애니메이션 클래스 정의용
 
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
          <BrowserRouter>
             <AnimatedRoutes />
+            <Analytics />
          </BrowserRouter>
       </QueryClientProvider>
    );
