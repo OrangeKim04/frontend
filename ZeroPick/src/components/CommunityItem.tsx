@@ -5,34 +5,53 @@ import { useNavigate } from 'react-router-dom';
 import { SubText } from '@/components/styles/common';
 import { Post } from '@/type/post';
 import { FaRegComment } from 'react-icons/fa';
+import { useState } from 'react';
+import { customFetch } from '@/hooks/CustomFetch';
 const CommunityItem = ({ post }: { post: Post }) => {
    const navigate = useNavigate();
+   const [liked, setLiked] = useState(post.liked);
+   const [likeCount, setLikeCount] = useState(post.likeCount);
+
    const handlePostClick = (postId: number) => {
       navigate(`/community/post/${postId}`);
    };
+
+   const handleLikeClick = async (e: React.MouseEvent) => {
+      e.stopPropagation(); // 카드 클릭 방지
+      try {
+         if (liked) {
+            await customFetch(`/boards/${post.boardId}/likes`, { method: 'DELETE' }, navigate);
+            setLiked(false);
+            setLikeCount(prev => prev - 1);
+         } else {
+            await customFetch(`/boards/${post.boardId}/likes`, { method: 'POST' }, navigate);
+            setLiked(true);
+            setLikeCount(prev => prev + 1);
+         }
+      } catch (error) {
+         console.error('좋아요 실패:', error);
+      }
+   };
+
    return (
-      <PostCard
-         key={post.boardId}
-         onClick={() => handlePostClick(post.boardId)}>
+      <PostCard onClick={() => handlePostClick(post.boardId)}>
          <PostAuthor>{post.name}</PostAuthor>
          <PostTitle>{post.title}</PostTitle>
          <PostContent>
-            {post.content.length > 25
-               ? `${post.content.slice(0, 25)}...`
-               : post.content}
+            {post.content.length > 25 ? `${post.content.slice(0, 25)}...` : post.content}
          </PostContent>
 
          <ActionsContainer>
-            <ActionButton as="div">
+            <ActionButton as="div" onClick={handleLikeClick}>
                <img
-                  src={post.likeCount > 0 ? fillHeartIcon : blankHeartIcon}
+                  src={liked ? fillHeartIcon : blankHeartIcon}
                   alt="like"
                   style={{
                      width: '14px',
                      marginRight: '4px',
                   }}
                />
-               {post.likeCount}
+               {likeCount}
             </ActionButton>
             <ActionButton as="div">
                <FaRegComment style={{ color: 'black', marginRight: '4px' }} />
@@ -43,6 +62,7 @@ const CommunityItem = ({ post }: { post: Post }) => {
       </PostCard>
    );
 };
+
 export default CommunityItem;
 const PostCard = styled.div`
    position: relative;
