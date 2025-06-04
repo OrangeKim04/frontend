@@ -80,7 +80,7 @@ export default HomePage;
 const ButtonWrapper = styled.div`
    width: 100%;
    min-height: 50px;
-   padding: 2px;
+   padding: 1px;
    background: conic-gradient(
       from var(--angle, 0deg),
       red,
